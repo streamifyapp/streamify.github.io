@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies - Streamify</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/browse.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="nav-left">
+            <a href="index.html" class="logo">STREAMIFY</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="movies.html" class="active">Movies</a></li>
+                <li><a href="series.html">TV Shows</a></li>
+                <li><a href="mylist.html">My List</a></li>
+            </ul>
+        </div>
+        <div class="nav-right">
+            <div class="search-box" id="searchBox">
+                <button class="search-toggle" id="searchToggle">
+                    <i class="fas fa-search"></i>
+                </button>
+                <input type="text" id="searchInput" placeholder="Titles, people, genres">
+            </div>
+            <div class="profile-dropdown">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" alt="Profile" class="profile-img">
+                <i class="fas fa-caret-down"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="browse-header">
+        <div class="browse-header-content">
+            <h1>Movies</h1>
+            <div class="filter-controls">
+                <div class="filter-dropdown">
+                    <button class="filter-btn" id="genreBtn">
+                        <span>Genres</span>
+                        <i class="fas fa-caret-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="genreDropdown">
+                        <a href="#" data-genre="all" class="active">All Genres</a>
+                        <a href="#" data-genre="28">Action</a>
+                        <a href="#" data-genre="12">Adventure</a>
+                        <a href="#" data-genre="16">Animation</a>
+                        <a href="#" data-genre="35">Comedy</a>
+                        <a href="#" data-genre="80">Crime</a>
+                        <a href="#" data-genre="99">Documentary</a>
+                        <a href="#" data-genre="18">Drama</a>
+                        <a href="#" data-genre="10751">Family</a>
+                        <a href="#" data-genre="14">Fantasy</a>
+                        <a href="#" data-genre="36">History</a>
+                        <a href="#" data-genre="27">Horror</a>
+                        <a href="#" data-genre="10402">Music</a>
+                        <a href="#" data-genre="9648">Mystery</a>
+                        <a href="#" data-genre="10749">Romance</a>
+                        <a href="#" data-genre="878">Science Fiction</a>
+                        <a href="#" data-genre="53">Thriller</a>
+                        <a href="#" data-genre="10752">War</a>
+                        <a href="#" data-genre="37">Western</a>
+                    </div>
+                </div>
+                <div class="filter-dropdown">
+                    <button class="filter-btn" id="sortBtn">
+                        <span>Sort By</span>
+                        <i class="fas fa-caret-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="sortDropdown">
+                        <a href="#" data-sort="popularity.desc" class="active">Most Popular</a>
+                        <a href="#" data-sort="vote_average.desc">Top Rated</a>
+                        <a href="#" data-sort="release_date.desc">Newest</a>
+                        <a href="#" data-sort="release_date.asc">Oldest</a>
+                        <a href="#" data-sort="original_title.asc">A-Z</a>
+                        <a href="#" data-sort="original_title.desc">Z-A</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Movies Grid -->
+    <main class="browse-content">
+        <div class="content-grid" id="moviesGrid">
+            <!-- Movies will be loaded here -->
+        </div>
+        
+        <!-- Load More Button -->
+        <div class="load-more-container">
+            <button class="load-more-btn" id="loadMoreBtn">
+                <span>Load More</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+            <div class="footer-links">
+                <a href="#">Audio Description</a>
+                <a href="#">Help Center</a>
+                <a href="#">Gift Cards</a>
+                <a href="#">Media Center</a>
+                <a href="#">Investor Relations</a>
+                <a href="#">Jobs</a>
+                <a href="#">Terms of Use</a>
+                <a href="#">Privacy</a>
+                <a href="#">Legal Notices</a>
+                <a href="#">Cookie Preferences</a>
+                <a href="#">Corporate Information</a>
+                <a href="#">Contact Us</a>
+            </div>
+            <p class="copyright">© 2025 Streamify. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Detail Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="detail-modal" id="detailModal">
+            <button class="modal-close" id="modalClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-banner" id="modalBanner">
+                <div class="modal-banner-gradient"></div>
+                <div class="modal-banner-content">
+                    <h1 class="modal-title" id="modalTitle">Movie Title</h1>
+                    <div class="modal-buttons">
+                        <button class="btn-play" id="modalPlayBtn">
+                            <i class="fas fa-play"></i> Play
+                        </button>
+                        <button class="btn-circle" id="modalAddList">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button class="btn-circle" id="modalLike">
+                            <i class="fas fa-thumbs-up"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-info-left">
+                    <div class="modal-meta">
+                        <span class="match-score" id="modalMatch">98% Match</span>
+                        <span id="modalYear">2024</span>
+                        <span class="hd-badge">HD</span>
+                        <span id="modalDuration">2h 15m</span>
+                    </div>
+                    <p class="modal-description" id="modalDescription">
+                        Description loading...
+                    </p>
+                </div>
+                <div class="modal-info-right">
+                    <p><span class="info-label">Genres:</span> <span id="modalGenres">Action, Drama</span></p>
+                    <p><span class="info-label">Rating:</span> <span id="modalRating">8.5</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/movies.js"></script>
+</body>
+</html>
