@@ -1386,12 +1386,12 @@ button {
         font-size: 13px;
     }
     
-    /* Hero Mobile - FIXED CONGESTION */
+       /* Hero Mobile - TALLER HEIGHT FIX */
     .hero { 
-        height: 50vh; 
-        min-height: 350px; 
-        max-height: 450px;
-        padding-bottom: 40px;
+        height: 65vh; 
+        min-height: 450px; 
+        max-height: 580px;
+        padding-bottom: 50px;
         align-items: flex-end;
     }
     
@@ -1590,11 +1590,10 @@ button {
 }
 
 /* ============ RESPONSIVE - SMALL MOBILE ============ */
-@media (max-width: 480px) {
     .hero { 
-        height: 45vh; 
-        min-height: 300px;
-        max-height: 380px;
+        height: 60vh; 
+        min-height: 400px;
+        max-height: 520px;
     }
     
     .hero h1 { font-size: 20px; }
