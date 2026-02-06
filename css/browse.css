@@ -736,4 +736,241 @@
     
     .detail-modal {
         max-height: 95vh;
-        border-radius: 15px 15px 0
+                border-radius: 15px 15px 0 0;
+        margin-top: auto;
+    }
+    
+    .modal-banner {
+        height: 200px;
+    }
+    
+    .modal-banner-content {
+        bottom: 15px;
+        left: 15px;
+        right: 15px;
+    }
+    
+    .modal-title {
+        font-size: 20px;
+        margin-bottom: 12px;
+    }
+    
+    .modal-buttons .btn-play {
+        padding: 10px 20px;
+        font-size: 14px;
+        min-height: 44px;
+    }
+    
+    .btn-circle {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .modal-body {
+        padding: 15px;
+    }
+    
+    .modal-meta {
+        font-size: 12px;
+        gap: 10px;
+    }
+    
+    .modal-description {
+        font-size: 13px;
+    }
+    
+    .empty-icon {
+        font-size: 60px;
+    }
+    
+    .empty-state h2 {
+        font-size: 22px;
+    }
+    
+    .empty-state p {
+        font-size: 14px;
+    }
+    
+    .footer-links {
+        gap: 15px 25px;
+    }
+    
+    .footer-links a {
+        font-size: 12px;
+    }
+    
+    .load-more-btn {
+        padding: 12px 30px;
+        font-size: 14px;
+    }
+}
+
+/* ============ RESPONSIVE - SMALL MOBILE ============ */
+@media (max-width: 480px) {
+    .content-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+    
+    .grid-card-title {
+        font-size: 9px;
+    }
+    
+    .grid-card-meta {
+        font-size: 8px;
+    }
+    
+    .grid-card-overlay {
+        padding: 6px;
+    }
+    
+    .browse-header h1 {
+        font-size: 22px;
+    }
+    
+    .filter-btn {
+        font-size: 12px;
+        padding: 10px 12px;
+    }
+    
+    .modal-title {
+        font-size: 18px;
+    }
+    
+    .modal-buttons .btn-play {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+    
+    .btn-circle {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+    
+    .grid-card-btn.remove-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 9px;
+        top: 4px;
+        right: 4px;
+    }
+}
+
+/* ============ RESPONSIVE - VERY SMALL ============ */
+@media (max-width: 350px) {
+    .content-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 5px;
+    }
+    
+    .browse-header h1 {
+        font-size: 20px;
+    }
+    
+    .browse-header h1 i {
+        font-size: 18px;
+    }
+}
+
+/* ============ SEARCH BOX FOR BROWSE PAGES ============ */
+.search-box {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.search-box input {
+    width: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+.search-box.active input {
+    width: 200px;
+    padding: 10px 15px;
+    background: #141414;
+    border: 1px solid #333;
+    border-radius: 4px;
+    opacity: 1;
+    margin-right: 10px;
+}
+
+.search-box.active input:focus {
+    border-color: #fff;
+    outline: none;
+}
+
+.search-toggle {
+    color: #fff;
+    font-size: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-toggle:hover {
+    color: #e50914;
+}
+
+/* Profile Dropdown for Browse Pages */
+.profile-dropdown {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.profile-dropdown .profile-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+}
+
+.profile-dropdown i {
+    color: #fff;
+    font-size: 12px;
+    transition: transform 0.2s;
+}
+
+.profile-dropdown:hover i {
+    transform: rotate(180deg);
+}
+
+/* ============ MOBILE SEARCH ============ */
+@media (max-width: 768px) {
+    .search-box {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #141414;
+        padding: 15px;
+        z-index: 1000;
+        display: none;
+    }
+    
+    .search-box.active {
+        display: flex;
+    }
+    
+    .search-box.active input {
+        width: 100%;
+        flex: 1;
+    }
+    
+    .profile-dropdown {
+        display: none;
+    }
+}
