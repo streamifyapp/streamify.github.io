@@ -36,7 +36,7 @@
             <button id="closeMenu"><i class="fas fa-times"></i></button>
         </div>
         <ul>
-            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="index.html" class="active"><i class="fas fa-home"></i> Home</a></li>
             <li><a href="movies.html"><i class="fas fa-film"></i> Movies</a></li>
             <li><a href="series.html"><i class="fas fa-tv"></i> TV Shows</a></li>
             <li><a href="mylist.html"><i class="fas fa-bookmark"></i> My List</a></li>
@@ -58,7 +58,7 @@
     <section class="hero" id="hero">
         <div class="hero-bg" id="heroBg"></div>
         <div class="hero-overlay"></div>
-        <div class="hero-content">
+        <div class="hero-content" id="heroContent">
             <span class="hero-badge"><i class="fas fa-play-circle"></i> <span id="heroType">MOVIE</span></span>
             <h1 id="heroTitle">Loading...</h1>
             <div class="hero-meta">
@@ -82,7 +82,11 @@
             <div class="section-header">
                 <h2><i class="fas fa-history"></i> Continue Watching</h2>
             </div>
-            <div class="content-row" id="continueWatching"></div>
+            <div class="row-wrapper">
+                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
+                <div class="content-row" id="continueWatching"></div>
+                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
+            </div>
         </section>
 
         <!-- Trending -->
@@ -91,7 +95,11 @@
                 <h2><i class="fas fa-fire"></i> Trending Now</h2>
                 <button class="see-all-btn" data-cat="trending">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="content-row" id="trendingNow"></div>
+            <div class="row-wrapper">
+                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
+                <div class="content-row" id="trendingNow"></div>
+                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
+            </div>
         </section>
 
         <!-- New Releases -->
@@ -100,7 +108,11 @@
                 <h2><i class="fas fa-sparkles"></i> New Releases</h2>
                 <button class="see-all-btn" data-cat="new">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="content-row" id="newReleases"></div>
+            <div class="row-wrapper">
+                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
+                <div class="content-row" id="newReleases"></div>
+                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
+            </div>
         </section>
 
         <!-- Top Rated -->
@@ -109,7 +121,11 @@
                 <h2><i class="fas fa-trophy"></i> Top Rated</h2>
                 <button class="see-all-btn" data-cat="toprated">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="content-row" id="topRated"></div>
+            <div class="row-wrapper">
+                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
+                <div class="content-row" id="topRated"></div>
+                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
+            </div>
         </section>
 
         <!-- Action -->
@@ -118,7 +134,11 @@
                 <h2><i class="fas fa-burst"></i> Action</h2>
                 <button class="see-all-btn" data-cat="action">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="content-row" id="actionMovies"></div>
+            <div class="row-wrapper">
+                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
+                <div class="content-row" id="actionMovies"></div>
+                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
+            </div>
         </section>
 
         <!-- Comedy -->
@@ -127,7 +147,11 @@
                 <h2><i class="fas fa-face-laugh-squint"></i> Comedy</h2>
                 <button class="see-all-btn" data-cat="comedy">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="content-row" id="comedyMovies"></div>
+            <div class="row-wrapper">
+                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
+                <div class="content-row" id="comedyMovies"></div>
+                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
+            </div>
         </section>
 
         <!-- Horror -->
@@ -136,7 +160,11 @@
                 <h2><i class="fas fa-ghost"></i> Horror</h2>
                 <button class="see-all-btn" data-cat="horror">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="content-row" id="horrorMovies"></div>
+            <div class="row-wrapper">
+                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
+                <div class="content-row" id="horrorMovies"></div>
+                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
+            </div>
         </section>
 
         <!-- Romance -->
@@ -145,7 +173,11 @@
                 <h2><i class="fas fa-heart"></i> Romance</h2>
                 <button class="see-all-btn" data-cat="romance">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="content-row" id="romanceMovies"></div>
+            <div class="row-wrapper">
+                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
+                <div class="content-row" id="romanceMovies"></div>
+                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
+            </div>
         </section>
 
         <!-- Thriller -->
@@ -154,7 +186,11 @@
                 <h2><i class="fas fa-user-secret"></i> Thriller</h2>
                 <button class="see-all-btn" data-cat="thriller">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="content-row" id="thrillerMovies"></div>
+            <div class="row-wrapper">
+                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
+                <div class="content-row" id="thrillerMovies"></div>
+                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
+            </div>
         </section>
 
         <!-- Sci-Fi -->
@@ -163,7 +199,11 @@
                 <h2><i class="fas fa-rocket"></i> Science Fiction</h2>
                 <button class="see-all-btn" data-cat="scifi">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="content-row" id="scifiMovies"></div>
+            <div class="row-wrapper">
+                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
+                <div class="content-row" id="scifiMovies"></div>
+                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
+            </div>
         </section>
 
         <!-- Drama -->
@@ -172,7 +212,11 @@
                 <h2><i class="fas fa-masks-theater"></i> Drama</h2>
                 <button class="see-all-btn" data-cat="drama">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="content-row" id="dramaMovies"></div>
+            <div class="row-wrapper">
+                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
+                <div class="content-row" id="dramaMovies"></div>
+                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
+            </div>
         </section>
 
         <!-- Animation -->
@@ -181,7 +225,11 @@
                 <h2><i class="fas fa-wand-magic-sparkles"></i> Animation</h2>
                 <button class="see-all-btn" data-cat="animation">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="content-row" id="animationMovies"></div>
+            <div class="row-wrapper">
+                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
+                <div class="content-row" id="animationMovies"></div>
+                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
+            </div>
         </section>
 
     </main>
