@@ -1150,3 +1150,179 @@ button {
     .instruction-item { flex-direction: column; text-align: center; gap: 8px; }
     .instruction-item i.fab { margin: 0 auto; }
 }
+
+/* ============================================
+   TOP 5 SECTION - COMPLETE FIX
+   Add this to your css/style.css
+============================================ */
+
+/* Top 5 Card Wrapper */
+.top-5-card {
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-end;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.top-5-card:hover {
+    transform: scale(1.05);
+    z-index: 5;
+}
+
+/* Rank Number Styling */
+.rank-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 240px;
+    font-weight: 900;
+    line-height: 0.75;
+    color: transparent;
+    -webkit-text-stroke: 3px #2a2a2a;
+    margin-right: -35px;
+    z-index: 1;
+    text-shadow: 0 0 40px rgba(0,0,0,0.9);
+    position: relative;
+}
+
+/* Gold for #1 */
+.top-5-card:nth-child(1) .rank-number {
+    background: linear-gradient(180deg, #ffd700 0%, #ff8c00 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 2px #b8860b;
+    filter: drop-shadow(0 0 15px rgba(255,215,0,0.5));
+}
+
+/* Silver for #2 */
+.top-5-card:nth-child(2) .rank-number {
+    background: linear-gradient(180deg, #e8e8e8 0%, #9a9a9a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 2px #707070;
+    filter: drop-shadow(0 0 15px rgba(192,192,192,0.4));
+}
+
+/* Bronze for #3 */
+.top-5-card:nth-child(3) .rank-number {
+    background: linear-gradient(180deg, #d4915d 0%, #8b4513 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 2px #6b3410;
+    filter: drop-shadow(0 0 15px rgba(205,127,50,0.4));
+}
+
+/* Poster Styling */
+.top-5-poster {
+    width: 180px;
+    height: 270px;
+    object-fit: cover;
+    border-radius: 10px;
+    z-index: 2;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+    position: relative;
+}
+
+/* Info Box - Shows on Hover */
+.top-5-info {
+    position: absolute;
+    bottom: 0;
+    left: 80px;
+    right: 0;
+    background: linear-gradient(0deg, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.85) 60%, transparent 100%);
+    padding: 20px 15px 15px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 3;
+    border-radius: 0 0 10px 10px;
+}
+
+.top-5-card:hover .top-5-info {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Title Styling */
+.top-5-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Meta Info */
+.top-5-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+}
+
+.top-5-rating {
+    color: #46d369;
+    font-weight: 600;
+}
+
+.top-5-type {
+    background: rgba(255,255,255,0.15);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .rank-number {
+        font-size: 150px;
+        margin-right: -20px;
+        -webkit-text-stroke: 2px #2a2a2a;
+    }
+    
+    .top-5-poster {
+        width: 120px;
+        height: 180px;
+    }
+    
+    .top-5-info {
+        left: 60px;
+        padding: 15px 12px 12px;
+    }
+    
+    .top-5-title {
+        font-size: 13px;
+    }
+    
+    .top-5-meta {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 480px) {
+    .rank-number {
+        font-size: 120px;
+        margin-right: -15px;
+    }
+    
+    .top-5-poster {
+        width: 100px;
+        height: 150px;
+    }
+    
+    .top-5-info {
+        left: 50px;
+        padding: 12px 10px 10px;
+    }
+    
+    .top-5-title {
+        font-size: 12px;
+        -webkit-line-clamp: 1;
+    }
+}
