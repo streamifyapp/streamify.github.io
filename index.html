@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streamify - Watch Movies & TV Shows</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-play-circle"></i>
+                <span>Streamify</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="active">Home</a>
+                <a href="movies.html">Movies</a>
+                <a href="series.html">TV Shows</a>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search movies, shows...">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="heroSection">
+        <div class="hero-content">
+            <h1 id="heroTitle">Loading...</h1>
+            <p id="heroOverview"></p>
+            <div class="hero-buttons">
+                <button class="btn-play" id="heroPlay"><i class="fas fa-play"></i> Watch Now</button>
+                <button class="btn-info" id="heroInfo"><i class="fas fa-info-circle"></i> More Info</button>
+            </div>
+        </div>
+        <div class="hero-overlay"></div>
+    </section>
+
+    <!-- Continue Watching -->
+    <section class="content-row" id="continueWatchingSection" style="display:none;">
+        <h2><i class="fas fa-history"></i> Continue Watching</h2>
+        <div class="row-container" id="continueWatching"></div>
+    </section>
+
+    <!-- Trending Movies -->
+    <section class="content-row">
+        <h2><i class="fas fa-fire"></i> Trending Movies</h2>
+        <div class="row-container" id="trendingMovies"></div>
+    </section>
+
+    <!-- Trending Series -->
+    <section class="content-row">
+        <h2><i class="fas fa-fire"></i> Trending TV Shows</h2>
+        <div class="row-container" id="trendingSeries"></div>
+    </section>
+
+    <!-- Popular Movies -->
+    <section class="content-row">
+        <h2><i class="fas fa-star"></i> Popular Movies</h2>
+        <div class="row-container" id="popularMovies"></div>
+    </section>
+
+    <!-- Popular Series -->
+    <section class="content-row">
+        <h2><i class="fas fa-star"></i> Popular TV Shows</h2>
+        <div class="row-container" id="popularSeries"></div>
+    </section>
+
+    <!-- Top Rated Movies -->
+    <section class="content-row">
+        <h2><i class="fas fa-trophy"></i> Top Rated Movies</h2>
+        <div class="row-container" id="topRatedMovies"></div>
+    </section>
+
+    <!-- Top Rated Series -->
+    <section class="content-row">
+        <h2><i class="fas fa-trophy"></i> Top Rated TV Shows</h2>
+        <div class="row-container" id="topRatedSeries"></div>
+    </section>
+
+    <!-- Now Playing -->
+    <section class="content-row">
+        <h2><i class="fas fa-film"></i> Now Playing in Theaters</h2>
+        <div class="row-container" id="nowPlaying"></div>
+    </section>
+
+    <!-- Upcoming Movies -->
+    <section class="content-row">
+        <h2><i class="fas fa-calendar"></i> Upcoming Movies</h2>
+        <div class="row-container" id="upcomingMovies"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-play-circle"></i>
+                <span>Streamify</span>
+            </div>
+            <p>Stream your favorite movies and TV shows for free.</p>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+            <p class="copyright">© 2025 Streamify. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/home.js"></script>
+</body>
+</html>
