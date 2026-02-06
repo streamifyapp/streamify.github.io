@@ -1,9 +1,8 @@
 /* ============================================
-   STREAMIFY - MOVIES PAGE LOGIC (FIXED)
-   Browse All Movies with Filters
+   STREAMIFY - MOVIES PAGE LOGIC
+   FULLY OPTIMIZED FOR MOBILE
 ============================================ */
 
-// ============ DOM ELEMENTS ============
 const MoviesDOM = {
     moviesGrid: document.getElementById('moviesGrid'),
     loadMoreBtn: document.getElementById('loadMoreBtn'),
@@ -15,7 +14,6 @@ const MoviesDOM = {
     searchToggle: document.getElementById('searchToggle'),
     searchInput: document.getElementById('searchInput'),
     
-    // Modal
     modalOverlay: document.getElementById('modalOverlay'),
     modalClose: document.getElementById('modalClose'),
     modalBanner: document.getElementById('modalBanner'),
@@ -30,7 +28,6 @@ const MoviesDOM = {
     modalAddList: document.getElementById('modalAddList')
 };
 
-// ============ STATE ============
 let currentPage = 1;
 let currentGenre = 'all';
 let currentSort = 'popularity.desc';
@@ -38,7 +35,6 @@ let isLoading = false;
 let totalPages = 1;
 let currentModalItem = null;
 
-// ============ INITIALIZATION ============
 document.addEventListener('DOMContentLoaded', () => {
     initFilters();
     initSearch();
@@ -46,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadMovies();
 });
 
-// ============ FILTERS ============
 function initFilters() {
     MoviesDOM.genreBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -107,7 +102,6 @@ function initFilters() {
     });
 }
 
-// ============ SEARCH ============
 function initSearch() {
     MoviesDOM.searchToggle.addEventListener('click', () => {
         MoviesDOM.searchBox.classList.toggle('active');
@@ -137,7 +131,6 @@ async function searchMovies(query) {
     hideLoading();
 }
 
-// ============ LOAD MOVIES ============
 async function loadMovies(append = false) {
     if (isLoading) return;
     showLoading();
@@ -209,15 +202,18 @@ function createGridCard(item, type) {
     `;
 }
 
+// FIXED: Card click events - Opens modal on POSTER click too
 function addCardEventListeners() {
     MoviesDOM.moviesGrid.querySelectorAll('.grid-card').forEach(card => {
         const id = parseInt(card.dataset.id);
         const type = card.dataset.type;
         
-        // FIXED: Card click opens modal
+        // FIXED: Clicking card/image opens modal
         card.addEventListener('click', (e) => {
-            // Don't open modal if clicking a button
+            // Don't open modal if clicking button
             if (!e.target.closest('button')) {
+                e.preventDefault();
+                e.stopPropagation();
                 openModal(id, type);
             }
         });
@@ -271,7 +267,6 @@ async function toggleListFromCard(card, id, type) {
     }
 }
 
-// ============ MODAL ============
 function initModal() {
     MoviesDOM.modalClose.addEventListener('click', closeModal);
     
@@ -344,7 +339,6 @@ function updateModalListButton() {
     }
 }
 
-// ============ UTILITIES ============
 function showLoading() {
     isLoading = true;
     MoviesDOM.loadMoreBtn.classList.add('loading');
