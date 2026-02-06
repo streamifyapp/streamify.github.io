@@ -1,6 +1,6 @@
 /* ============================================
    STREAMIFY - PREMIUM NETFLIX CLONE
-   Updated Version - Fixed Top 5 & Popup
+   FULLY OPTIMIZED FOR MOBILE & DESKTOP
 ============================================ */
 
 * {
@@ -287,6 +287,7 @@ button {
     z-index: 200;
     padding: 25px;
     transition: left 0.3s ease;
+    overflow-y: auto;
 }
 
 .mobile-menu.active {
@@ -647,6 +648,7 @@ button {
     padding: 15px 0;
     scrollbar-width: none;
     scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
 }
 
 .content-row::-webkit-scrollbar {
@@ -690,7 +692,7 @@ button {
     border-radius: 5px 0 0 5px;
 }
 
-/* ============ TOP 5 RANKING CARDS - IMPROVED ============ */
+/* ============ TOP 5 RANKING CARDS ============ */
 .top-5-row {
     gap: 35px;
 }
@@ -754,6 +756,58 @@ button {
     z-index: 2;
     box-shadow: 0 15px 40px rgba(0,0,0,0.7);
     position: relative;
+}
+
+.top-5-info {
+    position: absolute;
+    bottom: 0;
+    left: 80px;
+    right: 0;
+    background: linear-gradient(0deg, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.85) 60%, transparent 100%);
+    padding: 20px 15px 15px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 3;
+    border-radius: 0 0 10px 10px;
+}
+
+.top-5-card:hover .top-5-info {
+    opacity: 1;
+    visibility: visible;
+}
+
+.top-5-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.top-5-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+}
+
+.top-5-rating {
+    color: #46d369;
+    font-weight: 600;
+}
+
+.top-5-type {
+    background: rgba(255,255,255,0.15);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
 }
 
 /* ============ REGULAR CARDS ============ */
@@ -1077,7 +1131,7 @@ button {
     font-size: 14px;
 }
 
-/* ============ RESPONSIVE ============ */
+/* ============ RESPONSIVE - MOBILE OPTIMIZED ============ */
 @media (max-width: 1024px) {
     .navbar { padding: 15px 30px; }
     .hero-content { padding: 0 30px; }
@@ -1086,243 +1140,168 @@ button {
 }
 
 @media (max-width: 768px) {
+    /* Navbar Mobile */
     .nav-links, .profile-img, .download-btn { display: none; }
     .menu-toggle { display: block; }
     .navbar { padding: 12px 20px; }
     .logo { font-size: 26px; }
     
+    /* Popup Mobile */
     .popup-box { padding: 30px 25px; max-width: 95%; }
     .popup-icon { width: 60px; height: 60px; font-size: 24px; }
     .popup-box h2 { font-size: 22px; }
     .popup-instructions { padding: 15px; }
-    .instruction-item { padding: 10px 0; }
-    .instruction-item i.fab { font-size: 20px; width: 25px; }
+    .instruction-item { padding: 10px 0; flex-direction: column; text-align: center; gap: 8px; }
+    .instruction-item i.fab { font-size: 20px; width: 25px; margin: 0 auto; }
     .instruction-item span { font-size: 13px; }
     .popup-btn { padding: 12px 30px; font-size: 14px; }
     
-    .hero { height: 65vh; min-height: 450px; padding-bottom: 80px; }
+    /* Hero Mobile */
+    .hero { 
+        height: 60vh; 
+        min-height: 400px; 
+        padding-bottom: 60px;
+        align-items: center;
+    }
     .hero-content { padding: 0 20px; max-width: 100%; }
-    .hero h1 { font-size: 30px; }
-    .hero-meta { font-size: 13px; }
-    .hero-desc { display: none; }
-    .btn-play, .btn-info { padding: 12px 22px; font-size: 14px; }
+    .hero h1 { font-size: 28px; margin-bottom: 12px; }
+    .hero-meta { font-size: 13px; flex-wrap: wrap; gap: 12px; }
+    .hero-desc { font-size: 14px; margin-bottom: 18px; }
+    .hero-btns { flex-wrap: wrap; }
+    .btn-play, .btn-info { 
+        padding: 12px 24px; 
+        font-size: 14px; 
+        flex: 1;
+        min-width: 140px;
+        justify-content: center;
+    }
     
-    .main-content { margin-top: -60px; }
-    .content-section { padding: 0 15px; margin-bottom: 35px; }
+    /* Content Mobile */
+    .main-content { margin-top: -40px; }
+    .content-section { padding: 0 15px; margin-bottom: 30px; }
+    .section-header { margin-bottom: 12px; }
     .section-header h2 { font-size: 18px; }
     .section-header h2 i { font-size: 16px; }
+    .see-all-btn { font-size: 13px; padding: 6px 12px; }
     
-    .card { width: 150px; }
-    .card-img { height: 225px; }
-    .card-title { font-size: 13px; }
-    .skeleton { width: 150px; height: 225px; }
+    /* Cards Mobile - OPTIMIZED */
+    .card { width: 140px; }
+    .card-img { height: 210px; }
+    .card-title { font-size: 14px; }
+    .card-meta { font-size: 12px; gap: 8px; }
+    .skeleton { width: 140px; height: 210px; }
     
-    .rank-number { font-size: 150px; margin-right: -20px; -webkit-text-stroke: 2px #2a2a2a; }
-    .top-5-poster { width: 120px; height: 180px; }
+    /* Top 5 Mobile - WITH INFO VISIBLE */
+    .rank-number { 
+        font-size: 140px; 
+        margin-right: -25px; 
+        -webkit-text-stroke: 2px #2a2a2a; 
+    }
+    .top-5-poster { width: 110px; height: 165px; }
     .top-5-row { gap: 25px; }
     
+    /* MOBILE FIX: Always show info on mobile */
+    .top-5-info {
+        opacity: 1;
+        visibility: visible;
+        left: 60px;
+        padding: 12px 10px 10px;
+        background: linear-gradient(0deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.75) 70%, transparent 100%);
+    }
+    
+    .top-5-title { 
+        font-size: 12px; 
+        -webkit-line-clamp: 1;
+        margin-bottom: 6px;
+    }
+    
+    .top-5-meta { 
+        font-size: 10px; 
+        gap: 6px;
+    }
+    
+    /* Scroll arrows hidden on mobile */
     .scroll-arrow { display: none; }
     
+    /* Content Row - Touch Scrolling */
+    .content-row {
+        gap: 12px;
+        padding: 12px 0;
+    }
+    
+    /* See All Modal Mobile */
     .see-all-header { padding: 18px 20px; }
     .see-all-header h2 { font-size: 22px; }
-    .see-all-grid { grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 25px 15px 40px; }
+    .see-all-header button { width: 40px; height: 40px; font-size: 18px; }
+    .see-all-grid { 
+        grid-template-columns: repeat(3, 1fr); 
+        gap: 12px; 
+        padding: 20px 15px 40px; 
+    }
+    .see-all-card-title { font-size: 13px; }
+    .see-all-card-meta { font-size: 11px; }
     
-    .detail-modal { padding: 15px; }
-    .detail-banner { height: 220px; }
-    .detail-info { padding: 20px; }
-    .detail-info h1 { font-size: 24px; }
-    .detail-btns { flex-direction: column; }
+    /* Detail Modal Mobile */
+    .detail-modal { padding: 15px; align-items: flex-start; }
+    .detail-box { max-height: 95vh; }
+    .detail-banner { height: 200px; }
+    .detail-close { 
+        width: 40px; 
+        height: 40px; 
+        font-size: 18px;
+        top: 10px;
+        right: 10px;
+    }
+    .detail-info { padding: 20px; margin-top: -30px; }
+    .detail-info h1 { font-size: 22px; }
+    .detail-meta { font-size: 13px; gap: 12px; }
+    .detail-info > p { font-size: 14px; }
+    .detail-btns { 
+        flex-direction: column; 
+        gap: 10px;
+    }
+    .detail-btns button {
+        width: 100%;
+        justify-content: center;
+    }
     
+    /* Search Modal Mobile */
+    .search-modal { padding: 20px; }
+    .search-wrapper { 
+        margin: 40px auto 20px;
+        padding: 10px 20px;
+    }
+    .search-wrapper i { font-size: 18px; }
+    .search-wrapper input { font-size: 16px; }
+    .search-results { 
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+    
+    /* Footer Mobile */
     .footer { padding: 40px 20px; }
+    .footer-logo { font-size: 28px; }
+    .footer-download { padding: 10px 24px; font-size: 14px; }
 }
 
 @media (max-width: 480px) {
-    .card { width: 130px; }
-    .card-img { height: 195px; }
-    .skeleton { width: 130px; height: 195px; }
+    /* Extra small screens */
+    .hero h1 { font-size: 24px; }
+    .hero-btns { flex-direction: column; width: 100%; }
+    .btn-play, .btn-info { width: 100%; }
     
-    .rank-number { font-size: 120px; margin-right: -15px; }
-    .top-5-poster { width: 100px; height: 150px; }
-    .top-5-row { gap: 20px; }
+    .card { width: 120px; }
+    .card-img { height: 180px; }
+    .skeleton { width: 120px; height: 180px; }
+    
+    .rank-number { font-size: 110px; margin-right: -18px; }
+    .top-5-poster { width: 90px; height: 135px; }
+    .top-5-row { gap: 18px; }
+    .top-5-info { left: 48px; padding: 10px 8px 8px; }
+    .top-5-title { font-size: 11px; }
+    .top-5-meta { font-size: 9px; }
     
     .see-all-grid { grid-template-columns: repeat(2, 1fr); }
     
-    .instruction-item { flex-direction: column; text-align: center; gap: 8px; }
-    .instruction-item i.fab { margin: 0 auto; }
-}
-
-/* ============================================
-   TOP 5 SECTION - COMPLETE FIX
-   Add this to your css/style.css
-============================================ */
-
-/* Top 5 Card Wrapper */
-.top-5-card {
-    position: relative;
-    flex-shrink: 0;
-    display: flex;
-    align-items: flex-end;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.top-5-card:hover {
-    transform: scale(1.05);
-    z-index: 5;
-}
-
-/* Rank Number Styling */
-.rank-number {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 240px;
-    font-weight: 900;
-    line-height: 0.75;
-    color: transparent;
-    -webkit-text-stroke: 3px #2a2a2a;
-    margin-right: -35px;
-    z-index: 1;
-    text-shadow: 0 0 40px rgba(0,0,0,0.9);
-    position: relative;
-}
-
-/* Gold for #1 */
-.top-5-card:nth-child(1) .rank-number {
-    background: linear-gradient(180deg, #ffd700 0%, #ff8c00 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    -webkit-text-stroke: 2px #b8860b;
-    filter: drop-shadow(0 0 15px rgba(255,215,0,0.5));
-}
-
-/* Silver for #2 */
-.top-5-card:nth-child(2) .rank-number {
-    background: linear-gradient(180deg, #e8e8e8 0%, #9a9a9a 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    -webkit-text-stroke: 2px #707070;
-    filter: drop-shadow(0 0 15px rgba(192,192,192,0.4));
-}
-
-/* Bronze for #3 */
-.top-5-card:nth-child(3) .rank-number {
-    background: linear-gradient(180deg, #d4915d 0%, #8b4513 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    -webkit-text-stroke: 2px #6b3410;
-    filter: drop-shadow(0 0 15px rgba(205,127,50,0.4));
-}
-
-/* Poster Styling */
-.top-5-poster {
-    width: 180px;
-    height: 270px;
-    object-fit: cover;
-    border-radius: 10px;
-    z-index: 2;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.7);
-    position: relative;
-}
-
-/* Info Box - Shows on Hover */
-.top-5-info {
-    position: absolute;
-    bottom: 0;
-    left: 80px;
-    right: 0;
-    background: linear-gradient(0deg, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.85) 60%, transparent 100%);
-    padding: 20px 15px 15px;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    z-index: 3;
-    border-radius: 0 0 10px 10px;
-}
-
-.top-5-card:hover .top-5-info {
-    opacity: 1;
-    visibility: visible;
-}
-
-/* Title Styling */
-.top-5-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 8px;
-    line-height: 1.3;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-/* Meta Info */
-.top-5-meta {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 12px;
-}
-
-.top-5-rating {
-    color: #46d369;
-    font-weight: 600;
-}
-
-.top-5-type {
-    background: rgba(255,255,255,0.15);
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 500;
-    text-transform: uppercase;
-}
-
-/* Mobile Responsive */
-@media (max-width: 768px) {
-    .rank-number {
-        font-size: 150px;
-        margin-right: -20px;
-        -webkit-text-stroke: 2px #2a2a2a;
-    }
-    
-    .top-5-poster {
-        width: 120px;
-        height: 180px;
-    }
-    
-    .top-5-info {
-        left: 60px;
-        padding: 15px 12px 12px;
-    }
-    
-    .top-5-title {
-        font-size: 13px;
-    }
-    
-    .top-5-meta {
-        font-size: 11px;
-    }
-}
-
-@media (max-width: 480px) {
-    .rank-number {
-        font-size: 120px;
-        margin-right: -15px;
-    }
-    
-    .top-5-poster {
-        width: 100px;
-        height: 150px;
-    }
-    
-    .top-5-info {
-        left: 50px;
-        padding: 12px 10px 10px;
-    }
-    
-    .top-5-title {
-        font-size: 12px;
-        -webkit-line-clamp: 1;
-    }
+    .search-results { grid-template-columns: repeat(2, 1fr); }
 }
