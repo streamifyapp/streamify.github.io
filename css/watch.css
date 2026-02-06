@@ -489,8 +489,8 @@
 ============================================ */
 #playerTopSpacer {
     width: 100% !important;
-    height: 125px !important;
-    min-height: 125px !important;
+    height: 144px !important;
+    min-height: 144px !important;
     max-height: none !important;
     background: #000000 !important;
     display: block !important;
@@ -513,8 +513,8 @@
 
 @media (max-width: 768px) {
     #playerTopSpacer {
-        height: 125px !important;
-        min-height: 125px !important;
+        height: 144px !important;
+        min-height: 144px !important;
         max-height: none !important;
         display: block !important;
         visibility: visible !important;
@@ -523,8 +523,8 @@
 
 @media (max-width: 480px) {
     #playerTopSpacer {
-        height: 125px !important;
-        min-height: 125px !important;
+        height: 144px !important;
+        min-height: 144px !important;
         max-height: none !important;
         display: block !important;
         visibility: visible !important;
