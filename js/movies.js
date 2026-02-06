@@ -1,5 +1,5 @@
 /* ============================================
-   STREAMIFY - MOVIES PAGE LOGIC
+   STREAMIFY - MOVIES PAGE LOGIC (FIXED)
    Browse All Movies with Filters
 ============================================ */
 
@@ -48,43 +48,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ============ FILTERS ============
 function initFilters() {
-    // Genre dropdown toggle
     MoviesDOM.genreBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         MoviesDOM.genreBtn.parentElement.classList.toggle('active');
         MoviesDOM.sortBtn.parentElement.classList.remove('active');
     });
     
-    // Sort dropdown toggle
     MoviesDOM.sortBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         MoviesDOM.sortBtn.parentElement.classList.toggle('active');
         MoviesDOM.genreBtn.parentElement.classList.remove('active');
     });
     
-    // Close dropdowns on outside click
     document.addEventListener('click', () => {
         MoviesDOM.genreBtn.parentElement.classList.remove('active');
         MoviesDOM.sortBtn.parentElement.classList.remove('active');
     });
     
-    // Genre selection
     MoviesDOM.genreDropdown.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const genre = link.dataset.genre;
             
-            // Update active state
             MoviesDOM.genreDropdown.querySelectorAll('a').forEach(a => a.classList.remove('active'));
             link.classList.add('active');
-            
-            // Update button text
             MoviesDOM.genreBtn.querySelector('span').textContent = link.textContent;
-            
-            // Close dropdown
             MoviesDOM.genreBtn.parentElement.classList.remove('active');
             
-            // Load movies with new genre
             currentGenre = genre;
             currentPage = 1;
             MoviesDOM.moviesGrid.innerHTML = '';
@@ -92,23 +82,16 @@ function initFilters() {
         });
     });
     
-    // Sort selection
     MoviesDOM.sortDropdown.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const sort = link.dataset.sort;
             
-            // Update active state
             MoviesDOM.sortDropdown.querySelectorAll('a').forEach(a => a.classList.remove('active'));
             link.classList.add('active');
-            
-            // Update button text
             MoviesDOM.sortBtn.querySelector('span').textContent = link.textContent;
-            
-            // Close dropdown
             MoviesDOM.sortBtn.parentElement.classList.remove('active');
             
-            // Load movies with new sort
             currentSort = sort;
             currentPage = 1;
             MoviesDOM.moviesGrid.innerHTML = '';
@@ -116,7 +99,6 @@ function initFilters() {
         });
     });
     
-    // Load more button
     MoviesDOM.loadMoreBtn.addEventListener('click', () => {
         if (!isLoading && currentPage < totalPages) {
             currentPage++;
@@ -146,26 +128,21 @@ function initSearch() {
 
 async function searchMovies(query) {
     showLoading();
-    
     const data = await API.searchMovies(query, currentPage);
-    
     if (data && data.results) {
         totalPages = data.total_pages;
         renderMovies(data.results, false);
         updateLoadMoreButton();
     }
-    
     hideLoading();
 }
 
 // ============ LOAD MOVIES ============
 async function loadMovies(append = false) {
     if (isLoading) return;
-    
     showLoading();
     
     let data;
-    
     if (currentGenre === 'all') {
         data = await API.fetchFromTMDB('/discover/movie', {
             sort_by: currentSort,
@@ -186,20 +163,16 @@ async function loadMovies(append = false) {
         renderMovies(data.results, append);
         updateLoadMoreButton();
     }
-    
     hideLoading();
 }
 
 function renderMovies(movies, append = false) {
     const html = movies.map(movie => createGridCard(movie, 'movie')).join('');
-    
     if (append) {
         MoviesDOM.moviesGrid.innerHTML += html;
     } else {
         MoviesDOM.moviesGrid.innerHTML = html;
     }
-    
-    // Add event listeners to new cards
     addCardEventListeners();
 }
 
@@ -238,48 +211,58 @@ function createGridCard(item, type) {
 
 function addCardEventListeners() {
     MoviesDOM.moviesGrid.querySelectorAll('.grid-card').forEach(card => {
-        const id = card.dataset.id;
+        const id = parseInt(card.dataset.id);
         const type = card.dataset.type;
         
-        // Play button
-        card.querySelector('[data-action="play"]')?.addEventListener('click', (e) => {
-            e.stopPropagation();
-            window.location.href = `watch.html?id=${id}&type=${type}`;
+        // FIXED: Card click opens modal
+        card.addEventListener('click', (e) => {
+            // Don't open modal if clicking a button
+            if (!e.target.closest('button')) {
+                openModal(id, type);
+            }
         });
+        
+        // Play button
+        const playBtn = card.querySelector('[data-action="play"]');
+        if (playBtn) {
+            playBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                window.location.href = `watch.html?id=${id}&type=${type}`;
+            });
+        }
         
         // Add to list button
-        card.querySelector('[data-action="list"]')?.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleListFromCard(card, id, type);
-        });
+        const listBtn = card.querySelector('[data-action="list"]');
+        if (listBtn) {
+            listBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleListFromCard(card, id, type);
+            });
+        }
         
         // Info button
-        card.querySelector('[data-action="info"]')?.addEventListener('click', (e) => {
-            e.stopPropagation();
-            openModal(id, type);
-        });
-        
-        // Card click
-        card.addEventListener('click', () => {
-            openModal(id, type);
-        });
+        const infoBtn = card.querySelector('[data-action="info"]');
+        if (infoBtn) {
+            infoBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openModal(id, type);
+            });
+        }
     });
 }
 
 async function toggleListFromCard(card, id, type) {
     const btn = card.querySelector('[data-action="list"]');
     const icon = btn.querySelector('i');
-    
-    // Get basic info from card
     const title = card.querySelector('.grid-card-title').textContent;
     const img = card.querySelector('img');
     
-    if (Storage.isInMyList(parseInt(id), type)) {
-        Storage.removeFromMyList(parseInt(id), type);
+    if (Storage.isInMyList(id, type)) {
+        Storage.removeFromMyList(id, type);
         icon.className = 'fas fa-plus';
     } else {
         Storage.addToMyList({
-            id: parseInt(id),
+            id: id,
             type: type,
             title: title,
             poster_path: img.src.includes('image.tmdb.org') ? img.src.split('/').pop() : null
