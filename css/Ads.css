@@ -110,37 +110,64 @@
 
 /* Mobile - Hide Desktop Ads, Show Mobile Ads */
 @media (max-width: 768px) {
-    /* Hide desktop-only ads - CRITICAL */
+    /* CRITICAL: Hide desktop-only ads with maximum specificity */
+    .ad-container.desktop-banner-top,
+    div.ad-container.desktop-banner-top,
     .desktop-banner-top {
         display: none !important;
         visibility: hidden !important;
         height: 0 !important;
+        max-height: 0 !important;
+        min-height: 0 !important;
         overflow: hidden !important;
         margin: 0 !important;
         padding: 0 !important;
+        opacity: 0 !important;
+        position: absolute !important;
+        left: -9999px !important;
     }
     
+    .ad-container.native-ad,
+    div.ad-container.native-ad,
     .native-ad {
         display: none !important;
         visibility: hidden !important;
         height: 0 !important;
+        max-height: 0 !important;
+        min-height: 0 !important;
         overflow: hidden !important;
         margin: 0 !important;
         padding: 0 !important;
+        opacity: 0 !important;
+        position: absolute !important;
+        left: -9999px !important;
     }
     
-    /* Force hide any native ad containers */
-    .native-ad * {
+    /* Force hide any native ad containers and their children */
+    .native-ad *,
+    .native-ad script,
+    .native-ad iframe,
+    .native-ad div {
         display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        width: 0 !important;
     }
     
-    .desktop-banner-top * {
+    .desktop-banner-top *,
+    .desktop-banner-top script,
+    .desktop-banner-top iframe,
+    .desktop-banner-top div {
         display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        width: 0 !important;
     }
     
     /* Show mobile banners */
     .mobile-banner-320x100 {
         display: flex !important;
+        visibility: visible !important;
     }
     
     .banner-300x250 {
