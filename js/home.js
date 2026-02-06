@@ -1,6 +1,7 @@
 /* ============================================
    STREAMIFY - HOME PAGE (FULLY OPTIMIZED)
    Fixed: Korean, Bollywood, Mixed Content, Mobile
+   See All: 70+ posters, Hero: Mixed content
 ============================================ */
 
 const $ = id => document.getElementById(id);
@@ -74,6 +75,7 @@ const DOM = {
 let currentItem = null;
 let heroItems = [];
 let heroIndex = 0;
+let isModalLoading = false;
 
 const GENRES = {
     action: 28,
@@ -230,17 +232,33 @@ function loadContinueWatching() {
     }
 }
 
-// Hero - Mixed Content
+// Hero - Mixed Hollywood + Bollywood + Movies + TV
 async function loadHero() {
-    const [movies, tv] = await Promise.all([
+    const [hollywoodMovies, hollywoodTV, bollywoodMovies, bollywoodTV] = await Promise.all([
         API.getTrendingMovies('day'),
-        API.getTrendingTV('day')
+        API.getTrendingTV('day'),
+        API.fetchFromTMDB('/discover/movie', {
+            with_original_language: 'hi',
+            sort_by: 'popularity.desc',
+            'vote_count.gte': 100
+        }),
+        API.fetchFromTMDB('/discover/tv', {
+            with_original_language: 'hi',
+            sort_by: 'popularity.desc',
+            'vote_count.gte': 50
+        })
     ]);
     
-    heroItems = mixArrays(
-        (movies?.results || []).map(i => ({ ...i, type: 'movie' })),
-        (tv?.results || []).map(i => ({ ...i, type: 'tv' }))
-    ).filter(i => i.backdrop_path).slice(0, 10);
+    // Mix all content for hero
+    const allContent = [
+        ...(hollywoodMovies?.results || []).slice(0, 4).map(i => ({ ...i, type: 'movie' })),
+        ...(hollywoodTV?.results || []).slice(0, 3).map(i => ({ ...i, type: 'tv' })),
+        ...(bollywoodMovies?.results || []).slice(0, 2).map(i => ({ ...i, type: 'movie' })),
+        ...(bollywoodTV?.results || []).slice(0, 1).map(i => ({ ...i, type: 'tv' }))
+    ];
+    
+    // Shuffle and filter
+    heroItems = shuffleArray(allContent).filter(i => i.backdrop_path).slice(0, 10);
     
     if (heroItems.length) {
         updateHero(heroItems[0]);
@@ -249,6 +267,15 @@ async function loadHero() {
             animateHeroChange(heroItems[heroIndex]);
         }, 6000);
     }
+}
+
+function shuffleArray(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
 }
 
 function animateHeroChange(item) {
@@ -276,21 +303,29 @@ function updateHero(item) {
     DOM.heroInfo.onclick = () => openDetail(item.id, type);
 }
 
-// FIXED: Top 5 Today with Title & Info (Mobile Compatible)
+// Top 5 Today - Mixed Content
 async function loadTop5() {
     if (!DOM.top5Today) return;
     
     DOM.top5Today.innerHTML = Array(5).fill('<div class="skeleton" style="width:200px;height:225px;"></div>').join('');
     
-    const [movies, tv] = await Promise.all([
+    const [movies, tv, bollywood] = await Promise.all([
         API.getPopularMovies(),
-        API.getPopularTV()
+        API.getPopularTV(),
+        API.fetchFromTMDB('/discover/movie', {
+            with_original_language: 'hi',
+            sort_by: 'popularity.desc'
+        })
     ]);
     
-    const mixed = mixArrays(
-        (movies?.results || []).map(i => ({ ...i, type: 'movie' })),
-        (tv?.results || []).map(i => ({ ...i, type: 'tv' }))
-    ).slice(0, 5);
+    // Mix Hollywood and Bollywood
+    const allContent = [
+        ...(movies?.results || []).slice(0, 2).map(i => ({ ...i, type: 'movie' })),
+        ...(tv?.results || []).slice(0, 2).map(i => ({ ...i, type: 'tv' })),
+        ...(bollywood?.results || []).slice(0, 1).map(i => ({ ...i, type: 'movie' }))
+    ];
+    
+    const mixed = shuffleArray(allContent).slice(0, 5);
     
     DOM.top5Today.innerHTML = mixed.map((item, idx) => `
         <div class="top-5-card" data-id="${item.id}" data-type="${item.type}">
@@ -307,27 +342,38 @@ async function loadTop5() {
     `).join('');
     
     DOM.top5Today.querySelectorAll('.top-5-card').forEach(card => {
-        card.addEventListener('click', () => {
-            openDetail(card.dataset.id, card.dataset.type);
-        });
+        card.addEventListener('click', handleCardClick);
     });
+}
+
+// Handle card click with debounce for mobile
+function handleCardClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const card = e.currentTarget;
+    const id = card.dataset.id;
+    const type = card.dataset.type;
+    
+    if (id && type) {
+        openDetail(id, type);
+    }
 }
 
 // Load ALL Categories - MIXED Movies & TV Shows
 async function loadAllCategories() {
-    // Original Categories
-    loadMixed(DOM.trendingNow, 'trending');
+    // Mixed categories
+    loadMixedCategory(DOM.trendingNow, 'trending');
+    loadMixedCategory(DOM.newReleases, 'new');
+    loadMixedCategory(DOM.topRated, 'toprated');
     
-    // BOLLYWOOD CATEGORY - Shows below New Releases
+    // BOLLYWOOD CATEGORY - ONLY Hindi content (untouched)
     loadBollywood();
     
-    loadMixed(DOM.newReleases, 'new');
-    loadMixed(DOM.topRated, 'toprated');
-    
-    // KOREAN CATEGORY - Shows after Top Rated
+    // KOREAN CATEGORY - ONLY Korean content (untouched)
     loadKorean();
     
-    // Genre Categories (All Mixed)
+    // Genre Categories (All Mixed with Hollywood + Bollywood + Movies + TV)
     loadMixedGenre(DOM.actionMovies, GENRES.action);
     loadMixedGenre(DOM.comedyMovies, GENRES.comedy);
     loadMixedGenre(DOM.horrorMovies, GENRES.horror);
@@ -344,12 +390,11 @@ async function loadAllCategories() {
     loadMixedGenre(DOM.familyContent, GENRES.family);
 }
 
-// BOLLYWOOD CATEGORY - Hindi Movies & Series
+// BOLLYWOOD CATEGORY - ONLY Hindi (Untouched as requested)
 async function loadBollywood() {
     if (!DOM.bollywoodContent) return;
     DOM.bollywoodContent.innerHTML = Array(10).fill('<div class="skeleton"></div>').join('');
     
-    // Fetch Hindi (India) content
     const [movies, tv] = await Promise.all([
         API.fetchFromTMDB('/discover/movie', {
             with_original_language: 'hi',
@@ -372,12 +417,11 @@ async function loadBollywood() {
     addCardEvents(DOM.bollywoodContent);
 }
 
-// KOREAN CATEGORY - Korean Movies & Series  
+// KOREAN CATEGORY - ONLY Korean (Untouched as requested)
 async function loadKorean() {
     if (!DOM.koreanContent) return;
     DOM.koreanContent.innerHTML = Array(10).fill('<div class="skeleton"></div>').join('');
     
-    // Fetch Korean content
     const [movies, tv] = await Promise.all([
         API.fetchFromTMDB('/discover/movie', {
             with_original_language: 'ko',
@@ -400,57 +444,86 @@ async function loadKorean() {
     addCardEvents(DOM.koreanContent);
 }
 
-async function loadMixed(container, category) {
+// Mixed Category - Hollywood + Bollywood + Movies + TV
+async function loadMixedCategory(container, category) {
     if (!container) return;
     container.innerHTML = Array(10).fill('<div class="skeleton"></div>').join('');
     
-    let movies, tv;
+    let hollywoodMovies, hollywoodTV, bollywoodMovies, bollywoodTV;
     
     if (category === 'trending') {
-        [movies, tv] = await Promise.all([
+        [hollywoodMovies, hollywoodTV, bollywoodMovies] = await Promise.all([
             API.getTrendingMovies('week'),
-            API.getTrendingTV('week')
+            API.getTrendingTV('week'),
+            API.fetchFromTMDB('/discover/movie', {
+                with_original_language: 'hi',
+                sort_by: 'popularity.desc'
+            })
         ]);
     } else if (category === 'new') {
-        [movies, tv] = await Promise.all([
+        [hollywoodMovies, hollywoodTV, bollywoodMovies] = await Promise.all([
             API.getNowPlayingMovies(),
-            API.getAiringTodayTV()
+            API.getAiringTodayTV(),
+            API.fetchFromTMDB('/discover/movie', {
+                with_original_language: 'hi',
+                sort_by: 'release_date.desc',
+                'vote_count.gte': 10
+            })
         ]);
     } else if (category === 'toprated') {
-        [movies, tv] = await Promise.all([
+        [hollywoodMovies, hollywoodTV, bollywoodMovies] = await Promise.all([
             API.getTopRatedMovies(),
-            API.getTopRatedTV()
+            API.getTopRatedTV(),
+            API.fetchFromTMDB('/discover/movie', {
+                with_original_language: 'hi',
+                sort_by: 'vote_average.desc',
+                'vote_count.gte': 100
+            })
         ]);
     }
     
-    const mixed = mixArrays(
-        (movies?.results || []).map(i => ({ ...i, type: 'movie' })),
-        (tv?.results || []).map(i => ({ ...i, type: 'tv' }))
-    );
+    // Mix all content
+    const allContent = [
+        ...(hollywoodMovies?.results || []).map(i => ({ ...i, type: 'movie' })),
+        ...(hollywoodTV?.results || []).map(i => ({ ...i, type: 'tv' })),
+        ...(bollywoodMovies?.results || []).slice(0, 5).map(i => ({ ...i, type: 'movie' }))
+    ];
+    
+    const mixed = mixAndDedupe(allContent);
     
     container.innerHTML = mixed.map(i => createCard(i, i.type)).join('');
     addCardEvents(container);
 }
 
+// Mixed Genre - Hollywood + Bollywood + Movies + TV
 async function loadMixedGenre(container, genreId) {
     if (!container) return;
     container.innerHTML = Array(10).fill('<div class="skeleton"></div>').join('');
     
-    const [movies, tv] = await Promise.all([
+    const [hollywoodMovies, hollywoodTV, bollywoodMovies] = await Promise.all([
         API.getMoviesByGenre(genreId),
-        API.getTVByGenre(genreId)
+        API.getTVByGenre(genreId),
+        API.fetchFromTMDB('/discover/movie', {
+            with_original_language: 'hi',
+            with_genres: genreId,
+            sort_by: 'popularity.desc'
+        })
     ]);
     
-    const mixed = mixArrays(
-        (movies?.results || []).map(i => ({ ...i, type: 'movie' })),
-        (tv?.results || []).map(i => ({ ...i, type: 'tv' }))
-    );
+    // Mix all content
+    const allContent = [
+        ...(hollywoodMovies?.results || []).map(i => ({ ...i, type: 'movie' })),
+        ...(hollywoodTV?.results || []).map(i => ({ ...i, type: 'tv' })),
+        ...(bollywoodMovies?.results || []).slice(0, 4).map(i => ({ ...i, type: 'movie' }))
+    ];
+    
+    const mixed = mixAndDedupe(allContent);
     
     container.innerHTML = mixed.map(i => createCard(i, i.type)).join('');
     addCardEvents(container);
 }
 
-// Mix arrays alternating between movies and TV shows
+// Mix arrays alternating between items
 function mixArrays(a, b) {
     const mixed = [];
     const max = Math.max(a.length, b.length);
@@ -458,12 +531,24 @@ function mixArrays(a, b) {
         if (a[i]) mixed.push(a[i]);
         if (b[i]) mixed.push(b[i]);
     }
+    return dedupeArray(mixed);
+}
+
+// Mix and dedupe any array
+function mixAndDedupe(arr) {
+    const shuffled = shuffleArray(arr);
+    return dedupeArray(shuffled).slice(0, 20);
+}
+
+// Remove duplicates
+function dedupeArray(arr) {
     const seen = new Set();
-    return mixed.filter(i => {
-        if (seen.has(i.id) || !i.poster_path) return false;
-        seen.add(i.id);
+    return arr.filter(i => {
+        const key = `${i.id}-${i.type}`;
+        if (seen.has(key) || !i.poster_path) return false;
+        seen.add(key);
         return true;
-    }).slice(0, 20);
+    });
 }
 
 function createCard(item, type) {
@@ -486,24 +571,32 @@ function createCard(item, type) {
     `;
 }
 
-// FIXED: Card Events - Opens modal on any click (not just play button)
+// Card Events - Works on mobile and desktop
 function addCardEvents(container) {
     container.querySelectorAll('.card').forEach(card => {
-        // Make entire card clickable
+        // Remove any existing listeners
+        card.replaceWith(card.cloneNode(true));
+    });
+    
+    // Re-select and add fresh listeners
+    container.querySelectorAll('.card').forEach(card => {
+        card.style.cursor = 'pointer';
+        
         card.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
+            
             const id = card.dataset.id;
             const type = card.dataset.type;
-            openDetail(id, type);
+            
+            if (id && type) {
+                openDetail(id, type);
+            }
         });
-        
-        // Prevent double-trigger
-        card.style.cursor = 'pointer';
     });
 }
 
-// See All Modal
+// See All Modal - Fixed to show 70+ posters
 function initSeeAll() {
     document.querySelectorAll('.see-all-btn').forEach(btn => {
         btn.addEventListener('click', () => openSeeAll(btn.dataset.cat));
@@ -544,27 +637,29 @@ async function openSeeAll(cat) {
     DOM.seeAllTitle.textContent = titles[cat] || 'Content';
     DOM.seeAllGrid.innerHTML = '<p style="text-align:center;color:#666;padding:50px;">Loading...</p>';
     
-    let items = [];
+    let allItems = [];
     
-    for (let p = 1; p <= 3; p++) {
+    // Fetch 4 pages to get 70+ items
+    for (let p = 1; p <= 4; p++) {
         let movies, tv;
         
         if (cat === 'trending') {
             [movies, tv] = await Promise.all([
-                API.getTrendingMovies('week'),
-                API.getTrendingTV('week')
+                API.fetchFromTMDB('/trending/movie/week', { page: p }),
+                API.fetchFromTMDB('/trending/tv/week', { page: p })
             ]);
         } else if (cat === 'new') {
             [movies, tv] = await Promise.all([
-                API.getNowPlayingMovies(),
-                API.getAiringTodayTV()
+                API.fetchFromTMDB('/movie/now_playing', { page: p }),
+                API.fetchFromTMDB('/tv/airing_today', { page: p })
             ]);
         } else if (cat === 'toprated') {
             [movies, tv] = await Promise.all([
-                API.getTopRatedMovies(),
-                API.getTopRatedTV()
+                API.fetchFromTMDB('/movie/top_rated', { page: p }),
+                API.fetchFromTMDB('/tv/top_rated', { page: p })
             ]);
         } else if (cat === 'bollywood') {
+            // Bollywood - Only Hindi content
             [movies, tv] = await Promise.all([
                 API.fetchFromTMDB('/discover/movie', {
                     with_original_language: 'hi',
@@ -578,6 +673,7 @@ async function openSeeAll(cat) {
                 })
             ]);
         } else if (cat === 'korean') {
+            // Korean - Only Korean content
             [movies, tv] = await Promise.all([
                 API.fetchFromTMDB('/discover/movie', {
                     with_original_language: 'ko',
@@ -591,25 +687,22 @@ async function openSeeAll(cat) {
                 })
             ]);
         } else {
+            // Genre categories - Mixed content
             const gid = GENRES[cat] || 28;
             [movies, tv] = await Promise.all([
-                API.getMoviesByGenre(gid),
-                API.getTVByGenre(gid)
+                API.fetchFromTMDB('/discover/movie', { with_genres: gid, page: p, sort_by: 'popularity.desc' }),
+                API.fetchFromTMDB('/discover/tv', { with_genres: gid, page: p, sort_by: 'popularity.desc' })
             ]);
         }
         
-        items.push(...mixArrays(
-            (movies?.results || []).map(i => ({ ...i, type: 'movie' })),
-            (tv?.results || []).map(i => ({ ...i, type: 'tv' }))
-        ));
+        allItems.push(
+            ...(movies?.results || []).map(i => ({ ...i, type: 'movie' })),
+            ...(tv?.results || []).map(i => ({ ...i, type: 'tv' }))
+        );
     }
     
-    const seen = new Set();
-    const unique = items.filter(i => {
-        if (seen.has(i.id) || !i.poster_path) return false;
-        seen.add(i.id);
-        return true;
-    });
+    // Dedupe and limit
+    const unique = dedupeArray(allItems).slice(0, 80);
     
     DOM.seeAllGrid.innerHTML = unique.map(item => {
         const title = item.title || item.name;
@@ -627,11 +720,20 @@ async function openSeeAll(cat) {
         `;
     }).join('');
     
-    // FIXED: Make entire card clickable
+    // Add click events
     DOM.seeAllGrid.querySelectorAll('.see-all-card').forEach(card => {
-        card.addEventListener('click', () => {
+        card.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const id = card.dataset.id;
+            const type = card.dataset.type;
+            
             closeSeeAll();
-            openDetail(card.dataset.id, card.dataset.type);
+            
+            setTimeout(() => {
+                openDetail(id, type);
+            }, 100);
         });
     });
 }
@@ -641,7 +743,7 @@ function closeSeeAll() {
     document.body.style.overflow = '';
 }
 
-// Detail Modal
+// Detail Modal - Fixed for mobile
 function initDetailModal() {
     DOM.detailClose?.addEventListener('click', closeDetail);
     DOM.detailModal?.addEventListener('click', e => {
@@ -680,30 +782,44 @@ function initDetailModal() {
 }
 
 async function openDetail(id, type) {
+    if (isModalLoading) return;
+    isModalLoading = true;
+    
     DOM.detailModal.classList.add('active');
     document.body.style.overflow = 'hidden';
     
-    const data = type === 'movie' 
-        ? await API.getMovieDetails(id) 
-        : await API.getTVDetails(id);
+    // Show loading state
+    DOM.detailTitle.textContent = 'Loading...';
+    DOM.detailDesc.textContent = '';
+    DOM.detailBanner.style.backgroundImage = '';
     
-    if (data) {
-        currentItem = { ...data, type };
+    try {
+        const data = type === 'movie' 
+            ? await API.getMovieDetails(id) 
+            : await API.getTVDetails(id);
         
-        DOM.detailBanner.style.backgroundImage = `url(${API.getBackdropUrl(data.backdrop_path)})`;
-        DOM.detailTitle.textContent = data.title || data.name;
-        DOM.detailRating.textContent = data.vote_average?.toFixed(1) || 'N/A';
-        DOM.detailYear.textContent = (data.release_date || data.first_air_date || '').split('-')[0];
-        DOM.detailDuration.textContent = type === 'movie' 
-            ? `${data.runtime || 0} min` 
-            : `${data.number_of_seasons || 0} Season${data.number_of_seasons > 1 ? 's' : ''}`;
-        DOM.detailDesc.textContent = data.overview || 'No description available.';
-        DOM.detailGenres.textContent = data.genres?.map(g => g.name).join(', ') || 'N/A';
-        
-        DOM.detailList.innerHTML = Storage.isInMyList(data.id, type) 
-            ? '<i class="fas fa-check"></i> Added' 
-            : '<i class="fas fa-plus"></i> My List';
+        if (data) {
+            currentItem = { ...data, type };
+            
+            DOM.detailBanner.style.backgroundImage = `url(${API.getBackdropUrl(data.backdrop_path)})`;
+            DOM.detailTitle.textContent = data.title || data.name;
+            DOM.detailRating.textContent = data.vote_average?.toFixed(1) || 'N/A';
+            DOM.detailYear.textContent = (data.release_date || data.first_air_date || '').split('-')[0];
+            DOM.detailDuration.textContent = type === 'movie' 
+                ? `${data.runtime || 0} min` 
+                : `${data.number_of_seasons || 0} Season${data.number_of_seasons > 1 ? 's' : ''}`;
+            DOM.detailDesc.textContent = data.overview || 'No description available.';
+            DOM.detailGenres.textContent = data.genres?.map(g => g.name).join(', ') || 'N/A';
+            
+            DOM.detailList.innerHTML = Storage.isInMyList(data.id, type) 
+                ? '<i class="fas fa-check"></i> Added' 
+                : '<i class="fas fa-plus"></i> My List';
+        }
+    } catch (error) {
+        console.error('Error loading details:', error);
     }
+    
+    isModalLoading = false;
 }
 
 function closeDetail() {
