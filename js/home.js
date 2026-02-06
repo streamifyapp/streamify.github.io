@@ -1,6 +1,6 @@
 /* ============================================
    STREAMIFY - HOME PAGE
-   Complete Fixed Version
+   Final Premium Version
 ============================================ */
 
 const $ = id => document.getElementById(id);
@@ -18,6 +18,7 @@ const DOM = {
     searchResults: $('searchResults'),
     
     heroBg: $('heroBg'),
+    heroContent: $('heroContent'),
     heroTitle: $('heroTitle'),
     heroDesc: $('heroDesc'),
     heroRating: $('heroRating'),
@@ -78,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initNavbar();
     initMobileMenu();
     initSearch();
+    initScrollArrows();
     initSeeAll();
     initDetailModal();
     loadContinueWatching();
@@ -144,6 +146,23 @@ async function doSearch(query) {
     }
 }
 
+// Scroll Arrows
+function initScrollArrows() {
+    document.querySelectorAll('.row-wrapper').forEach(wrapper => {
+        const row = wrapper.querySelector('.content-row');
+        const leftBtn = wrapper.querySelector('.scroll-arrow.left');
+        const rightBtn = wrapper.querySelector('.scroll-arrow.right');
+        
+        leftBtn?.addEventListener('click', () => {
+            row.scrollBy({ left: -row.clientWidth * 0.8, behavior: 'smooth' });
+        });
+        
+        rightBtn?.addEventListener('click', () => {
+            row.scrollBy({ left: row.clientWidth * 0.8, behavior: 'smooth' });
+        });
+    });
+}
+
 // Continue Watching
 function loadContinueWatching() {
     const items = Storage.getContinueWatching();
@@ -170,24 +189,49 @@ function loadContinueWatching() {
     }
 }
 
-// Hero
+// Hero - Mixed Hollywood + Bollywood with Animation
 async function loadHero() {
-    const data = await API.getTrendingMovies('day');
+    // Fetch both Hollywood and Bollywood trending
+    const [hollywood, bollywood] = await Promise.all([
+        API.getTrendingMovies('day'),
+        API.fetchFromTMDB('/discover/movie', { with_origin_country: 'IN', sort_by: 'popularity.desc' })
+    ]);
     
-    if (data?.results) {
-        heroItems = data.results.filter(i => i.backdrop_path).slice(0, 8);
-        if (heroItems.length) {
-            updateHero(heroItems[0]);
-            setInterval(() => {
-                heroIndex = (heroIndex + 1) % heroItems.length;
-                updateHero(heroItems[heroIndex]);
-            }, 7000);
-        }
+    // Mix them together
+    let hwItems = (hollywood?.results || []).filter(i => i.backdrop_path).slice(0, 5);
+    let bwItems = (bollywood?.results || []).filter(i => i.backdrop_path).slice(0, 5);
+    
+    heroItems = [];
+    const max = Math.max(hwItems.length, bwItems.length);
+    for (let i = 0; i < max; i++) {
+        if (hwItems[i]) heroItems.push({ ...hwItems[i], type: hwItems[i].media_type || 'movie' });
+        if (bwItems[i]) heroItems.push({ ...bwItems[i], type: 'movie' });
+    }
+    
+    if (heroItems.length) {
+        updateHero(heroItems[0]);
+        setInterval(() => {
+            heroIndex = (heroIndex + 1) % heroItems.length;
+            animateHeroChange(heroItems[heroIndex]);
+        }, 6000);
     }
 }
 
+function animateHeroChange(item) {
+    // Fade out
+    DOM.heroBg.classList.add('fade-out');
+    DOM.heroContent.classList.add('fade-out');
+    
+    // After fade out, update content and fade in
+    setTimeout(() => {
+        updateHero(item);
+        DOM.heroBg.classList.remove('fade-out');
+        DOM.heroContent.classList.remove('fade-out');
+    }, 500);
+}
+
 function updateHero(item) {
-    const type = item.media_type || 'movie';
+    const type = item.type || item.media_type || 'movie';
     
     DOM.heroBg.style.backgroundImage = `url(${API.getBackdropUrl(item.backdrop_path)})`;
     DOM.heroTitle.textContent = item.title || item.name;
@@ -217,7 +261,7 @@ async function loadAllCategories() {
 
 async function loadMixed(container, endpoint) {
     if (!container) return;
-    container.innerHTML = Array(8).fill('<div class="skeleton"></div>').join('');
+    container.innerHTML = Array(10).fill('<div class="skeleton"></div>').join('');
     
     const [hw, bw] = await Promise.all([
         API.fetchFromTMDB(endpoint),
@@ -235,7 +279,7 @@ async function loadMixed(container, endpoint) {
 
 async function loadMixedGenre(container, genreId) {
     if (!container) return;
-    container.innerHTML = Array(8).fill('<div class="skeleton"></div>').join('');
+    container.innerHTML = Array(10).fill('<div class="skeleton"></div>').join('');
     
     const [hw, bw] = await Promise.all([
         API.fetchFromTMDB('/discover/movie', { with_genres: genreId }),
