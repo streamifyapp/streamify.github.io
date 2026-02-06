@@ -1,9 +1,12 @@
 /* ============================================
-   WATCH PAGE - FINAL
+   STREAMIFY - WATCH PAGE
+   Complete Final Version
 ============================================ */
 
+// Helper function
 const $ = id => document.getElementById(id);
 
+// DOM Elements
 const DOM = {
     playerLoader: $('playerLoader'),
     player: $('player'),
@@ -23,12 +26,13 @@ const DOM = {
     similarGrid: $('similarGrid')
 };
 
+// State
 let content = null;
 let contentType = 'movie';
 let currentSeason = 1;
 let currentEpisode = 1;
 
-// Init
+// Initialize
 document.addEventListener('DOMContentLoaded', init);
 
 async function init() {
@@ -36,7 +40,8 @@ async function init() {
     const id = params.get('id');
     const type = params.get('type') || 'movie';
     
-    if (!id) {        location.href = 'index.html';
+    if (!id) {
+        location.href = 'index.html';
         return;
     }
     
@@ -45,6 +50,7 @@ async function init() {
     initButtons();
 }
 
+// Load Content Details
 async function loadContent(id, type) {
     let data;
     
@@ -56,31 +62,46 @@ async function loadContent(id, type) {
     
     if (!data) {
         alert('Failed to load content');
+        location.href = 'index.html';
         return;
     }
     
     content = { ...data, type };
     
-    // Update UI
+    // Update Page Title
     document.title = `${data.title || data.name} - Streamify`;
+    
+    // Update UI Elements
     DOM.watchTitle.textContent = data.title || data.name;
     DOM.watchRating.textContent = data.vote_average?.toFixed(1) || 'N/A';
     DOM.watchYear.textContent = (data.release_date || data.first_air_date || '').split('-')[0];
     DOM.watchDesc.textContent = data.overview || 'No description available.';
     DOM.watchGenres.textContent = data.genres?.map(g => g.name).join(', ') || '-';
     
-    if (data.credits?.cast) {
-        DOM.watchCast.textContent = data.credits.cast.slice(0, 6).map(c => c.name).join(', ') || '-';
+    // Cast
+    if (data.credits && data.credits.cast) {
+        const castNames = data.credits.cast.slice(0, 6).map(c => c.name).join(', ');
+        DOM.watchCast.textContent = castNames || '-';
+    } else {
+        DOM.watchCast.textContent = '-';
     }
     
+    // Handle Movie vs TV Show
     if (type === 'movie') {
-        DOM.watchDuration.textContent = `${data.runtime || 0} min`;
+        // Movie duration
+        const hours = Math.floor((data.runtime || 0) / 60);
+        const mins = (data.runtime || 0) % 60;
+        DOM.watchDuration.textContent = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+        
         // Play movie immediately
         playVideo(id, 'movie');
     } else {
-        DOM.watchDuration.textContent = `${data.number_of_seasons} Season${data.number_of_seasons > 1 ? 's' : ''}`;
-        // Load episodes
+        // TV Show
+        DOM.watchDuration.textContent = `${data.number_of_seasons || 0} Season${data.number_of_seasons > 1 ? 's' : ''}`;
+        
+        // Load seasons and episodes
         await loadSeasons(id, data.seasons);
+        
         // Auto-play first episode
         playVideo(id, 'tv', 1, 1);
     }
@@ -88,63 +109,79 @@ async function loadContent(id, type) {
     // Load similar content
     loadSimilar(data);
     
-    // Update list button
+    // Update My List button state
     updateListBtn();
     
     // Save to continue watching
     saveToContinue();
 }
 
+// Load Seasons
 async function loadSeasons(tvId, seasons) {
     if (!seasons || seasons.length === 0) return;
     
+    // Filter out season 0 (specials)
     const validSeasons = seasons.filter(s => s.season_number > 0);
+    
     if (validSeasons.length === 0) return;
     
+    // Show episode selector
     DOM.episodeSelector.style.display = 'block';
     
     // Populate season dropdown
     DOM.seasonSelect.innerHTML = validSeasons.map(s => 
-        `<option value="${s.season_number}">Season ${s.season_number}</option>`
+        `<option value="${s.season_number}">Season ${s.season_number} (${s.episode_count} Episodes)</option>`
     ).join('');
     
     // Load first season episodes
     await loadEpisodes(tvId, 1);
     
-    // Season change event
+    // Season change event listener
     DOM.seasonSelect.addEventListener('change', async () => {
         currentSeason = parseInt(DOM.seasonSelect.value);
+        currentEpisode = 1;
         await loadEpisodes(tvId, currentSeason);
     });
 }
 
+// Load Episodes
 async function loadEpisodes(tvId, seasonNum) {
+    // Show loading
     DOM.episodesGrid.innerHTML = `
-        <div style="text-align:center;padding:40px;color:#666;">
-            <div class="spinner" style="margin:0 auto 15px;width:40px;height:40px;"></div>
-            Loading episodes...
+        <div style="text-align:center; padding:50px; color:#666;">
+            <div class="spinner" style="margin:0 auto 15px; width:40px; height:40px; border:3px solid #333; border-top-color:#e50914; border-radius:50%; animation:spin 1s linear infinite;"></div>
+            <p>Loading episodes...</p>
         </div>
     `;
     
     const data = await API.getSeasonDetails(tvId, seasonNum);
     
-    if (!data || !data.episodes) {
-        DOM.episodesGrid.innerHTML = '<p style="text-align:center;padding:30px;color:#666;">No episodes found</p>';
+    if (!data || !data.episodes || data.episodes.length === 0) {
+        DOM.episodesGrid.innerHTML = '<p style="text-align:center; padding:40px; color:#666;">No episodes found for this season.</p>';
         return;
     }
     
+    // Render episode cards
     DOM.episodesGrid.innerHTML = data.episodes.map(ep => {
         const isActive = ep.episode_number === currentEpisode && seasonNum === currentSeason;
-        const stillImg = ep.still_path 
+        
+        // Episode still image
+        const stillImage = ep.still_path 
             ? API.getImageUrl(ep.still_path, 'card') 
-            : 'https://via.placeholder.com/320x180/1a1a1a/666?text=No+Preview';
+            : 'https://via.placeholder.com/320x180/1a1a1a/666666?text=No+Preview';
+        
+        // Episode runtime
+        const runtime = ep.runtime ? `${ep.runtime} min` : '';
+        
+        // Episode description
+        const description = ep.overview || 'No description available for this episode.';
         
         return `
             <div class="episode-card ${isActive ? 'active' : ''}" 
                  data-season="${seasonNum}" 
                  data-episode="${ep.episode_number}">
                 <div class="episode-thumb">
-                    <img src="${stillImg}" alt="${ep.name}">
+                    <img src="${stillImage}" alt="${ep.name}" loading="lazy">
                     <span class="episode-number">E${ep.episode_number}</span>
                     <div class="episode-play">
                         <i class="fas fa-play"></i>
@@ -153,31 +190,34 @@ async function loadEpisodes(tvId, seasonNum) {
                 <div class="episode-info">
                     <div class="episode-header">
                         <span class="episode-title">${ep.name || 'Episode ' + ep.episode_number}</span>
-                        <span class="episode-duration">${ep.runtime ? ep.runtime + ' min' : ''}</span>
+                        <span class="episode-duration">${runtime}</span>
                     </div>
-                    <p class="episode-desc">${ep.overview || 'No description available for this episode.'}</p>
+                    <p class="episode-desc">${description}</p>
                 </div>
             </div>
         `;
     }).join('');
     
-    // Add click events
+    // Add click events to episode cards
     DOM.episodesGrid.querySelectorAll('.episode-card').forEach(card => {
         card.addEventListener('click', () => {
             const season = parseInt(card.dataset.season);
             const episode = parseInt(card.dataset.episode);
             
+            // Update current state
             currentSeason = season;
             currentEpisode = episode;
             
-            // Update active state
-            DOM.episodesGrid.querySelectorAll('.episode-card').forEach(c => c.classList.remove('active'));
+            // Update active class
+            DOM.episodesGrid.querySelectorAll('.episode-card').forEach(c => {
+                c.classList.remove('active');
+            });
             card.classList.add('active');
             
-            // Play episode
+            // Play the episode
             playVideo(content.id, 'tv', season, episode);
             
-            // Scroll to top
+            // Scroll to player
             window.scrollTo({ top: 0, behavior: 'smooth' });
             
             // Save progress
@@ -186,46 +226,63 @@ async function loadEpisodes(tvId, seasonNum) {
     });
 }
 
+// Play Video
 function playVideo(id, type, season = 1, episode = 1) {
-    let url;
+    let streamUrl;
     
     if (type === 'movie') {
-        url = CONFIG.getMovieStreamUrl(id);
+        streamUrl = CONFIG.getMovieStreamUrl(id);
     } else {
-        url = CONFIG.getTVStreamUrl(id, season, episode);
+        streamUrl = CONFIG.getTVStreamUrl(id, season, episode);
     }
     
-    DOM.player.src = url;
+    // Set iframe source
+    DOM.player.src = streamUrl;
     
+    // Hide loader when iframe loads
     DOM.player.onload = () => {
         DOM.playerLoader.classList.add('hidden');
     };
     
-    // Update URL
-    const newUrl = type === 'movie' 
-        ? `watch.html?id=${id}&type=movie`
-        : `watch.html?id=${id}&type=tv&s=${season}&e=${episode}`;
+    // Update browser URL without reload
+    let newUrl;
+    if (type === 'movie') {
+        newUrl = `watch.html?id=${id}&type=movie`;
+    } else {
+        newUrl = `watch.html?id=${id}&type=tv&s=${season}&e=${episode}`;
+    }
     history.replaceState(null, '', newUrl);
 }
 
+// Load Similar Content
 function loadSimilar(data) {
+    // Get similar or recommendations
     const items = data.similar?.results || data.recommendations?.results || [];
     
     if (items.length === 0) {
-        DOM.similarGrid.innerHTML = '<p style="color:#666;">No similar content found</p>';
+        DOM.similarGrid.innerHTML = '<p style="color:#666; padding:20px 0;">No similar content found.</p>';
         return;
     }
     
-    DOM.similarGrid.innerHTML = items.slice(0, 12).map(item => `
-        <div class="similar-card" onclick="location.href='watch.html?id=${item.id}&type=${contentType}'">
-            <img src="${API.getImageUrl(item.poster_path)}" alt="${item.title || item.name}" loading="lazy">
-            <p>${item.title || item.name}</p>
-        </div>
-    `).join('');
+    // Render similar cards
+    DOM.similarGrid.innerHTML = items.slice(0, 12).map(item => {
+        const title = item.title || item.name;
+        const posterUrl = item.poster_path 
+            ? API.getImageUrl(item.poster_path)
+            : 'https://via.placeholder.com/200x300/1a1a1a/666666?text=No+Image';
+        
+        return `
+            <div class="similar-card" onclick="window.location.href='watch.html?id=${item.id}&type=${contentType}'">
+                <img src="${posterUrl}" alt="${title}" loading="lazy">
+                <p>${title}</p>
+            </div>
+        `;
+    }).join('');
 }
 
+// Initialize Buttons
 function initButtons() {
-    // My List
+    // My List Button
     DOM.listBtn.addEventListener('click', () => {
         if (!content) return;
         
@@ -234,37 +291,75 @@ function initButtons() {
         } else {
             Storage.addToMyList({ ...content, type: contentType });
         }
+        
         updateListBtn();
     });
     
-    // Share
+    // Share Button
     DOM.shareBtn.addEventListener('click', async () => {
+        const title = content?.title || content?.name || 'Streamify';
         const shareData = {
-            title: content?.title || content?.name || 'Streamify',
-            text: `Watch ${content?.title || content?.name} on Streamify!`,
-            url: location.href
+            title: title,
+            text: `Watch ${title} on Streamify!`,
+            url: window.location.href
         };
         
         try {
             if (navigator.share) {
                 await navigator.share(shareData);
             } else {
-                await navigator.clipboard.writeText(location.href);
+                await navigator.clipboard.writeText(window.location.href);
                 alert('Link copied to clipboard!');
             }
         } catch (err) {
-            console.log('Share failed:', err);
+            console.log('Share error:', err);
+            // Fallback - copy to clipboard
+            try {
+                await navigator.clipboard.writeText(window.location.href);
+                alert('Link copied to clipboard!');
+            } catch (e) {
+                console.log('Clipboard error:', e);
+            }
         }
     });
     
-    // Like
+    // Like Button
     DOM.likeBtn.addEventListener('click', () => {
         DOM.likeBtn.classList.toggle('active');
+        
+        // Optional: Save like state to localStorage
+        const likedItems = JSON.parse(localStorage.getItem('streamify_liked') || '[]');
+        const itemId = `${contentType}_${content?.id}`;
+        
+        if (DOM.likeBtn.classList.contains('active')) {
+            if (!likedItems.includes(itemId)) {
+                likedItems.push(itemId);
+            }
+        } else {
+            const index = likedItems.indexOf(itemId);
+            if (index > -1) {
+                likedItems.splice(index, 1);
+            }
+        }
+        
+        localStorage.setItem('streamify_liked', JSON.stringify(likedItems));
     });
+    
+    // Check if already liked
+    if (content) {
+        const likedItems = JSON.parse(localStorage.getItem('streamify_liked') || '[]');
+        const itemId = `${contentType}_${content?.id}`;
+        if (likedItems.includes(itemId)) {
+            DOM.likeBtn.classList.add('active');
+        }
+    }
 }
 
+// Update My List Button State
 function updateListBtn() {
-    if (content && Storage.isInMyList(content.id, contentType)) {
+    if (!content) return;
+    
+    if (Storage.isInMyList(content.id, contentType)) {
         DOM.listBtn.classList.add('active');
         DOM.listBtn.innerHTML = '<i class="fas fa-check"></i><span>Added</span>';
     } else {
@@ -273,8 +368,12 @@ function updateListBtn() {
     }
 }
 
+// Save to Continue Watching
 function saveToContinue() {
     if (!content) return;
+    
+    // Random progress between 10-50%
+    const progress = Math.floor(Math.random() * 40) + 10;
     
     Storage.updateContinueWatching({
         id: content.id,
@@ -284,20 +383,39 @@ function saveToContinue() {
         backdrop_path: content.backdrop_path,
         season: contentType === 'tv' ? currentSeason : null,
         episode: contentType === 'tv' ? currentEpisode : null
-    }, Math.floor(Math.random() * 40) + 10);
+    }, progress);
 }
 
-// Keyboard shortcuts
-document.addEventListener('keydown', e => {
+// Keyboard Shortcuts
+document.addEventListener('keydown', (e) => {
+    // Escape - Go back to home
     if (e.key === 'Escape') {
-        location.href = 'index.html';
+        window.location.href = 'index.html';
     }
+    
+    // F - Toggle Fullscreen
     if (e.key === 'f' || e.key === 'F') {
+        const playerContainer = DOM.player.parentElement;
+        
         if (document.fullscreenElement) {
             document.exitFullscreen();
         } else {
-            DOM.player.parentElement.requestFullscreen?.();
+            if (playerContainer.requestFullscreen) {
+                playerContainer.requestFullscreen();
+            } else if (playerContainer.webkitRequestFullscreen) {
+                playerContainer.webkitRequestFullscreen();
+            } else if (playerContainer.msRequestFullscreen) {
+                playerContainer.msRequestFullscreen();
+            }
         }
     }
 });
-        
+
+// Add spinner animation CSS dynamically
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+`;
+document.head.appendChild(style);
