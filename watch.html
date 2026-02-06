@@ -63,7 +63,34 @@
         <script src="https://www.highperformanceformat.com/b5665256146eed2362f1be2c457f7a22/invoke.js"></script>
     </div>
 <!-- Black Spacer Above Player - MOBILE ONLY -->
-<div id="playerTopSpacer" style="width:100%;background:#000000;"></div>
+<div id="playerTopSpacer" style="width:100%;height:144px;min-height:144px;background:#000000;margin:0;padding:0;border:none;"></div>
+
+<script>
+// Hide spacer on desktop, show on mobile
+(function() {
+    var spacer = document.getElementById('playerTopSpacer');
+    function toggleSpacer() {
+        if (window.innerWidth > 768) {
+            spacer.style.display = 'none';
+            spacer.style.height = '0';
+            spacer.style.minHeight = '0';
+        } else {
+            spacer.style.display = 'block';
+            spacer.style.height = '144px';
+            spacer.style.minHeight = '144px';
+            spacer.style.visibility = 'visible';
+            spacer.style.opacity = '1';
+            spacer.style.position = 'relative';
+            spacer.style.background = '#000000';
+            spacer.style.width = '100%';
+        }
+    }
+    
+    toggleSpacer();
+    window.addEventListener('resize', toggleSpacer);
+})();
+</script>
+    
     <!-- Player -->
     <div class="player-container">
         <div class="player-loader" id="playerLoader">
