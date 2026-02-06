@@ -483,46 +483,51 @@
 }
 
 /* ============================================
-   PLAYER TOP SPACER - Social Bar Landing Zone
-   Inline styled in HTML but CSS backup here
+/* ============================================
+   PLAYER TOP SPACER - 1 INCH BLACK BAR
+   Social Bar shows here instead of on player
 ============================================ */
 #playerTopSpacer {
     width: 100% !important;
-    background: #000 !important;
+    height: 96px !important;
+    min-height: 96px !important;
+    max-height: none !important;
+    background: #000000 !important;
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
     position: relative !important;
-    z-index: 2 !important;
+    z-index: 5 !important;
     left: auto !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
     overflow: visible !important;
     margin: 0 !important;
     padding: 0 !important;
+    border: none !important;
+    float: none !important;
+    clear: both !important;
+    transform: none !important;
 }
 
-/* Desktop spacer */
-@media (min-width: 769px) {
-    #playerTopSpacer {
-        height: 90px !important;
-        min-height: 90px !important;
-        max-height: none !important;
-    }
-}
-
-/* Tablet */
+/* All screen sizes - always 1 inch */
 @media (max-width: 768px) {
     #playerTopSpacer {
-        height: 65px !important;
-        min-height: 65px !important;
+        height: 96px !important;
+        min-height: 96px !important;
         max-height: none !important;
+        display: block !important;
+        visibility: visible !important;
     }
 }
 
-/* Small Mobile */
 @media (max-width: 480px) {
     #playerTopSpacer {
-        height: 55px !important;
-        min-height: 55px !important;
+        height: 96px !important;
+        min-height: 96px !important;
         max-height: none !important;
+        display: block !important;
+        visibility: visible !important;
     }
 }
