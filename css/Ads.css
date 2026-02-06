@@ -25,7 +25,7 @@
     border: 1px solid rgba(255,255,255,0.05);
 }
 
-/* Native Banner Ad */
+/* Native Banner Ad - DESKTOP ONLY */
 .native-ad {
     width: 100%;
     max-width: 900px;
@@ -36,7 +36,7 @@
     border: 1px solid rgba(255,255,255,0.03);
 }
 
-/* Banner 300x250 */
+/* Banner 300x250 - Works on both desktop and mobile */
 .banner-300x250 {
     width: 300px;
     min-height: 250px;
@@ -44,6 +44,19 @@
     margin: 30px auto;
     background: linear-gradient(135deg, rgba(26,26,26,0.4) 0%, rgba(10,10,10,0.4) 100%);
     border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Mobile Banner 320x100 - MOBILE ONLY */
+.mobile-banner-320x100 {
+    display: none;
+    width: 100%;
+    max-width: 320px;
+    min-height: 100px;
+    padding: 10px;
+    margin: 20px auto;
+    background: linear-gradient(135deg, rgba(26,26,26,0.4) 0%, rgba(10,10,10,0.4) 100%);
+    border-radius: 8px;
     border: 1px solid rgba(255,255,255,0.05);
 }
 
@@ -95,17 +108,20 @@
     }
 }
 
-/* Mobile - Hide Desktop Banner, Show Mobile Sticky */
+/* Mobile - Hide Desktop Ads, Show Mobile Ads */
 @media (max-width: 768px) {
-    /* Hide 728x90 desktop banner on mobile */
+    /* Hide desktop-only ads */
     .desktop-banner-top {
         display: none !important;
     }
     
     .native-ad {
-        padding: 12px;
-        margin: 15px auto;
-        border-radius: 8px;
+        display: none !important;
+    }
+    
+    /* Show mobile banners */
+    .mobile-banner-320x100 {
+        display: flex;
     }
     
     .banner-300x250 {
@@ -129,12 +145,12 @@
 
 /* Small Mobile */
 @media (max-width: 480px) {
-    .native-ad {
-        padding: 10px;
-        margin: 12px 10px;
+    .banner-300x250 {
+        padding: 8px;
+        margin: 15px auto;
     }
     
-    .banner-300x250 {
+    .mobile-banner-320x100 {
         padding: 8px;
         margin: 15px auto;
     }
