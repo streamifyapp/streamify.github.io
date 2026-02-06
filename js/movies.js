@@ -1,31 +1,47 @@
 /* ============================================
    STREAMIFY - MOVIES PAGE LOGIC
-   FULLY OPTIMIZED FOR MOBILE - NO FREEZE
+   COMPLETELY FIXED FOR MOBILE & DESKTOP
 ============================================ */
 
-const MoviesDOM = {
-    moviesGrid: document.getElementById('moviesGrid'),
-    loadMoreBtn: document.getElementById('loadMoreBtn'),
-    genreBtn: document.getElementById('genreBtn'),
-    genreDropdown: document.getElementById('genreDropdown'),
-    sortBtn: document.getElementById('sortBtn'),
-    sortDropdown: document.getElementById('sortDropdown'),
-    searchBox: document.getElementById('searchBox'),
-    searchToggle: document.getElementById('searchToggle'),
-    searchInput: document.getElementById('searchInput'),
+// Wait for DOM and scripts to load
+document.addEventListener('DOMContentLoaded', initMoviesPage);
+
+function initMoviesPage() {
+    // Check if API is loaded
+    if (typeof API === 'undefined') {
+        console.error('API not loaded');
+        return;
+    }
     
-    modalOverlay: document.getElementById('modalOverlay'),
-    modalClose: document.getElementById('modalClose'),
-    modalBanner: document.getElementById('modalBanner'),
-    modalTitle: document.getElementById('modalTitle'),
-    modalMatch: document.getElementById('modalMatch'),
-    modalYear: document.getElementById('modalYear'),
-    modalDuration: document.getElementById('modalDuration'),
-    modalDescription: document.getElementById('modalDescription'),
-    modalGenres: document.getElementById('modalGenres'),
-    modalRating: document.getElementById('modalRating'),
-    modalPlayBtn: document.getElementById('modalPlayBtn'),
-    modalAddList: document.getElementById('modalAddList')
+    initFilters();
+    initSearch();
+    initModal();
+    loadMovies();
+}
+
+// DOM Elements
+const MoviesDOM = {
+    get moviesGrid() { return document.getElementById('moviesGrid'); },
+    get loadMoreBtn() { return document.getElementById('loadMoreBtn'); },
+    get genreBtn() { return document.getElementById('genreBtn'); },
+    get genreDropdown() { return document.getElementById('genreDropdown'); },
+    get sortBtn() { return document.getElementById('sortBtn'); },
+    get sortDropdown() { return document.getElementById('sortDropdown'); },
+    get searchBox() { return document.getElementById('searchBox'); },
+    get searchToggle() { return document.getElementById('searchToggle'); },
+    get searchInput() { return document.getElementById('searchInput'); },
+    get modalOverlay() { return document.getElementById('modalOverlay'); },
+    get modalClose() { return document.getElementById('modalClose'); },
+    get modalBanner() { return document.getElementById('modalBanner'); },
+    get modalTitle() { return document.getElementById('modalTitle'); },
+    get modalMatch() { return document.getElementById('modalMatch'); },
+    get modalYear() { return document.getElementById('modalYear'); },
+    get modalDuration() { return document.getElementById('modalDuration'); },
+    get modalDescription() { return document.getElementById('modalDescription'); },
+    get modalGenres() { return document.getElementById('modalGenres'); },
+    get modalRating() { return document.getElementById('modalRating'); },
+    get modalPlayBtn() { return document.getElementById('modalPlayBtn'); },
+    get modalAddList() { return document.getElementById('modalAddList'); }
 };
 
 let currentPage = 1;
@@ -36,40 +52,38 @@ let totalPages = 1;
 let currentModalItem = null;
 let isModalOpen = false;
 
-document.addEventListener('DOMContentLoaded', () => {
-    initFilters();
-    initSearch();
-    initModal();
-    loadMovies();
-});
-
 function initFilters() {
-    MoviesDOM.genreBtn?.addEventListener('click', (e) => {
+    const genreBtn = MoviesDOM.genreBtn;
+    const sortBtn = MoviesDOM.sortBtn;
+    const genreDropdown = MoviesDOM.genreDropdown;
+    const sortDropdown = MoviesDOM.sortDropdown;
+    
+    genreBtn?.addEventListener('click', (e) => {
         e.stopPropagation();
-        MoviesDOM.genreBtn.parentElement.classList.toggle('active');
-        MoviesDOM.sortBtn.parentElement.classList.remove('active');
+        genreBtn.parentElement.classList.toggle('active');
+        sortBtn?.parentElement.classList.remove('active');
     });
     
-    MoviesDOM.sortBtn?.addEventListener('click', (e) => {
+    sortBtn?.addEventListener('click', (e) => {
         e.stopPropagation();
-        MoviesDOM.sortBtn.parentElement.classList.toggle('active');
-        MoviesDOM.genreBtn.parentElement.classList.remove('active');
+        sortBtn.parentElement.classList.toggle('active');
+        genreBtn?.parentElement.classList.remove('active');
     });
     
     document.addEventListener('click', () => {
-        MoviesDOM.genreBtn?.parentElement.classList.remove('active');
-        MoviesDOM.sortBtn?.parentElement.classList.remove('active');
+        genreBtn?.parentElement.classList.remove('active');
+        sortBtn?.parentElement.classList.remove('active');
     });
     
-    MoviesDOM.genreDropdown?.querySelectorAll('a').forEach(link => {
+    genreDropdown?.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const genre = link.dataset.genre;
             
-            MoviesDOM.genreDropdown.querySelectorAll('a').forEach(a => a.classList.remove('active'));
+            genreDropdown.querySelectorAll('a').forEach(a => a.classList.remove('active'));
             link.classList.add('active');
-            MoviesDOM.genreBtn.querySelector('span').textContent = link.textContent;
-            MoviesDOM.genreBtn.parentElement.classList.remove('active');
+            genreBtn.querySelector('span').textContent = link.textContent;
+            genreBtn.parentElement.classList.remove('active');
             
             currentGenre = genre;
             currentPage = 1;
@@ -78,15 +92,15 @@ function initFilters() {
         });
     });
     
-    MoviesDOM.sortDropdown?.querySelectorAll('a').forEach(link => {
+    sortDropdown?.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const sort = link.dataset.sort;
             
-            MoviesDOM.sortDropdown.querySelectorAll('a').forEach(a => a.classList.remove('active'));
+            sortDropdown.querySelectorAll('a').forEach(a => a.classList.remove('active'));
             link.classList.add('active');
-            MoviesDOM.sortBtn.querySelector('span').textContent = link.textContent;
-            MoviesDOM.sortBtn.parentElement.classList.remove('active');
+            sortBtn.querySelector('span').textContent = link.textContent;
+            sortBtn.parentElement.classList.remove('active');
             
             currentSort = sort;
             currentPage = 1;
@@ -123,11 +137,15 @@ function initSearch() {
 
 async function searchMovies(query) {
     showLoading();
-    const data = await API.searchMovies(query, currentPage);
-    if (data && data.results) {
-        totalPages = data.total_pages;
-        renderMovies(data.results, false);
-        updateLoadMoreButton();
+    try {
+        const data = await API.searchMovies(query, currentPage);
+        if (data && data.results) {
+            totalPages = data.total_pages;
+            renderMovies(data.results, false);
+            updateLoadMoreButton();
+        }
+    } catch (error) {
+        console.error('Search error:', error);
     }
     hideLoading();
 }
@@ -136,51 +154,59 @@ async function loadMovies(append = false) {
     if (isLoading) return;
     showLoading();
     
-    let data;
-    if (currentGenre === 'all') {
-        data = await API.fetchFromTMDB('/discover/movie', {
-            sort_by: currentSort,
-            page: currentPage,
-            'vote_count.gte': 100
-        });
-    } else {
-        data = await API.fetchFromTMDB('/discover/movie', {
-            with_genres: currentGenre,
-            sort_by: currentSort,
-            page: currentPage,
-            'vote_count.gte': 50
-        });
-    }
-    
-    if (data && data.results) {
-        totalPages = Math.min(data.total_pages, 500);
-        renderMovies(data.results, append);
-        updateLoadMoreButton();
+    try {
+        let data;
+        if (currentGenre === 'all') {
+            data = await API.fetchFromTMDB('/discover/movie', {
+                sort_by: currentSort,
+                page: currentPage,
+                'vote_count.gte': 100
+            });
+        } else {
+            data = await API.fetchFromTMDB('/discover/movie', {
+                with_genres: currentGenre,
+                sort_by: currentSort,
+                page: currentPage,
+                'vote_count.gte': 50
+            });
+        }
+        
+        if (data && data.results) {
+            totalPages = Math.min(data.total_pages, 500);
+            renderMovies(data.results, append);
+            updateLoadMoreButton();
+        }
+    } catch (error) {
+        console.error('Load movies error:', error);
     }
     hideLoading();
 }
 
 function renderMovies(movies, append = false) {
+    const grid = MoviesDOM.moviesGrid;
+    if (!grid) return;
+    
     const html = movies.map(movie => createGridCard(movie, 'movie')).join('');
+    
     if (append) {
-        MoviesDOM.moviesGrid.innerHTML += html;
+        grid.innerHTML += html;
     } else {
-        MoviesDOM.moviesGrid.innerHTML = html;
+        grid.innerHTML = html;
     }
     
-    // Use requestAnimationFrame to prevent freeze
-    requestAnimationFrame(() => {
+    // Add event listeners after render
+    setTimeout(() => {
         addCardEventListeners();
-    });
+    }, 100);
 }
 
 function createGridCard(item, type) {
-    const title = item.title || item.name;
+    const title = item.title || item.name || 'Untitled';
     const year = (item.release_date || item.first_air_date || '').split('-')[0];
     const rating = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
     const posterUrl = item.poster_path 
         ? API.getImageUrl(item.poster_path) 
-        : 'https://via.placeholder.com/300x450?text=No+Image';
+        : 'https://via.placeholder.com/300x450/1a1a1a/666?text=No+Image';
     
     return `
         <div class="grid-card" data-id="${item.id}" data-type="${type}">
@@ -192,13 +218,13 @@ function createGridCard(item, type) {
                     <span class="grid-card-year">${year}</span>
                 </div>
                 <div class="grid-card-buttons">
-                    <button class="grid-card-btn play-btn" data-action="play">
+                    <button class="grid-card-btn play-btn" data-action="play" type="button">
                         <i class="fas fa-play"></i>
                     </button>
-                    <button class="grid-card-btn" data-action="list">
+                    <button class="grid-card-btn" data-action="list" type="button">
                         <i class="fas fa-plus"></i>
                     </button>
-                    <button class="grid-card-btn" data-action="info">
+                    <button class="grid-card-btn" data-action="info" type="button">
                         <i class="fas fa-chevron-down"></i>
                     </button>
                 </div>
@@ -207,81 +233,124 @@ function createGridCard(item, type) {
     `;
 }
 
-// FIXED: Card click events - Works on mobile without freeze
+// FIXED: Event listeners that work on both mobile and desktop
 function addCardEventListeners() {
-    MoviesDOM.moviesGrid?.querySelectorAll('.grid-card').forEach(card => {
-        const id = parseInt(card.dataset.id);
+    const grid = MoviesDOM.moviesGrid;
+    if (!grid) return;
+    
+    const cards = grid.querySelectorAll('.grid-card');
+    
+    cards.forEach(card => {
+        const id = card.dataset.id;
         const type = card.dataset.type;
         
-        // Make card clickable - opens modal
-        card.style.cursor = 'pointer';
+        if (!id) return;
         
-        // Single click handler for the whole card
-        card.onclick = function(e) {
-            // Check if clicked on a button
+        // Remove old listeners by cloning
+        const newCard = card.cloneNode(true);
+        card.parentNode.replaceChild(newCard, card);
+        
+        // Add click listener to entire card
+        newCard.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
             const button = e.target.closest('button');
             
             if (button) {
-                e.stopPropagation();
                 const action = button.dataset.action;
                 
                 if (action === 'play') {
+                    // Go to watch page
                     window.location.href = `watch.html?id=${id}&type=${type}`;
                 } else if (action === 'list') {
-                    toggleListFromCard(card, id, type);
+                    // Toggle my list
+                    toggleListFromCard(newCard, parseInt(id), type);
                 } else if (action === 'info') {
-                    openModal(id, type);
+                    // Open modal
+                    openModal(parseInt(id), type);
                 }
             } else {
-                // Clicked on card itself - open modal
-                openModal(id, type);
+                // Clicked on card (not button) - open modal
+                openModal(parseInt(id), type);
             }
-        };
+        });
+        
+        // Touch support for mobile
+        newCard.addEventListener('touchend', function(e) {
+            // Only if not scrolling
+            if (e.cancelable) {
+                // Let click handler deal with it
+            }
+        }, { passive: true });
     });
 }
 
-async function toggleListFromCard(card, id, type) {
+function toggleListFromCard(card, id, type) {
     const btn = card.querySelector('[data-action="list"]');
     const icon = btn?.querySelector('i');
     if (!icon) return;
     
     const title = card.querySelector('.grid-card-title')?.textContent || '';
     const img = card.querySelector('img');
+    const posterPath = img?.src.includes('image.tmdb.org') 
+        ? '/' + img.src.split('/').slice(-1)[0] 
+        : null;
     
-    if (Storage.isInMyList(id, type)) {
-        Storage.removeFromMyList(id, type);
-        icon.className = 'fas fa-plus';
-    } else {
-        Storage.addToMyList({
-            id: id,
-            type: type,
-            title: title,
-            poster_path: img?.src.includes('image.tmdb.org') ? img.src.split('/').pop() : null
-        });
-        icon.className = 'fas fa-check';
+    if (typeof Storage !== 'undefined' && Storage.isInMyList) {
+        if (Storage.isInMyList(id, type)) {
+            Storage.removeFromMyList(id, type);
+            icon.className = 'fas fa-plus';
+        } else {
+            Storage.addToMyList({
+                id: id,
+                type: type,
+                title: title,
+                poster_path: posterPath
+            });
+            icon.className = 'fas fa-check';
+        }
     }
 }
 
 function initModal() {
-    MoviesDOM.modalClose?.addEventListener('click', closeModal);
+    const overlay = MoviesDOM.modalOverlay;
+    const closeBtn = MoviesDOM.modalClose;
+    const playBtn = MoviesDOM.modalPlayBtn;
+    const addListBtn = MoviesDOM.modalAddList;
     
-    MoviesDOM.modalOverlay?.addEventListener('click', (e) => {
-        if (e.target === MoviesDOM.modalOverlay) {
+    // Close button
+    closeBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeModal();
+    });
+    
+    // Click outside to close
+    overlay?.addEventListener('click', (e) => {
+        if (e.target === overlay) {
             closeModal();
         }
     });
     
+    // Escape key
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeModal();
+        if (e.key === 'Escape' && isModalOpen) {
+            closeModal();
+        }
     });
     
-    MoviesDOM.modalPlayBtn?.addEventListener('click', () => {
+    // Play button
+    playBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
         if (currentModalItem) {
             window.location.href = `watch.html?id=${currentModalItem.id}&type=movie`;
         }
     });
     
-    MoviesDOM.modalAddList?.addEventListener('click', () => {
+    // Add to list button
+    addListBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
         if (currentModalItem) {
             toggleMyList(currentModalItem);
         }
@@ -290,17 +359,29 @@ function initModal() {
 
 async function openModal(id, type) {
     // Prevent multiple opens
-    if (isModalOpen) return;
+    if (isModalOpen) {
+        console.log('Modal already open');
+        return;
+    }
+    
+    console.log('Opening modal for:', id, type);
     isModalOpen = true;
     
-    // Show modal immediately with loading state
-    MoviesDOM.modalOverlay.classList.add('active');
+    const overlay = MoviesDOM.modalOverlay;
+    if (!overlay) {
+        console.error('Modal overlay not found');
+        isModalOpen = false;
+        return;
+    }
+    
+    // Show modal with loading state
+    overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
     
     // Set loading state
-    MoviesDOM.modalTitle.textContent = 'Loading...';
-    MoviesDOM.modalDescription.textContent = '';
-    MoviesDOM.modalBanner.style.backgroundImage = '';
+    if (MoviesDOM.modalTitle) MoviesDOM.modalTitle.textContent = 'Loading...';
+    if (MoviesDOM.modalDescription) MoviesDOM.modalDescription.textContent = '';
+    if (MoviesDOM.modalBanner) MoviesDOM.modalBanner.style.backgroundImage = 'none';
     
     try {
         const data = await API.getMovieDetails(id);
@@ -308,31 +389,66 @@ async function openModal(id, type) {
         if (data) {
             currentModalItem = { ...data, type: 'movie' };
             
-            MoviesDOM.modalBanner.style.backgroundImage = `url(${API.getBackdropUrl(data.backdrop_path)})`;
-            MoviesDOM.modalTitle.textContent = data.title;
-            MoviesDOM.modalMatch.textContent = `${Math.round(data.vote_average * 10)}% Match`;
-            MoviesDOM.modalYear.textContent = (data.release_date || '').split('-')[0];
-            MoviesDOM.modalDuration.textContent = data.runtime ? `${Math.floor(data.runtime / 60)}h ${data.runtime % 60}m` : 'N/A';
-            MoviesDOM.modalDescription.textContent = data.overview || 'No description available.';
-            MoviesDOM.modalGenres.textContent = data.genres ? data.genres.map(g => g.name).join(', ') : 'N/A';
-            MoviesDOM.modalRating.textContent = data.vote_average ? data.vote_average.toFixed(1) : 'N/A';
+            // Update modal content
+            if (MoviesDOM.modalBanner) {
+                MoviesDOM.modalBanner.style.backgroundImage = data.backdrop_path 
+                    ? `url(${API.getBackdropUrl(data.backdrop_path)})` 
+                    : 'none';
+            }
+            if (MoviesDOM.modalTitle) {
+                MoviesDOM.modalTitle.textContent = data.title || 'Untitled';
+            }
+            if (MoviesDOM.modalMatch) {
+                MoviesDOM.modalMatch.textContent = `${Math.round((data.vote_average || 0) * 10)}% Match`;
+            }
+            if (MoviesDOM.modalYear) {
+                MoviesDOM.modalYear.textContent = (data.release_date || '').split('-')[0] || 'N/A';
+            }
+            if (MoviesDOM.modalDuration) {
+                const runtime = data.runtime || 0;
+                MoviesDOM.modalDuration.textContent = runtime 
+                    ? `${Math.floor(runtime / 60)}h ${runtime % 60}m` 
+                    : 'N/A';
+            }
+            if (MoviesDOM.modalDescription) {
+                MoviesDOM.modalDescription.textContent = data.overview || 'No description available.';
+            }
+            if (MoviesDOM.modalGenres) {
+                MoviesDOM.modalGenres.textContent = data.genres 
+                    ? data.genres.map(g => g.name).join(', ') 
+                    : 'N/A';
+            }
+            if (MoviesDOM.modalRating) {
+                MoviesDOM.modalRating.textContent = data.vote_average 
+                    ? data.vote_average.toFixed(1) 
+                    : 'N/A';
+            }
             
             updateModalListButton();
+        } else {
+            if (MoviesDOM.modalTitle) MoviesDOM.modalTitle.textContent = 'Error loading content';
         }
     } catch (error) {
         console.error('Error loading movie details:', error);
-        MoviesDOM.modalTitle.textContent = 'Error loading content';
+        if (MoviesDOM.modalTitle) MoviesDOM.modalTitle.textContent = 'Error loading content';
     }
 }
 
 function closeModal() {
-    MoviesDOM.modalOverlay.classList.remove('active');
+    console.log('Closing modal');
+    const overlay = MoviesDOM.modalOverlay;
+    
+    if (overlay) {
+        overlay.classList.remove('active');
+    }
     document.body.style.overflow = '';
     currentModalItem = null;
     isModalOpen = false;
 }
 
 function toggleMyList(item) {
+    if (typeof Storage === 'undefined' || !Storage.isInMyList) return;
+    
     if (Storage.isInMyList(item.id, 'movie')) {
         Storage.removeFromMyList(item.id, 'movie');
     } else {
@@ -345,19 +461,22 @@ function updateModalListButton() {
     const icon = MoviesDOM.modalAddList?.querySelector('i');
     if (!icon) return;
     
-    if (currentModalItem && Storage.isInMyList(currentModalItem.id, 'movie')) {
-        icon.className = 'fas fa-check';
-    } else {
-        icon.className = 'fas fa-plus';
+    if (typeof Storage !== 'undefined' && Storage.isInMyList && currentModalItem) {
+        if (Storage.isInMyList(currentModalItem.id, 'movie')) {
+            icon.className = 'fas fa-check';
+        } else {
+            icon.className = 'fas fa-plus';
+        }
     }
 }
 
 function showLoading() {
     isLoading = true;
-    if (MoviesDOM.loadMoreBtn) {
-        MoviesDOM.loadMoreBtn.classList.add('loading');
-        const span = MoviesDOM.loadMoreBtn.querySelector('span');
-        const icon = MoviesDOM.loadMoreBtn.querySelector('i');
+    const btn = MoviesDOM.loadMoreBtn;
+    if (btn) {
+        btn.classList.add('loading');
+        const span = btn.querySelector('span');
+        const icon = btn.querySelector('i');
         if (span) span.textContent = 'Loading...';
         if (icon) icon.className = 'fas fa-spinner';
     }
@@ -365,21 +484,19 @@ function showLoading() {
 
 function hideLoading() {
     isLoading = false;
-    if (MoviesDOM.loadMoreBtn) {
-        MoviesDOM.loadMoreBtn.classList.remove('loading');
-        const span = MoviesDOM.loadMoreBtn.querySelector('span');
-        const icon = MoviesDOM.loadMoreBtn.querySelector('i');
+    const btn = MoviesDOM.loadMoreBtn;
+    if (btn) {
+        btn.classList.remove('loading');
+        const span = btn.querySelector('span');
+        const icon = btn.querySelector('i');
         if (span) span.textContent = 'Load More';
         if (icon) icon.className = 'fas fa-chevron-down';
     }
 }
 
 function updateLoadMoreButton() {
-    if (MoviesDOM.loadMoreBtn) {
-        if (currentPage >= totalPages) {
-            MoviesDOM.loadMoreBtn.style.display = 'none';
-        } else {
-            MoviesDOM.loadMoreBtn.style.display = 'flex';
-        }
+    const btn = MoviesDOM.loadMoreBtn;
+    if (btn) {
+        btn.style.display = (currentPage >= totalPages) ? 'none' : 'flex';
     }
 }
