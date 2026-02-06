@@ -108,27 +108,7 @@
     border: 1px solid rgba(255,255,255,0.05);
 }
 
-/* ============================================
-   BLACK SPACER ABOVE PLAYER (for social bar)
-   NOT an ad container - standalone element
-============================================ */
-.player-top-spacer {
-    width: 100%;
-    height: 70px;
-    background: #000;
-    display: block !important;
-    visibility: visible !important;
-    position: relative;
-    z-index: 1;
-    opacity: 1 !important;
-    min-height: 70px !important;
-    max-height: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: visible !important;
-}
-
-/* Ad Label (Optional - for transparency) */
+/* Ad Label */
 .ad-label {
     font-size: 9px;
     color: #666;
@@ -160,7 +140,7 @@
 
 /* Mobile - Hide Desktop Ads, Show Mobile Ads */
 @media (max-width: 768px) {
-    /* CRITICAL: Hide desktop-only ads */
+    /* Hide desktop-only ads */
     .ad-container.desktop-banner-top,
     div.ad-container.desktop-banner-top,
     .desktop-banner-top {
@@ -193,7 +173,6 @@
         left: -9999px !important;
     }
     
-    /* Force hide children of desktop ads */
     .native-ad *,
     .native-ad script,
     .native-ad iframe,
@@ -231,31 +210,14 @@
         padding: 5px 0;
     }
     
-    /* Add bottom padding for sticky ad */
+    /* Bottom padding for sticky ad */
     .main-content,
     .browse-content,
     .watch-main {
         padding-bottom: 70px;
     }
     
-    /* IMPORTANT: Player spacer stays visible on mobile */
-    .player-top-spacer {
-        display: block !important;
-        visibility: visible !important;
-        height: 60px !important;
-        min-height: 60px !important;
-        max-height: none !important;
-        background: #000 !important;
-        opacity: 1 !important;
-        position: relative !important;
-        left: auto !important;
-        overflow: visible !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 100% !important;
-    }
-    
-    /* Keep small and medium banners visible on mobile */
+    /* Keep custom banners visible on mobile */
     .small-banner-below-continue,
     .small-banner-below-title {
         display: flex !important;
@@ -295,20 +257,6 @@
     .mobile-sticky-bottom {
         padding: 4px 0;
     }
-    
-    /* Spacer on small mobile */
-    .player-top-spacer {
-        height: 55px !important;
-        min-height: 55px !important;
-    }
-}
-
-/* Desktop spacer */
-@media (min-width: 769px) {
-    .player-top-spacer {
-        height: 80px !important;
-        min-height: 80px !important;
-    }
 }
 
 /* ============ AD ANIMATION ============ */
@@ -327,7 +275,7 @@
     }
 }
 
-/* ============ AD CLOSE BUTTON STYLING ============ */
+/* ============ AD CLOSE BUTTON ============ */
 .ad-close {
     position: absolute;
     top: 5px;
