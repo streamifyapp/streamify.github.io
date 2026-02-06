@@ -19,9 +19,7 @@
                 <li><a href="index.html" class="active">Home</a></li>
                 <li><a href="movies.html">Movies</a></li>
                 <li><a href="series.html">TV Shows</a></li>
-                <li><a href="new.html">New & Popular</a></li>
                 <li><a href="mylist.html">My List</a></li>
-                <li><a href="browse.html">Browse by Languages</a></li>
             </ul>
         </div>
         <div class="nav-right">
@@ -42,7 +40,7 @@
         </div>
     </nav>
 
-    <!-- Hero Banner Section - Netflix Style -->
+    <!-- Hero Banner Section -->
     <section class="hero-banner" id="heroBanner">
         <div class="hero-background" id="heroBackground"></div>
         <div class="hero-gradient-bottom"></div>
@@ -75,7 +73,6 @@
             </div>
         </div>
 
-        <!-- Mute Button -->
         <div class="hero-controls">
             <button class="btn-mute" id="muteBtn">
                 <i class="fas fa-volume-high"></i>
@@ -414,7 +411,7 @@
 
     </main>
 
-    <!-- Netflix Style Footer -->
+    <!-- Footer -->
     <footer class="footer">
         <div class="footer-container">
             <div class="social-icons">
@@ -442,7 +439,7 @@
         </div>
     </footer>
 
-    <!-- Detail Modal (Popup) -->
+    <!-- Detail Modal -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="detail-modal" id="detailModal">
             <button class="modal-close" id="modalClose">
@@ -485,7 +482,20 @@
         </div>
     </div>
 
-    <!-- Search Results Page (Hidden by default) -->
+    <!-- See All Modal -->
+    <div class="see-all-modal" id="seeAllModal">
+        <div class="see-all-header">
+            <h2 id="seeAllTitle">Category</h2>
+            <button class="see-all-close" id="seeAllClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="see-all-grid" id="seeAllGrid">
+            <!-- Content will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Search Results Page -->
     <div class="search-results-page" id="searchResultsPage" style="display: none;">
         <button class="search-back" id="searchBack">
             <i class="fas fa-arrow-left"></i> Back
