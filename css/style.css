@@ -910,7 +910,7 @@ button {
     100% { background-position: -200% 0; }
 }
 
-/* ============ SEE ALL MODAL - SAME AS BOLLYWOOD ============ */
+/* ============ SEE ALL MODAL - FIXED MOBILE SIZE ============ */
 .see-all-modal {
     position: fixed;
     inset: 0;
@@ -932,160 +932,84 @@ button {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 40px;
+    padding: 15px 20px;
     background: #0a0a0a;
     border-bottom: 1px solid #1a1a1a;
     z-index: 10;
+    min-height: 60px;
 }
 
 .see-all-header h2 {
-    font-size: 24px;
+    font-size: 20px;
+    font-weight: 600;
 }
 
 .see-all-header button {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     background: rgba(255,255,255,0.1);
     color: #fff;
-    font-size: 20px;
+    font-size: 18px;
     border-radius: 50%;
     transition: all 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .see-all-header button:hover {
     background: #e50914;
-    transform: rotate(90deg);
 }
 
+/* DESKTOP GRID - 6 columns */
 .see-all-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 20px;
-    padding: 30px 40px 60px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 15px;
+    padding: 20px;
 }
 
 .see-all-card {
     cursor: pointer;
-    transition: transform 0.3s;
-    touch-action: manipulation;
+    transition: transform 0.2s;
     -webkit-tap-highlight-color: transparent;
 }
 
 .see-all-card:hover {
-    transform: scale(1.05);
+    transform: scale(1.03);
 }
 
 .see-all-card:active {
-    transform: scale(0.98);
+    transform: scale(0.97);
 }
 
 .see-all-card img {
     width: 100%;
     aspect-ratio: 2/3;
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: 4px;
     background: #1a1a1a;
     display: block;
 }
 
 .see-all-card-info {
-    padding: 10px 3px;
+    padding: 6px 0;
 }
 
 .see-all-card-title {
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
+    color: #fff;
 }
 
 .see-all-card-meta {
-    font-size: 11px;
+    font-size: 10px;
     color: #888;
-}
-
-/* MOBILE - EXACTLY LIKE BOLLYWOOD */
-@media (max-width: 768px) {
-    .see-all-header { 
-        padding: 15px; 
-    }
-    .see-all-header h2 { 
-        font-size: 18px; 
-    }
-    .see-all-header button { 
-        width: 40px; 
-        height: 40px; 
-        font-size: 16px; 
-    }
-    
-    .see-all-grid { 
-        grid-template-columns: repeat(3, 1fr); 
-        gap: 10px; 
-        padding: 15px; 
-    }
-    
-    .see-all-card img {
-        border-radius: 6px;
-    }
-    
-    .see-all-card-info {
-        padding: 8px 2px;
-    }
-    
-    .see-all-card-title { 
-        font-size: 11px; 
-    }
-    
-    .see-all-card-meta { 
-        font-size: 10px; 
-    }
-}
-
-@media (max-width: 480px) {
-    .see-all-grid { 
-        grid-template-columns: repeat(3, 1fr); 
-        gap: 8px;
-        padding: 10px;
-    }
-    
-    .see-all-card-title { 
-        font-size: 10px; 
-    }
-    
-    .see-all-card-meta { 
-        font-size: 9px; 
-    }
-}
-
-@media (max-width: 480px) {
-    /* FIXED: Still 3 columns but tighter */
-    .see-all-grid { 
-        grid-template-columns: repeat(3, 1fr); 
-        gap: 6px;
-        padding: 10px;
-    }
-    
-    .see-all-card-title { 
-        font-size: 9px; 
-    }
-    
-    .see-all-card-meta { 
-        font-size: 8px; 
-    }
-}
-
-@media (max-width: 360px) {
-    /* Very small screens - 2 columns */
-    .see-all-grid { 
-        grid-template-columns: repeat(2, 1fr); 
-        gap: 8px;
-        padding: 10px;
-    }
 }
 
 /* ============ DETAIL MODAL ============ */
@@ -1240,15 +1164,20 @@ button {
     font-size: 14px;
 }
 
-/* ============ RESPONSIVE - MOBILE OPTIMIZED ============ */
+/* ============ RESPONSIVE - TABLET ============ */
 @media (max-width: 1024px) {
     .navbar { padding: 15px 30px; }
     .hero-content { padding: 0 30px; }
     .content-section { padding: 0 30px; }
-    .see-all-header { padding: 18px 25px; }
-    .see-all-grid { padding: 25px; gap: 15px; }
+    
+    .see-all-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+        padding: 15px;
+    }
 }
 
+/* ============ RESPONSIVE - MOBILE ============ */
 @media (max-width: 768px) {
     /* Navbar Mobile */
     .nav-links, .profile-img, .download-btn { display: none; }
@@ -1350,14 +1279,14 @@ button {
     .section-header h2 i { font-size: 14px; }
     .see-all-btn { font-size: 12px; padding: 6px 10px; }
     
-    /* Cards Mobile - OPTIMIZED */
+    /* Cards Mobile */
     .card { width: 130px; }
     .card-img { height: 195px; }
     .card-title { font-size: 13px; }
     .card-meta { font-size: 11px; gap: 6px; }
     .skeleton { width: 130px; height: 195px; }
     
-    /* Top 5 Mobile - WITH INFO VISIBLE */
+    /* Top 5 Mobile */
     .rank-number { 
         font-size: 120px; 
         margin-right: -20px; 
@@ -1366,7 +1295,6 @@ button {
     .top-5-poster { width: 100px; height: 150px; }
     .top-5-row { gap: 20px; }
     
-    /* MOBILE FIX: Always show info on mobile */
     .top-5-info {
         opacity: 1;
         visibility: visible;
@@ -1389,40 +1317,48 @@ button {
     /* Scroll arrows hidden on mobile */
     .scroll-arrow { display: none; }
     
-    /* Content Row - Touch Scrolling */
+    /* Content Row */
     .content-row {
         gap: 10px;
         padding: 10px 0;
     }
     
-    /* See All Modal Mobile - FIXED POSTER SIZE */
-    .see-all-header { 
-        padding: 15px; 
-        position: sticky;
-        top: 0;
+    /* SEE ALL MODAL - MOBILE 3 COLUMNS */
+    .see-all-header {
+        padding: 12px 15px;
+        min-height: 50px;
     }
-    .see-all-header h2 { font-size: 18px; }
-    .see-all-header button { width: 40px; height: 40px; font-size: 16px; }
     
-    .see-all-grid { 
-        grid-template-columns: repeat(3, 1fr); 
-        gap: 10px; 
-        padding: 15px; 
+    .see-all-header h2 {
+        font-size: 16px;
+    }
+    
+    .see-all-header button {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+    
+    .see-all-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        padding: 10px;
     }
     
     .see-all-card img {
-        border-radius: 6px;
+        border-radius: 3px;
     }
     
     .see-all-card-info {
-        padding: 8px 2px;
+        padding: 5px 0;
     }
     
-    .see-all-card-title { 
-        font-size: 11px; 
+    .see-all-card-title {
+        font-size: 10px;
     }
-    .see-all-card-meta { 
-        font-size: 10px; 
+    
+    .see-all-card-meta {
+        font-size: 8px;
     }
     
     /* Detail Modal Mobile */
@@ -1475,8 +1411,8 @@ button {
     .footer-download { padding: 10px 20px; font-size: 13px; }
 }
 
+/* ============ RESPONSIVE - SMALL MOBILE ============ */
 @media (max-width: 480px) {
-    /* Extra small screens */
     .hero { 
         height: 45vh; 
         min-height: 300px;
@@ -1506,15 +1442,33 @@ button {
     .top-5-title { font-size: 10px; }
     .top-5-meta { font-size: 8px; }
     
-    /* See All - 2 columns on very small screens */
+    /* See All - 3 columns on small screens too */
     .see-all-grid { 
-        grid-template-columns: repeat(2, 1fr); 
-        gap: 8px;
-        padding: 12px;
+        grid-template-columns: repeat(3, 1fr); 
+        gap: 6px;
+        padding: 8px;
     }
     
-    .see-all-card-title { font-size: 10px; }
-    .see-all-card-meta { font-size: 9px; }
+    .see-all-card-title { 
+        font-size: 9px; 
+    }
+    
+    .see-all-card-meta { 
+        font-size: 7px; 
+    }
+    
+    .search-results { 
+        grid-template-columns: repeat(3, 1fr); 
+    }
+}
+
+/* ============ RESPONSIVE - VERY SMALL ============ */
+@media (max-width: 350px) {
+    .see-all-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        padding: 8px;
+    }
     
     .search-results { 
         grid-template-columns: repeat(2, 1fr); 
@@ -1527,7 +1481,6 @@ button {
     min-height: 100vh;
 }
 
-/* Back Button */
 .back-btn {
     position: fixed;
     top: 20px;
@@ -1552,7 +1505,6 @@ button {
     transform: translateX(-5px);
 }
 
-/* Player */
 .player-container {
     position: relative;
     width: 100%;
@@ -1591,7 +1543,10 @@ button {
     animation: spin 1s linear infinite;
 }
 
-/* Main Content */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
 .watch-main {
     max-width: 1200px;
     margin: 0 auto;
@@ -1636,7 +1591,6 @@ button {
     font-weight: 600;
 }
 
-/* Episode Selector - PREMIUM */
 .episode-selector {
     background: linear-gradient(180deg, #1a1a1a 0%, #141414 100%);
     border-radius: 15px;
@@ -1685,7 +1639,6 @@ button {
     border-color: #e50914;
 }
 
-/* Episode Cards - PREMIUM */
 .episodes-grid {
     display: flex;
     flex-direction: column;
@@ -1819,7 +1772,6 @@ button {
     overflow: hidden;
 }
 
-/* Description */
 .watch-desc {
     margin-bottom: 30px;
 }
@@ -1841,7 +1793,6 @@ button {
     color: #ccc;
 }
 
-/* Actions */
 .watch-actions {
     display: flex;
     gap: 20px;
@@ -1880,7 +1831,6 @@ button {
     color: #aaa;
 }
 
-/* Similar */
 .similar-section {
     margin-bottom: 50px;
 }
