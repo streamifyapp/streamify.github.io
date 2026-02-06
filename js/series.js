@@ -1,6 +1,6 @@
 /* ============================================
    STREAMIFY - TV SHOWS PAGE LOGIC
-   FULLY OPTIMIZED FOR MOBILE
+   FULLY OPTIMIZED FOR MOBILE - NO FREEZE
 ============================================ */
 
 const SeriesDOM = {
@@ -34,6 +34,7 @@ let currentSort = 'popularity.desc';
 let isLoading = false;
 let totalPages = 1;
 let currentModalItem = null;
+let isModalOpen = false;
 
 document.addEventListener('DOMContentLoaded', () => {
     initFilters();
@@ -43,24 +44,24 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initFilters() {
-    SeriesDOM.genreBtn.addEventListener('click', (e) => {
+    SeriesDOM.genreBtn?.addEventListener('click', (e) => {
         e.stopPropagation();
         SeriesDOM.genreBtn.parentElement.classList.toggle('active');
         SeriesDOM.sortBtn.parentElement.classList.remove('active');
     });
     
-    SeriesDOM.sortBtn.addEventListener('click', (e) => {
+    SeriesDOM.sortBtn?.addEventListener('click', (e) => {
         e.stopPropagation();
         SeriesDOM.sortBtn.parentElement.classList.toggle('active');
         SeriesDOM.genreBtn.parentElement.classList.remove('active');
     });
     
     document.addEventListener('click', () => {
-        SeriesDOM.genreBtn.parentElement.classList.remove('active');
-        SeriesDOM.sortBtn.parentElement.classList.remove('active');
+        SeriesDOM.genreBtn?.parentElement.classList.remove('active');
+        SeriesDOM.sortBtn?.parentElement.classList.remove('active');
     });
     
-    SeriesDOM.genreDropdown.querySelectorAll('a').forEach(link => {
+    SeriesDOM.genreDropdown?.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const genre = link.dataset.genre;
@@ -77,7 +78,7 @@ function initFilters() {
         });
     });
     
-    SeriesDOM.sortDropdown.querySelectorAll('a').forEach(link => {
+    SeriesDOM.sortDropdown?.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const sort = link.dataset.sort;
@@ -94,7 +95,7 @@ function initFilters() {
         });
     });
     
-    SeriesDOM.loadMoreBtn.addEventListener('click', () => {
+    SeriesDOM.loadMoreBtn?.addEventListener('click', () => {
         if (!isLoading && currentPage < totalPages) {
             currentPage++;
             loadSeries(true);
@@ -103,14 +104,14 @@ function initFilters() {
 }
 
 function initSearch() {
-    SeriesDOM.searchToggle.addEventListener('click', () => {
+    SeriesDOM.searchToggle?.addEventListener('click', () => {
         SeriesDOM.searchBox.classList.toggle('active');
         if (SeriesDOM.searchBox.classList.contains('active')) {
             SeriesDOM.searchInput.focus();
         }
     });
     
-    SeriesDOM.searchInput.addEventListener('keypress', async (e) => {
+    SeriesDOM.searchInput?.addEventListener('keypress', async (e) => {
         if (e.key === 'Enter' && SeriesDOM.searchInput.value.trim()) {
             const query = SeriesDOM.searchInput.value.trim();
             currentPage = 1;
@@ -166,7 +167,11 @@ function renderSeries(shows, append = false) {
     } else {
         SeriesDOM.seriesGrid.innerHTML = html;
     }
-    addCardEventListeners();
+    
+    // Use requestAnimationFrame to prevent freeze
+    requestAnimationFrame(() => {
+        addCardEventListeners();
+    });
 }
 
 function createGridCard(item, type) {
@@ -202,52 +207,45 @@ function createGridCard(item, type) {
     `;
 }
 
-// FIXED: Card click events - Opens modal on POSTER click too
+// FIXED: Card click events - Works on mobile without freeze
 function addCardEventListeners() {
-    SeriesDOM.seriesGrid.querySelectorAll('.grid-card').forEach(card => {
+    SeriesDOM.seriesGrid?.querySelectorAll('.grid-card').forEach(card => {
         const id = parseInt(card.dataset.id);
         const type = card.dataset.type;
         
-        // FIXED: Clicking card/image opens modal
-        card.addEventListener('click', (e) => {
-            // Don't open modal if clicking button
-            if (!e.target.closest('button')) {
-                e.preventDefault();
+        // Make card clickable - opens modal
+        card.style.cursor = 'pointer';
+        
+        // Single click handler for the whole card
+        card.onclick = function(e) {
+            // Check if clicked on a button
+            const button = e.target.closest('button');
+            
+            if (button) {
                 e.stopPropagation();
+                const action = button.dataset.action;
+                
+                if (action === 'play') {
+                    window.location.href = `watch.html?id=${id}&type=${type}`;
+                } else if (action === 'list') {
+                    toggleListFromCard(card, id, type);
+                } else if (action === 'info') {
+                    openModal(id, type);
+                }
+            } else {
+                // Clicked on card itself - open modal
                 openModal(id, type);
             }
-        });
-        
-        const playBtn = card.querySelector('[data-action="play"]');
-        if (playBtn) {
-            playBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                window.location.href = `watch.html?id=${id}&type=${type}`;
-            });
-        }
-        
-        const listBtn = card.querySelector('[data-action="list"]');
-        if (listBtn) {
-            listBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                toggleListFromCard(card, id, type);
-            });
-        }
-        
-        const infoBtn = card.querySelector('[data-action="info"]');
-        if (infoBtn) {
-            infoBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                openModal(id, type);
-            });
-        }
+        };
     });
 }
 
 async function toggleListFromCard(card, id, type) {
     const btn = card.querySelector('[data-action="list"]');
-    const icon = btn.querySelector('i');
-    const title = card.querySelector('.grid-card-title').textContent;
+    const icon = btn?.querySelector('i');
+    if (!icon) return;
+    
+    const title = card.querySelector('.grid-card-title')?.textContent || '';
     const img = card.querySelector('img');
     
     if (Storage.isInMyList(id, type)) {
@@ -258,16 +256,16 @@ async function toggleListFromCard(card, id, type) {
             id: id,
             type: type,
             title: title,
-            poster_path: img.src.includes('image.tmdb.org') ? img.src.split('/').pop() : null
+            poster_path: img?.src.includes('image.tmdb.org') ? img.src.split('/').pop() : null
         });
         icon.className = 'fas fa-check';
     }
 }
 
 function initModal() {
-    SeriesDOM.modalClose.addEventListener('click', closeModal);
+    SeriesDOM.modalClose?.addEventListener('click', closeModal);
     
-    SeriesDOM.modalOverlay.addEventListener('click', (e) => {
+    SeriesDOM.modalOverlay?.addEventListener('click', (e) => {
         if (e.target === SeriesDOM.modalOverlay) {
             closeModal();
         }
@@ -277,13 +275,13 @@ function initModal() {
         if (e.key === 'Escape') closeModal();
     });
     
-    SeriesDOM.modalPlayBtn.addEventListener('click', () => {
+    SeriesDOM.modalPlayBtn?.addEventListener('click', () => {
         if (currentModalItem) {
             window.location.href = `watch.html?id=${currentModalItem.id}&type=tv`;
         }
     });
     
-    SeriesDOM.modalAddList.addEventListener('click', () => {
+    SeriesDOM.modalAddList?.addEventListener('click', () => {
         if (currentModalItem) {
             toggleMyList(currentModalItem);
         }
@@ -291,24 +289,39 @@ function initModal() {
 }
 
 async function openModal(id, type) {
+    // Prevent multiple opens
+    if (isModalOpen) return;
+    isModalOpen = true;
+    
+    // Show modal immediately with loading state
     SeriesDOM.modalOverlay.classList.add('active');
     document.body.style.overflow = 'hidden';
     
-    const data = await API.getTVDetails(id);
+    // Set loading state
+    SeriesDOM.modalTitle.textContent = 'Loading...';
+    SeriesDOM.modalDescription.textContent = '';
+    SeriesDOM.modalBanner.style.backgroundImage = '';
     
-    if (data) {
-        currentModalItem = { ...data, type: 'tv' };
+    try {
+        const data = await API.getTVDetails(id);
         
-        SeriesDOM.modalBanner.style.backgroundImage = `url(${API.getBackdropUrl(data.backdrop_path)})`;
-        SeriesDOM.modalTitle.textContent = data.name;
-        SeriesDOM.modalMatch.textContent = `${Math.round(data.vote_average * 10)}% Match`;
-        SeriesDOM.modalYear.textContent = (data.first_air_date || '').split('-')[0];
-        SeriesDOM.modalDuration.textContent = `${data.number_of_seasons || 0} Season${data.number_of_seasons > 1 ? 's' : ''}`;
-        SeriesDOM.modalDescription.textContent = data.overview || 'No description available.';
-        SeriesDOM.modalGenres.textContent = data.genres ? data.genres.map(g => g.name).join(', ') : 'N/A';
-        SeriesDOM.modalRating.textContent = data.vote_average ? data.vote_average.toFixed(1) : 'N/A';
-        
-        updateModalListButton();
+        if (data) {
+            currentModalItem = { ...data, type: 'tv' };
+            
+            SeriesDOM.modalBanner.style.backgroundImage = `url(${API.getBackdropUrl(data.backdrop_path)})`;
+            SeriesDOM.modalTitle.textContent = data.name;
+            SeriesDOM.modalMatch.textContent = `${Math.round(data.vote_average * 10)}% Match`;
+            SeriesDOM.modalYear.textContent = (data.first_air_date || '').split('-')[0];
+            SeriesDOM.modalDuration.textContent = `${data.number_of_seasons || 0} Season${data.number_of_seasons > 1 ? 's' : ''}`;
+            SeriesDOM.modalDescription.textContent = data.overview || 'No description available.';
+            SeriesDOM.modalGenres.textContent = data.genres ? data.genres.map(g => g.name).join(', ') : 'N/A';
+            SeriesDOM.modalRating.textContent = data.vote_average ? data.vote_average.toFixed(1) : 'N/A';
+            
+            updateModalListButton();
+        }
+    } catch (error) {
+        console.error('Error loading TV show details:', error);
+        SeriesDOM.modalTitle.textContent = 'Error loading content';
     }
 }
 
@@ -316,6 +329,7 @@ function closeModal() {
     SeriesDOM.modalOverlay.classList.remove('active');
     document.body.style.overflow = '';
     currentModalItem = null;
+    isModalOpen = false;
 }
 
 function toggleMyList(item) {
@@ -328,7 +342,9 @@ function toggleMyList(item) {
 }
 
 function updateModalListButton() {
-    const icon = SeriesDOM.modalAddList.querySelector('i');
+    const icon = SeriesDOM.modalAddList?.querySelector('i');
+    if (!icon) return;
+    
     if (currentModalItem && Storage.isInMyList(currentModalItem.id, 'tv')) {
         icon.className = 'fas fa-check';
     } else {
@@ -338,22 +354,32 @@ function updateModalListButton() {
 
 function showLoading() {
     isLoading = true;
-    SeriesDOM.loadMoreBtn.classList.add('loading');
-    SeriesDOM.loadMoreBtn.querySelector('span').textContent = 'Loading...';
-    SeriesDOM.loadMoreBtn.querySelector('i').className = 'fas fa-spinner';
+    if (SeriesDOM.loadMoreBtn) {
+        SeriesDOM.loadMoreBtn.classList.add('loading');
+        const span = SeriesDOM.loadMoreBtn.querySelector('span');
+        const icon = SeriesDOM.loadMoreBtn.querySelector('i');
+        if (span) span.textContent = 'Loading...';
+        if (icon) icon.className = 'fas fa-spinner';
+    }
 }
 
 function hideLoading() {
     isLoading = false;
-    SeriesDOM.loadMoreBtn.classList.remove('loading');
-    SeriesDOM.loadMoreBtn.querySelector('span').textContent = 'Load More';
-    SeriesDOM.loadMoreBtn.querySelector('i').className = 'fas fa-chevron-down';
+    if (SeriesDOM.loadMoreBtn) {
+        SeriesDOM.loadMoreBtn.classList.remove('loading');
+        const span = SeriesDOM.loadMoreBtn.querySelector('span');
+        const icon = SeriesDOM.loadMoreBtn.querySelector('i');
+        if (span) span.textContent = 'Load More';
+        if (icon) icon.className = 'fas fa-chevron-down';
+    }
 }
 
 function updateLoadMoreButton() {
-    if (currentPage >= totalPages) {
-        SeriesDOM.loadMoreBtn.style.display = 'none';
-    } else {
-        SeriesDOM.loadMoreBtn.style.display = 'flex';
+    if (SeriesDOM.loadMoreBtn) {
+        if (currentPage >= totalPages) {
+            SeriesDOM.loadMoreBtn.style.display = 'none';
+        } else {
+            SeriesDOM.loadMoreBtn.style.display = 'flex';
+        }
     }
 }
