@@ -1,13 +1,11 @@
 /* ============================================
    STREAMIFY - MOVIES PAGE LOGIC
-   COMPLETELY FIXED FOR MOBILE & DESKTOP
+   FIXED: Poster click = Play button click
 ============================================ */
 
-// Wait for DOM and scripts to load
 document.addEventListener('DOMContentLoaded', initMoviesPage);
 
 function initMoviesPage() {
-    // Check if API is loaded
     if (typeof API === 'undefined') {
         console.error('API not loaded');
         return;
@@ -19,7 +17,6 @@ function initMoviesPage() {
     loadMovies();
 }
 
-// DOM Elements
 const MoviesDOM = {
     get moviesGrid() { return document.getElementById('moviesGrid'); },
     get loadMoreBtn() { return document.getElementById('loadMoreBtn'); },
@@ -50,7 +47,6 @@ let currentSort = 'popularity.desc';
 let isLoading = false;
 let totalPages = 1;
 let currentModalItem = null;
-let isModalOpen = false;
 
 function initFilters() {
     const genreBtn = MoviesDOM.genreBtn;
@@ -194,10 +190,7 @@ function renderMovies(movies, append = false) {
         grid.innerHTML = html;
     }
     
-    // Add event listeners after render
-    setTimeout(() => {
-        addCardEventListeners();
-    }, 100);
+    addCardEventListeners();
 }
 
 function createGridCard(item, type) {
@@ -233,56 +226,48 @@ function createGridCard(item, type) {
     `;
 }
 
-// FIXED: Event listeners that work on both mobile and desktop
+// FIXED: Clicking poster = Same as clicking play button
 function addCardEventListeners() {
     const grid = MoviesDOM.moviesGrid;
     if (!grid) return;
     
-    const cards = grid.querySelectorAll('.grid-card');
-    
-    cards.forEach(card => {
+    grid.querySelectorAll('.grid-card').forEach(card => {
         const id = card.dataset.id;
         const type = card.dataset.type;
         
         if (!id) return;
         
-        // Remove old listeners by cloning
+        // Remove existing listeners
         const newCard = card.cloneNode(true);
         card.parentNode.replaceChild(newCard, card);
         
-        // Add click listener to entire card
+        // POSTER/CARD CLICK - Goes directly to watch page (same as play button)
         newCard.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
             const button = e.target.closest('button');
             
             if (button) {
+                e.preventDefault();
+                e.stopPropagation();
+                
                 const action = button.dataset.action;
                 
                 if (action === 'play') {
-                    // Go to watch page
+                    // Play button - go to watch page
                     window.location.href = `watch.html?id=${id}&type=${type}`;
                 } else if (action === 'list') {
-                    // Toggle my list
+                    // List button
                     toggleListFromCard(newCard, parseInt(id), type);
                 } else if (action === 'info') {
-                    // Open modal
+                    // Info button - open modal
                     openModal(parseInt(id), type);
                 }
             } else {
-                // Clicked on card (not button) - open modal
-                openModal(parseInt(id), type);
+                // CLICKED ON POSTER/CARD - GO TO WATCH PAGE (same as play button)
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = `watch.html?id=${id}&type=${type}`;
             }
         });
-        
-        // Touch support for mobile
-        newCard.addEventListener('touchend', function(e) {
-            // Only if not scrolling
-            if (e.cancelable) {
-                // Let click handler deal with it
-            }
-        }, { passive: true });
     });
 }
 
@@ -319,28 +304,21 @@ function initModal() {
     const playBtn = MoviesDOM.modalPlayBtn;
     const addListBtn = MoviesDOM.modalAddList;
     
-    // Close button
     closeBtn?.addEventListener('click', (e) => {
         e.preventDefault();
-        e.stopPropagation();
         closeModal();
     });
     
-    // Click outside to close
     overlay?.addEventListener('click', (e) => {
         if (e.target === overlay) {
             closeModal();
         }
     });
     
-    // Escape key
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && isModalOpen) {
-            closeModal();
-        }
+        if (e.key === 'Escape') closeModal();
     });
     
-    // Play button
     playBtn?.addEventListener('click', (e) => {
         e.preventDefault();
         if (currentModalItem) {
@@ -348,7 +326,6 @@ function initModal() {
         }
     });
     
-    // Add to list button
     addListBtn?.addEventListener('click', (e) => {
         e.preventDefault();
         if (currentModalItem) {
@@ -358,27 +335,12 @@ function initModal() {
 }
 
 async function openModal(id, type) {
-    // Prevent multiple opens
-    if (isModalOpen) {
-        console.log('Modal already open');
-        return;
-    }
-    
-    console.log('Opening modal for:', id, type);
-    isModalOpen = true;
-    
     const overlay = MoviesDOM.modalOverlay;
-    if (!overlay) {
-        console.error('Modal overlay not found');
-        isModalOpen = false;
-        return;
-    }
+    if (!overlay) return;
     
-    // Show modal with loading state
     overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
     
-    // Set loading state
     if (MoviesDOM.modalTitle) MoviesDOM.modalTitle.textContent = 'Loading...';
     if (MoviesDOM.modalDescription) MoviesDOM.modalDescription.textContent = '';
     if (MoviesDOM.modalBanner) MoviesDOM.modalBanner.style.backgroundImage = 'none';
@@ -389,11 +351,8 @@ async function openModal(id, type) {
         if (data) {
             currentModalItem = { ...data, type: 'movie' };
             
-            // Update modal content
-            if (MoviesDOM.modalBanner) {
-                MoviesDOM.modalBanner.style.backgroundImage = data.backdrop_path 
-                    ? `url(${API.getBackdropUrl(data.backdrop_path)})` 
-                    : 'none';
+            if (MoviesDOM.modalBanner && data.backdrop_path) {
+                MoviesDOM.modalBanner.style.backgroundImage = `url(${API.getBackdropUrl(data.backdrop_path)})`;
             }
             if (MoviesDOM.modalTitle) {
                 MoviesDOM.modalTitle.textContent = data.title || 'Untitled';
@@ -406,27 +365,19 @@ async function openModal(id, type) {
             }
             if (MoviesDOM.modalDuration) {
                 const runtime = data.runtime || 0;
-                MoviesDOM.modalDuration.textContent = runtime 
-                    ? `${Math.floor(runtime / 60)}h ${runtime % 60}m` 
-                    : 'N/A';
+                MoviesDOM.modalDuration.textContent = runtime ? `${Math.floor(runtime / 60)}h ${runtime % 60}m` : 'N/A';
             }
             if (MoviesDOM.modalDescription) {
                 MoviesDOM.modalDescription.textContent = data.overview || 'No description available.';
             }
             if (MoviesDOM.modalGenres) {
-                MoviesDOM.modalGenres.textContent = data.genres 
-                    ? data.genres.map(g => g.name).join(', ') 
-                    : 'N/A';
+                MoviesDOM.modalGenres.textContent = data.genres ? data.genres.map(g => g.name).join(', ') : 'N/A';
             }
             if (MoviesDOM.modalRating) {
-                MoviesDOM.modalRating.textContent = data.vote_average 
-                    ? data.vote_average.toFixed(1) 
-                    : 'N/A';
+                MoviesDOM.modalRating.textContent = data.vote_average ? data.vote_average.toFixed(1) : 'N/A';
             }
             
             updateModalListButton();
-        } else {
-            if (MoviesDOM.modalTitle) MoviesDOM.modalTitle.textContent = 'Error loading content';
         }
     } catch (error) {
         console.error('Error loading movie details:', error);
@@ -435,15 +386,12 @@ async function openModal(id, type) {
 }
 
 function closeModal() {
-    console.log('Closing modal');
     const overlay = MoviesDOM.modalOverlay;
-    
     if (overlay) {
         overlay.classList.remove('active');
     }
     document.body.style.overflow = '';
     currentModalItem = null;
-    isModalOpen = false;
 }
 
 function toggleMyList(item) {
@@ -459,14 +407,10 @@ function toggleMyList(item) {
 
 function updateModalListButton() {
     const icon = MoviesDOM.modalAddList?.querySelector('i');
-    if (!icon) return;
+    if (!icon || !currentModalItem) return;
     
-    if (typeof Storage !== 'undefined' && Storage.isInMyList && currentModalItem) {
-        if (Storage.isInMyList(currentModalItem.id, 'movie')) {
-            icon.className = 'fas fa-check';
-        } else {
-            icon.className = 'fas fa-plus';
-        }
+    if (typeof Storage !== 'undefined' && Storage.isInMyList) {
+        icon.className = Storage.isInMyList(currentModalItem.id, 'movie') ? 'fas fa-check' : 'fas fa-plus';
     }
 }
 
