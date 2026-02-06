@@ -6,68 +6,77 @@
     <title>Watch - Streamify</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/watch.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body class="watch-page">
+<body class="watch-body">
 
     <!-- Back Button -->
     <a href="index.html" class="back-btn">
         <i class="fas fa-arrow-left"></i>
-        <span>Back</span>
+        <span>Back to Home</span>
     </a>
 
     <!-- Player -->
-    <div class="player-wrapper">
-        <div class="player-loading" id="playerLoading">
+    <div class="player-container">
+        <div class="player-loader" id="playerLoader">
             <div class="spinner"></div>
-            <p>Loading...</p>
+            <p>Loading Player...</p>
         </div>
-        <iframe id="videoPlayer" allowfullscreen></iframe>
+        <iframe id="player" allowfullscreen allow="autoplay; fullscreen"></iframe>
     </div>
 
-    <!-- Content Info -->
-    <div class="watch-content">
-        <div class="content-header">
-            <h1 id="contentTitle">Loading...</h1>
-            <div class="content-meta">
-                <span class="meta-rating" id="contentRating">⭐ 8.5</span>
-                <span id="contentYear">2024</span>
-                <span id="contentDuration">2h 15m</span>
+    <!-- Content -->
+    <div class="watch-main">
+        
+        <!-- Title & Meta -->
+        <div class="watch-header">
+            <h1 id="watchTitle">Loading...</h1>
+            <div class="watch-meta">
+                <span class="meta-rating"><i class="fas fa-star"></i> <span id="watchRating">8.5</span></span>
+                <span id="watchYear">2024</span>
+                <span id="watchDuration">2h 15m</span>
                 <span class="meta-badge">HD</span>
             </div>
         </div>
 
-        <!-- Season/Episode Selector (Shows for TV only) -->
-        <div class="episodes-selector" id="episodesSelector" style="display:none;">
-            <div class="selector-row">
+        <!-- Episode Selector (TV Shows) -->
+        <div class="episode-selector" id="episodeSelector" style="display:none;">
+            <div class="selector-header">
+                <h2><i class="fas fa-list"></i> Episodes</h2>
                 <select id="seasonSelect"></select>
-                <select id="episodeSelect"></select>
-                <button class="play-episode-btn" id="playEpisodeBtn">
-                    <i class="fas fa-play"></i> Play Episode
-                </button>
+            </div>
+            <div class="episodes-grid" id="episodesGrid"></div>
+        </div>
+
+        <!-- Description -->
+        <div class="watch-desc">
+            <p id="watchDesc">Loading description...</p>
+            <div class="watch-info">
+                <p><strong>Genres:</strong> <span id="watchGenres">-</span></p>
+                <p><strong>Cast:</strong> <span id="watchCast">-</span></p>
             </div>
         </div>
 
-        <p class="content-description" id="contentDescription">Loading description...</p>
-        
-        <div class="content-details">
-            <p><strong>Genres:</strong> <span id="contentGenres">-</span></p>
-            <p><strong>Cast:</strong> <span id="contentCast">-</span></p>
-        </div>
-
-        <div class="content-actions">
-            <button class="action-btn" id="addListBtn">
-                <i class="fas fa-plus"></i> My List
+        <!-- Actions -->
+        <div class="watch-actions">
+            <button class="action-btn" id="listBtn">
+                <i class="fas fa-plus"></i>
+                <span>My List</span>
             </button>
             <button class="action-btn" id="shareBtn">
-                <i class="fas fa-share"></i> Share
+                <i class="fas fa-share"></i>
+                <span>Share</span>
+            </button>
+            <button class="action-btn" id="likeBtn">
+                <i class="fas fa-thumbs-up"></i>
+                <span>Like</span>
             </button>
         </div>
 
-        <!-- Similar Content -->
+        <!-- Similar -->
         <div class="similar-section">
-            <h2>More Like This</h2>
+            <h2><i class="fas fa-film"></i> More Like This</h2>
             <div class="similar-grid" id="similarGrid"></div>
         </div>
     </div>
