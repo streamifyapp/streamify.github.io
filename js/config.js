@@ -18,7 +18,7 @@ const CONFIG = {
     },
     
     // Streaming API Configuration
-    STREAMING_BASE_URL: 'https://player.videasy.net',
+    STREAMING_BASE_URL: 'https://vidrock.net',
     
     // Build streaming URL for movies
     getMovieStreamUrl: function(tmdbId) {
