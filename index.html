@@ -11,6 +11,25 @@
 </head>
 <body>
 
+    <!-- Welcome Popup -->
+    <div class="welcome-popup" id="welcomePopup">
+        <div class="popup-box">
+            <div class="popup-icon">
+                <i class="fas fa-bookmark"></i>
+            </div>
+            <h2>Welcome to Streamify!</h2>
+            <p>To ensure you never lose access to unlimited free movies and TV shows, please <strong>bookmark this website</strong> now.</p>
+            <p class="popup-hint"><i class="fas fa-keyboard"></i> Press <span>Ctrl + D</span> (Windows) or <span>Cmd + D</span> (Mac)</p>
+            <button class="popup-btn" id="popupClose">
+                <i class="fas fa-check"></i> Got it, Thanks!
+            </button>
+            <label class="popup-checkbox">
+                <input type="checkbox" id="dontShowAgain">
+                <span>Don't show this again</span>
+            </label>
+        </div>
+    </div>
+
     <!-- Navbar -->
     <nav class="navbar" id="navbar">
         <div class="nav-left">
@@ -23,6 +42,10 @@
             </ul>
         </div>
         <div class="nav-right">
+            <a href="https://streamifyapp.github.io/" target="_blank" class="download-btn">
+                <i class="fab fa-android"></i>
+                <span>Get App</span>
+            </a>
             <button class="nav-btn" id="searchBtn"><i class="fas fa-search"></i></button>
             <button class="nav-btn menu-toggle" id="menuBtn"><i class="fas fa-bars"></i></button>
             <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" alt="Profile" class="profile-img">
@@ -40,6 +63,8 @@
             <li><a href="movies.html"><i class="fas fa-film"></i> Movies</a></li>
             <li><a href="series.html"><i class="fas fa-tv"></i> TV Shows</a></li>
             <li><a href="mylist.html"><i class="fas fa-bookmark"></i> My List</a></li>
+            <li class="menu-divider"></li>
+            <li><a href="https://streamifyapp.github.io/" target="_blank" class="download-link"><i class="fab fa-android"></i> Download App</a></li>
         </ul>
     </div>
     <div class="overlay" id="overlay"></div>
@@ -85,6 +110,19 @@
             <div class="row-wrapper">
                 <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
                 <div class="content-row" id="continueWatching"></div>
+                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </section>
+
+        <!-- Top 5 Today -->
+        <section class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-ranking-star"></i> Top 5 Today</h2>
+                <button class="see-all-btn" data-cat="trending">See All <i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="row-wrapper">
+                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
+                <div class="content-row top-5-row" id="top5Today"></div>
                 <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
             </div>
         </section>
@@ -237,6 +275,9 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-logo">STREAMIFY</div>
+        <a href="https://streamifyapp.github.io/" target="_blank" class="footer-download">
+            <i class="fab fa-android"></i> Download Streamify for Android
+        </a>
         <p>© 2025 Streamify. All rights reserved.</p>
     </footer>
 
