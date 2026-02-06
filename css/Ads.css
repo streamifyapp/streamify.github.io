@@ -110,18 +110,37 @@
 
 /* Mobile - Hide Desktop Ads, Show Mobile Ads */
 @media (max-width: 768px) {
-    /* Hide desktop-only ads */
+    /* Hide desktop-only ads - CRITICAL */
     .desktop-banner-top {
         display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
     
     .native-ad {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Force hide any native ad containers */
+    .native-ad * {
+        display: none !important;
+    }
+    
+    .desktop-banner-top * {
         display: none !important;
     }
     
     /* Show mobile banners */
     .mobile-banner-320x100 {
-        display: flex;
+        display: flex !important;
     }
     
     .banner-300x250 {
