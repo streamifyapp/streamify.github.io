@@ -61,6 +61,12 @@ const DOM = {
     modalAddList: document.getElementById('modalAddList'),
     modalLike: document.getElementById('modalLike'),
     
+    // See All Modal
+    seeAllModal: document.getElementById('seeAllModal'),
+    seeAllTitle: document.getElementById('seeAllTitle'),
+    seeAllGrid: document.getElementById('seeAllGrid'),
+    seeAllClose: document.getElementById('seeAllClose'),
+    
     // Search Results
     searchResultsPage: document.getElementById('searchResultsPage'),
     searchBack: document.getElementById('searchBack'),
@@ -81,13 +87,13 @@ document.addEventListener('DOMContentLoaded', () => {
     initSearch();
     initModal();
     initSliders();
+    initSeeAll();
     loadAllContent();
     loadContinueWatching();
 });
 
 // ============ NAVBAR FUNCTIONS ============
 function initNavbar() {
-    // Scroll effect for navbar
     window.addEventListener('scroll', () => {
         if (window.scrollY > 50) {
             DOM.navbar.classList.add('scrolled');
@@ -99,7 +105,6 @@ function initNavbar() {
 
 // ============ SEARCH FUNCTIONS ============
 function initSearch() {
-    // Toggle search box
     DOM.searchToggle.addEventListener('click', () => {
         DOM.searchBox.classList.toggle('active');
         if (DOM.searchBox.classList.contains('active')) {
@@ -107,20 +112,17 @@ function initSearch() {
         }
     });
     
-    // Search on Enter
     DOM.searchInput.addEventListener('keypress', async (e) => {
         if (e.key === 'Enter' && DOM.searchInput.value.trim()) {
             await performSearch(DOM.searchInput.value.trim());
         }
     });
     
-    // Back from search results
     DOM.searchBack.addEventListener('click', () => {
         DOM.searchResultsPage.style.display = 'none';
         DOM.searchInput.value = '';
     });
     
-    // Close search on clicking outside
     document.addEventListener('click', (e) => {
         if (!DOM.searchBox.contains(e.target) && DOM.searchBox.classList.contains('active')) {
             DOM.searchBox.classList.remove('active');
@@ -146,7 +148,6 @@ async function performSearch(query) {
             </div>
         `).join('');
         
-        // Add click events
         DOM.searchResults.querySelectorAll('.search-card').forEach(card => {
             card.addEventListener('click', () => {
                 const id = card.dataset.id;
@@ -161,31 +162,27 @@ async function performSearch(query) {
 
 // ============ MODAL FUNCTIONS ============
 function initModal() {
-    // Close modal on X button
     DOM.modalClose.addEventListener('click', closeModal);
     
-    // Close modal on overlay click
     DOM.modalOverlay.addEventListener('click', (e) => {
         if (e.target === DOM.modalOverlay) {
             closeModal();
         }
     });
     
-    // Close modal on Escape key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             closeModal();
+            closeSeeAllModal();
         }
     });
     
-    // Play button in modal
     DOM.modalPlayBtn.addEventListener('click', () => {
         if (currentModalItem) {
             playContent(currentModalItem.id, currentModalItem.type);
         }
     });
     
-    // Add to My List button
     DOM.modalAddList.addEventListener('click', () => {
         if (currentModalItem) {
             toggleMyList(currentModalItem);
@@ -207,10 +204,7 @@ async function openModal(id, type) {
     if (data) {
         currentModalItem = { ...data, type };
         
-        // Set banner
         DOM.modalBanner.style.backgroundImage = `url(${API.getBackdropUrl(data.backdrop_path)})`;
-        
-        // Set content
         DOM.modalTitle.textContent = data.title || data.name;
         DOM.modalMatch.textContent = `${Math.round(data.vote_average * 10)}% Match`;
         DOM.modalYear.textContent = (data.release_date || data.first_air_date || '').split('-')[0];
@@ -221,7 +215,6 @@ async function openModal(id, type) {
         DOM.modalGenres.textContent = data.genres ? data.genres.map(g => g.name).join(', ') : 'N/A';
         DOM.modalRating.textContent = data.vote_average ? data.vote_average.toFixed(1) : 'N/A';
         
-        // Update My List button
         updateMyListButton();
     }
 }
@@ -251,14 +244,6 @@ function toggleMyList(item) {
 
 // ============ PLAY CONTENT ============
 function playContent(id, type, season = 1, episode = 1) {
-    let streamUrl;
-    if (type === 'movie') {
-        streamUrl = CONFIG.getMovieStreamUrl(id);
-    } else {
-        streamUrl = CONFIG.getTVStreamUrl(id, season, episode);
-    }
-    
-    // Open in new page or redirect
     window.location.href = `watch.html?id=${id}&type=${type}&season=${season}&episode=${episode}`;
 }
 
@@ -279,12 +264,153 @@ function initSliders() {
     });
 }
 
+// ============ SEE ALL FUNCTIONALITY ============
+function initSeeAll() {
+    DOM.seeAllClose?.addEventListener('click', closeSeeAllModal);
+    
+    DOM.seeAllModal?.addEventListener('click', (e) => {
+        if (e.target === DOM.seeAllModal) {
+            closeSeeAllModal();
+        }
+    });
+    
+    document.querySelectorAll('.see-all').forEach(link => {
+        link.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const section = link.closest('.content-row');
+            const titleElement = section.querySelector('.row-title');
+            const title = titleElement.textContent.trim();
+            const container = section.querySelector('.row-content');
+            
+            await openSeeAllModal(title, container);
+        });
+    });
+}
+
+async function openSeeAllModal(title, sourceContainer) {
+    DOM.seeAllTitle.textContent = title;
+    DOM.seeAllModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    const cards = sourceContainer.querySelectorAll('.content-card, .top-10-card');
+    
+    DOM.seeAllGrid.innerHTML = '<div class="loading" style="color: #fff; text-align: center; padding: 50px;">Loading...</div>';
+    
+    // First load existing cards
+    let cardsHtml = '';
+    cards.forEach(card => {
+        const id = card.dataset.id;
+        const type = card.dataset.type || 'movie';
+        let imgSrc = '';
+        
+        const img = card.querySelector('img');
+        if (img) {
+            imgSrc = img.src.replace('/w780/', '/w500/').replace('/original/', '/w500/');
+        }
+        
+        if (card.classList.contains('top-10-card')) {
+            const poster = card.querySelector('.top-10-poster');
+            if (poster) imgSrc = poster.src;
+        }
+        
+        cardsHtml += `
+            <div class="see-all-card" data-id="${id}" data-type="${type}">
+                <img src="${imgSrc}" alt="Poster" loading="lazy">
+            </div>
+        `;
+    });
+    
+    DOM.seeAllGrid.innerHTML = cardsHtml;
+    
+    // Add click events
+    addSeeAllCardEvents();
+    
+    // Load more content
+    await loadMoreForSeeAll(title);
+}
+
+async function loadMoreForSeeAll(title) {
+    let data = null;
+    const titleLower = title.toLowerCase();
+    
+    if (titleLower.includes('trending')) {
+        data = await API.getTrendingMovies('week');
+    } else if (titleLower.includes('new release')) {
+        data = await API.getNowPlayingMovies();
+    } else if (titleLower.includes('top rated') || titleLower.includes('top 10')) {
+        data = await API.getTopRatedMovies();
+    } else if (titleLower.includes('k-drama')) {
+        data = await API.getKDrama();
+    } else if (titleLower.includes('bollywood')) {
+        data = await API.getBollywoodMovies();
+    } else if (titleLower.includes('action')) {
+        data = await API.getMoviesByGenre(28);
+    } else if (titleLower.includes('adventure')) {
+        data = await API.getMoviesByGenre(12);
+    } else if (titleLower.includes('animation')) {
+        data = await API.getMoviesByGenre(16);
+    } else if (titleLower.includes('comedy')) {
+        data = await API.getMoviesByGenre(35);
+    } else if (titleLower.includes('crime')) {
+        data = await API.getMoviesByGenre(80);
+    } else if (titleLower.includes('documentary')) {
+        data = await API.getMoviesByGenre(99);
+    } else if (titleLower.includes('family')) {
+        data = await API.getMoviesByGenre(10751);
+    } else if (titleLower.includes('history')) {
+        data = await API.getMoviesByGenre(36);
+    } else if (titleLower.includes('horror')) {
+        data = await API.getMoviesByGenre(27);
+    } else if (titleLower.includes('romance')) {
+        data = await API.getMoviesByGenre(10749);
+    } else if (titleLower.includes('science fiction')) {
+        data = await API.getMoviesByGenre(878);
+    } else if (titleLower.includes('thriller')) {
+        data = await API.getMoviesByGenre(53);
+    }
+    
+    if (data && data.results) {
+        data.results.forEach(item => {
+            const type = item.media_type || (item.first_air_date ? 'tv' : 'movie');
+            
+            const exists = DOM.seeAllGrid.querySelector(`[data-id="${item.id}"]`);
+            if (exists) return;
+            
+            const seeAllCard = document.createElement('div');
+            seeAllCard.className = 'see-all-card';
+            seeAllCard.dataset.id = item.id;
+            seeAllCard.dataset.type = type;
+            seeAllCard.innerHTML = `<img src="${API.getImageUrl(item.poster_path)}" alt="${item.title || item.name}" loading="lazy">`;
+            
+            seeAllCard.addEventListener('click', () => {
+                closeSeeAllModal();
+                openModal(item.id, type);
+            });
+            
+            DOM.seeAllGrid.appendChild(seeAllCard);
+        });
+    }
+}
+
+function addSeeAllCardEvents() {
+    DOM.seeAllGrid.querySelectorAll('.see-all-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const id = card.dataset.id;
+            const type = card.dataset.type;
+            closeSeeAllModal();
+            openModal(id, type);
+        });
+    });
+}
+
+function closeSeeAllModal() {
+    DOM.seeAllModal?.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
 // ============ CONTENT LOADING ============
 async function loadAllContent() {
-    // Load Hero Banner
     loadHeroBanner();
-    
-    // Load all rows
     loadTrending();
     loadNewReleases();
     loadTop10Movies();
@@ -323,14 +449,12 @@ function updateHeroBanner(item) {
     currentHeroItem = item;
     const type = item.media_type || 'movie';
     
-    // Update background with fade effect
     DOM.heroBackground.style.opacity = '0';
     setTimeout(() => {
         DOM.heroBackground.style.backgroundImage = `url(${API.getBackdropUrl(item.backdrop_path)})`;
         DOM.heroBackground.style.opacity = '1';
     }, 300);
     
-    // Update content
     DOM.heroTitle.textContent = item.title || item.name;
     DOM.heroDescription.textContent = item.overview || '';
     DOM.heroRating.innerHTML = `<i class="fas fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}`;
@@ -340,7 +464,6 @@ function updateHeroBanner(item) {
         <span>${type === 'movie' ? 'FILM' : 'SERIES'}</span>
     `;
     
-    // Update button events
     DOM.heroPlayBtn.onclick = () => playContent(item.id, type);
     DOM.heroInfoBtn.onclick = () => openModal(item.id, type);
 }
@@ -349,7 +472,7 @@ function startHeroRotation() {
     heroInterval = setInterval(() => {
         heroIndex = (heroIndex + 1) % heroItems.length;
         updateHeroBanner(heroItems[heroIndex]);
-    }, 8000); // Change every 8 seconds
+    }, 8000);
 }
 
 // ============ CONTINUE WATCHING ============
@@ -400,7 +523,6 @@ async function loadTrending() {
     if (moviesData?.results) items.push(...moviesData.results.map(m => ({ ...m, type: 'movie' })));
     if (tvData?.results) items.push(...tvData.results.map(t => ({ ...t, type: 'tv' })));
     
-    // Shuffle and take top 20
     items = shuffleArray(items).slice(0, 20);
     
     renderCards(DOM.trendingNow, items);
@@ -524,7 +646,6 @@ function renderTop10Cards(container, items) {
         </div>
     `).join('');
     
-    // Add click events for top 10 cards
     container.querySelectorAll('.top-10-card').forEach(card => {
         card.addEventListener('click', () => {
             const id = card.dataset.id;
@@ -544,25 +665,20 @@ function addCardEventListeners(container) {
         const id = card.dataset.id;
         const type = card.dataset.type;
         
-        // Play button
         card.querySelector('[data-action="play"]')?.addEventListener('click', (e) => {
             e.stopPropagation();
             playContent(id, type);
         });
         
-        // Add to list button
         card.querySelector('[data-action="list"]')?.addEventListener('click', (e) => {
             e.stopPropagation();
-            // Get item data and toggle list
         });
         
-        // Info button / Card click
         card.querySelector('[data-action="info"]')?.addEventListener('click', (e) => {
             e.stopPropagation();
             openModal(id, type);
         });
         
-        // Click anywhere on card
         card.addEventListener('click', () => {
             openModal(id, type);
         });
@@ -577,16 +693,4 @@ function shuffleArray(array) {
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     return shuffled;
-}
-
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
 }
