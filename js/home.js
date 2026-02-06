@@ -1,6 +1,6 @@
 /* ============================================
    STREAMIFY - HOME PAGE
-   Final Complete Version
+   Updated Version - Simplified Popup
 ============================================ */
 
 const $ = id => document.getElementById(id);
@@ -8,7 +8,6 @@ const $ = id => document.getElementById(id);
 const DOM = {
     welcomePopup: $('welcomePopup'),
     popupClose: $('popupClose'),
-    dontShowAgain: $('dontShowAgain'),
     
     navbar: $('navbar'),
     menuBtn: $('menuBtn'),
@@ -94,20 +93,13 @@ document.addEventListener('DOMContentLoaded', () => {
     loadAllCategories();
 });
 
-// Welcome Popup
+// Welcome Popup - Simplified (shows every time)
 function initWelcomePopup() {
-    const hidePopup = localStorage.getItem('streamify_hide_popup');
-    
-    if (!hidePopup) {
-        setTimeout(() => {
-            DOM.welcomePopup.classList.add('active');
-        }, 1500);
-    }
+    setTimeout(() => {
+        DOM.welcomePopup.classList.add('active');
+    }, 1500);
     
     DOM.popupClose?.addEventListener('click', () => {
-        if (DOM.dontShowAgain.checked) {
-            localStorage.setItem('streamify_hide_popup', 'true');
-        }
         DOM.welcomePopup.classList.remove('active');
     });
     
