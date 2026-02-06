@@ -78,6 +78,56 @@
     align-items: center;
 }
 
+/* Single small banner - visible on ALL devices */
+.small-banner-below-continue,
+.small-banner-below-title {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    margin: 15px auto;
+    max-width: 320px;
+    overflow: hidden;
+    padding: 10px;
+    background: linear-gradient(135deg, rgba(26,26,26,0.4) 0%, rgba(10,10,10,0.4) 100%);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Medium banner below trending - visible on ALL devices */
+.banner-below-trending {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    max-width: 300px;
+    min-height: 250px;
+    overflow: hidden;
+    padding: 15px;
+    background: linear-gradient(135deg, rgba(26,26,26,0.4) 0%, rgba(10,10,10,0.4) 100%);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* ============================================
+   BLACK SPACER ABOVE PLAYER (for social bar)
+   NOT an ad container - standalone element
+============================================ */
+.player-top-spacer {
+    width: 100%;
+    height: 70px;
+    background: #000;
+    display: block !important;
+    visibility: visible !important;
+    position: relative;
+    z-index: 1;
+    opacity: 1 !important;
+    min-height: 70px !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+}
+
 /* Ad Label (Optional - for transparency) */
 .ad-label {
     font-size: 9px;
@@ -110,7 +160,7 @@
 
 /* Mobile - Hide Desktop Ads, Show Mobile Ads */
 @media (max-width: 768px) {
-    /* CRITICAL: Hide desktop-only ads with maximum specificity */
+    /* CRITICAL: Hide desktop-only ads */
     .ad-container.desktop-banner-top,
     div.ad-container.desktop-banner-top,
     .desktop-banner-top {
@@ -143,7 +193,7 @@
         left: -9999px !important;
     }
     
-    /* Force hide any native ad containers and their children */
+    /* Force hide children of desktop ads */
     .native-ad *,
     .native-ad script,
     .native-ad iframe,
@@ -181,11 +231,52 @@
         padding: 5px 0;
     }
     
-    /* Add bottom padding to content to prevent overlap with sticky ad */
+    /* Add bottom padding for sticky ad */
     .main-content,
     .browse-content,
     .watch-main {
         padding-bottom: 70px;
+    }
+    
+    /* IMPORTANT: Player spacer stays visible on mobile */
+    .player-top-spacer {
+        display: block !important;
+        visibility: visible !important;
+        height: 60px !important;
+        min-height: 60px !important;
+        max-height: none !important;
+        background: #000 !important;
+        opacity: 1 !important;
+        position: relative !important;
+        left: auto !important;
+        overflow: visible !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+    
+    /* Keep small and medium banners visible on mobile */
+    .small-banner-below-continue,
+    .small-banner-below-title {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        left: auto !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: auto !important;
+    }
+    
+    .banner-below-trending {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        left: auto !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 250px !important;
     }
 }
 
@@ -203,6 +294,20 @@
     
     .mobile-sticky-bottom {
         padding: 4px 0;
+    }
+    
+    /* Spacer on small mobile */
+    .player-top-spacer {
+        height: 55px !important;
+        min-height: 55px !important;
+    }
+}
+
+/* Desktop spacer */
+@media (min-width: 769px) {
+    .player-top-spacer {
+        height: 80px !important;
+        min-height: 80px !important;
     }
 }
 
@@ -222,7 +327,7 @@
     }
 }
 
-/* ============ AD CLOSE BUTTON STYLING (if needed) ============ */
+/* ============ AD CLOSE BUTTON STYLING ============ */
 .ad-close {
     position: absolute;
     top: 5px;
@@ -244,48 +349,4 @@
 .ad-close:hover {
     background: #e50914;
     transform: scale(1.1);
-}
-
-/* Single small banner - visible on ALL devices */
-.small-banner-below-continue,
-.small-banner-below-title {
-    display: flex !important;
-    justify-content: center;
-    align-items: center;
-    margin: 15px auto;
-    max-width: 320px;
-    overflow: hidden;
-}
-
-/* Medium banner below trending - visible on ALL devices */
-.banner-below-trending {
-    display: flex !important;
-    justify-content: center;
-    align-items: center;
-    margin: 20px auto;
-    max-width: 300px;
-    overflow: hidden;
-}
-
-/* Black spacer above player for social bar */
-.player-top-spacer {
-    width: 100%;
-    height: 70px;
-    background: #000;
-    position: relative;
-    z-index: 1;
-}
-
-/* Desktop spacer height */
-@media (min-width: 769px) {
-    .player-top-spacer {
-        height: 80px;
-    }
-}
-
-/* Mobile spacer height */
-@media (max-width: 768px) {
-    .player-top-spacer {
-        height: 60px;
-    }
 }
