@@ -488,45 +488,38 @@
    Social Bar shows here instead of on player
 ============================================ */
 #playerTopSpacer {
-    width: 100% !important;
-    height: 144px !important;
-    min-height: 144px !important;
-    max-height: none !important;
-    background: #000000 !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: relative !important;
-    z-index: 5 !important;
-    left: auto !important;
-    top: auto !important;
-    right: auto !important;
-    bottom: auto !important;
-    overflow: visible !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    float: none !important;
-    clear: both !important;
-    transform: none !important;
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    min-height: 0 !important;
 }
 
 @media (max-width: 768px) {
     #playerTopSpacer {
+        display: block !important;
+        visibility: visible !important;
+        width: 100% !important;
         height: 144px !important;
         min-height: 144px !important;
         max-height: none !important;
-        display: block !important;
-        visibility: visible !important;
+        background: #000000 !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 5 !important;
+        left: auto !important;
+        top: auto !important;
+        overflow: visible !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
     }
 }
 
 @media (max-width: 480px) {
     #playerTopSpacer {
-        height: 144px !important;
-        min-height: 144px !important;
-        max-height: none !important;
         display: block !important;
         visibility: visible !important;
+        height: 144px !important;
+        min-height: 144px !important;
     }
 }
