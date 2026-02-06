@@ -596,7 +596,7 @@ function addCardEvents(container) {
     });
 }
 
-// See All Modal - Fixed to show 70+ posters
+// See All Modal - Fixed to show 70+ posters with PROPER MOBILE SIZE
 function initSeeAll() {
     document.querySelectorAll('.see-all-btn').forEach(btn => {
         btn.addEventListener('click', () => openSeeAll(btn.dataset.cat));
@@ -659,7 +659,6 @@ async function openSeeAll(cat) {
                 API.fetchFromTMDB('/tv/top_rated', { page: p })
             ]);
         } else if (cat === 'bollywood') {
-            // Bollywood - Only Hindi content
             [movies, tv] = await Promise.all([
                 API.fetchFromTMDB('/discover/movie', {
                     with_original_language: 'hi',
@@ -673,7 +672,6 @@ async function openSeeAll(cat) {
                 })
             ]);
         } else if (cat === 'korean') {
-            // Korean - Only Korean content
             [movies, tv] = await Promise.all([
                 API.fetchFromTMDB('/discover/movie', {
                     with_original_language: 'ko',
@@ -687,7 +685,6 @@ async function openSeeAll(cat) {
                 })
             ]);
         } else {
-            // Genre categories - Mixed content
             const gid = GENRES[cat] || 28;
             [movies, tv] = await Promise.all([
                 API.fetchFromTMDB('/discover/movie', { with_genres: gid, page: p, sort_by: 'popularity.desc' }),
@@ -704,6 +701,7 @@ async function openSeeAll(cat) {
     // Dedupe and limit
     const unique = dedupeArray(allItems).slice(0, 80);
     
+    // RENDER CARDS - Same style as Bollywood
     DOM.seeAllGrid.innerHTML = unique.map(item => {
         const title = item.title || item.name;
         const year = (item.release_date || item.first_air_date || '').split('-')[0];
@@ -720,7 +718,7 @@ async function openSeeAll(cat) {
         `;
     }).join('');
     
-    // Add click events
+    // Add click events - GO TO WATCH PAGE
     DOM.seeAllGrid.querySelectorAll('.see-all-card').forEach(card => {
         card.addEventListener('click', (e) => {
             e.preventDefault();
@@ -729,11 +727,8 @@ async function openSeeAll(cat) {
             const id = card.dataset.id;
             const type = card.dataset.type;
             
-            closeSeeAll();
-            
-            setTimeout(() => {
-                openDetail(id, type);
-            }, 100);
+            // Go directly to watch page
+            window.location.href = `watch.html?id=${id}&type=${type}`;
         });
     });
 }
