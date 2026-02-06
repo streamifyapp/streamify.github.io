@@ -189,14 +189,26 @@ function initSearch() {
         // Clear results if query is too short
         if (query.length < 2) {
             if (DOM.searchResults) {
-                DOM.searchResults.innerHTML = '<p style="text-align:center;color:#666;padding:50px;">Type at least 2 characters to search...</p>';
+                DOM.searchResults.innerHTML = `
+                    <div class="search-message">
+                        <i class="fas fa-film"></i>
+                        <p>Search for movies and TV shows</p>
+                        <span>Type at least 2 characters to start searching</span>
+                    </div>
+                `;
             }
             return;
         }
         
         // Show loading
         if (DOM.searchResults) {
-            DOM.searchResults.innerHTML = '<p style="text-align:center;color:#666;padding:50px;"><i class="fas fa-spinner fa-spin"></i> Searching...</p>';
+            DOM.searchResults.innerHTML = `
+                <div class="search-message">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Searching...</p>
+                    <span>Please wait</span>
+                </div>
+            `;
         }
         
         // Debounce search - wait 500ms after user stops typing
@@ -240,7 +252,13 @@ function openSearchModal() {
         
         // Show initial message
         if (DOM.searchResults) {
-            DOM.searchResults.innerHTML = '<p style="text-align:center;color:#666;padding:50px;">Type to search for movies and TV shows...</p>';
+            DOM.searchResults.innerHTML = `
+                <div class="search-message">
+                    <i class="fas fa-film"></i>
+                    <p>Search for movies and TV shows</p>
+                    <span>Type at least 2 characters to start searching</span>
+                </div>
+            `;
         }
     }
 }
@@ -293,7 +311,13 @@ async function performSearch(query) {
     } catch (error) {
         console.error('Search error:', error);
         if (DOM.searchResults) {
-            DOM.searchResults.innerHTML = '<p style="text-align:center;color:#e50914;padding:50px;">Error searching. Please try again.</p>';
+            DOM.searchResults.innerHTML = `
+                <div class="search-message">
+                    <i class="fas fa-exclamation-triangle" style="color:#e50914;"></i>
+                    <p>Error searching</p>
+                    <span>Please try again</span>
+                </div>
+            `;
         }
     }
 }
@@ -301,7 +325,10 @@ async function performSearch(query) {
 function renderSearchResults(items) {
     if (!DOM.searchResults) return;
     
-    DOM.searchResults.innerHTML = items.map(item => {
+    // Create grid container
+    let html = '<div class="search-results-grid">';
+    
+    html += items.map(item => {
         const title = item.title || item.name || 'Untitled';
         const year = (item.release_date || item.first_air_date || '').split('-')[0];
         const rating = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
@@ -325,6 +352,10 @@ function renderSearchResults(items) {
         `;
     }).join('');
     
+    html += '</div>';
+    
+    DOM.searchResults.innerHTML = html;
+    
     // Add click events to search results
     DOM.searchResults.querySelectorAll('.search-result-card').forEach(card => {
         card.addEventListener('click', (e) => {
@@ -335,7 +366,6 @@ function renderSearchResults(items) {
             const type = card.dataset.type;
             
             if (id && type) {
-                // Go to watch page
                 window.location.href = `watch.html?id=${id}&type=${type}`;
             }
         });
@@ -345,10 +375,10 @@ function renderSearchResults(items) {
 function showNoResults(query) {
     if (DOM.searchResults) {
         DOM.searchResults.innerHTML = `
-            <div style="text-align:center;color:#666;padding:50px;">
-                <i class="fas fa-search" style="font-size:48px;margin-bottom:20px;display:block;"></i>
-                <p style="font-size:18px;margin-bottom:10px;">No results found for "${query}"</p>
-                <p style="font-size:14px;">Try different keywords or check the spelling</p>
+            <div class="search-message">
+                <i class="fas fa-search"></i>
+                <p>No results found for "${query}"</p>
+                <span>Try different keywords or check the spelling</span>
             </div>
         `;
     }
@@ -412,7 +442,7 @@ async function loadHero() {
         
         const allContent = [
             ...(hollywoodMovies?.results || []).slice(0, 4).map(i => ({ ...i, type: 'movie' })),
-            ...(hollywoodTV?.results || []).slice(0, 3).map(i => ({ ...i, type: 'tv' })),
+                        ...(hollywoodTV?.results || []).slice(0, 3).map(i => ({ ...i, type: 'tv' })),
             ...(bollywoodMovies?.results || []).slice(0, 2).map(i => ({ ...i, type: 'movie' }))
         ];
         
