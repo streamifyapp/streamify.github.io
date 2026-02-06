@@ -1,65 +1,63 @@
 /* ============================================
-   STREAMIFY - MY LIST PAGE LOGIC
-   FULLY OPTIMIZED FOR MOBILE
+   STREAMIFY - MY LIST PAGE
+   FIXED: Poster click goes to watch page
 ============================================ */
 
-const MyListDOM = {
-    myListGrid: document.getElementById('myListGrid'),
-    emptyState: document.getElementById('emptyState'),
-    mylistCount: document.getElementById('mylistCount'),
-    
-    modalOverlay: document.getElementById('modalOverlay'),
-    modalClose: document.getElementById('modalClose'),
-    modalBanner: document.getElementById('modalBanner'),
-    modalTitle: document.getElementById('modalTitle'),
-    modalMatch: document.getElementById('modalMatch'),
-    modalYear: document.getElementById('modalYear'),
-    modalDuration: document.getElementById('modalDuration'),
-    modalDescription: document.getElementById('modalDescription'),
-    modalGenres: document.getElementById('modalGenres'),
-    modalRating: document.getElementById('modalRating'),
-    modalPlayBtn: document.getElementById('modalPlayBtn'),
-    modalAddList: document.getElementById('modalAddList')
-};
+document.addEventListener('DOMContentLoaded', initMyListPage);
 
-let currentModalItem = null;
-let isModalOpen = false;
-
-document.addEventListener('DOMContentLoaded', () => {
+function initMyListPage() {
     loadMyList();
-    initModal();
-});
+}
+
+// DOM Elements
+const MyListDOM = {
+    get myListGrid() { return document.getElementById('myListGrid'); },
+    get emptyState() { return document.getElementById('emptyState'); },
+    get mylistCount() { return document.getElementById('mylistCount'); }
+};
 
 function loadMyList() {
     const items = Storage.getMyList();
     
     if (items && items.length > 0) {
-        MyListDOM.emptyState.style.display = 'none';
-        MyListDOM.myListGrid.style.display = 'grid';
-        MyListDOM.mylistCount.textContent = `${items.length} title${items.length > 1 ? 's' : ''}`;
+        // Show grid, hide empty state
+        if (MyListDOM.emptyState) MyListDOM.emptyState.style.display = 'none';
+        if (MyListDOM.myListGrid) MyListDOM.myListGrid.style.display = 'grid';
+        if (MyListDOM.mylistCount) MyListDOM.mylistCount.textContent = `${items.length} title${items.length > 1 ? 's' : ''}`;
         
+        // Render cards
         MyListDOM.myListGrid.innerHTML = items.map(item => createGridCard(item)).join('');
         
-        requestAnimationFrame(() => {
-            addCardEventListeners();
-        });
+        // Add event listeners
+        addCardEventListeners();
     } else {
-        MyListDOM.emptyState.style.display = 'flex';
-        MyListDOM.myListGrid.style.display = 'none';
-        MyListDOM.mylistCount.textContent = '0 titles';
+        // Show empty state, hide grid
+        if (MyListDOM.emptyState) MyListDOM.emptyState.style.display = 'flex';
+        if (MyListDOM.myListGrid) MyListDOM.myListGrid.style.display = 'none';
+        if (MyListDOM.mylistCount) MyListDOM.mylistCount.textContent = '0 titles';
     }
 }
 
 function createGridCard(item) {
     const title = item.title || item.name || 'Untitled';
-    const posterUrl = item.poster_path 
-        ? API.getImageUrl(item.poster_path) 
-        : 'https://via.placeholder.com/300x450?text=No+Image';
     const rating = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
+    const type = item.type || 'movie';
+    
+    let posterUrl = 'https://via.placeholder.com/300x450/1a1a1a/666?text=No+Image';
+    
+    if (item.poster_path) {
+        if (item.poster_path.startsWith('http')) {
+            posterUrl = item.poster_path;
+        } else if (item.poster_path.startsWith('/')) {
+            posterUrl = `https://image.tmdb.org/t/p/w500${item.poster_path}`;
+        } else {
+            posterUrl = `https://image.tmdb.org/t/p/w500/${item.poster_path}`;
+        }
+    }
     
     return `
-        <div class="grid-card" data-id="${item.id}" data-type="${item.type}">
-            <button class="grid-card-btn remove-btn" data-action="remove">
+        <div class="grid-card" data-id="${item.id}" data-type="${type}">
+            <button class="grid-card-btn remove-btn" data-action="remove" type="button">
                 <i class="fas fa-times"></i>
             </button>
             <img src="${posterUrl}" alt="${title}" loading="lazy">
@@ -67,15 +65,7 @@ function createGridCard(item) {
                 <p class="grid-card-title">${title}</p>
                 <div class="grid-card-meta">
                     <span class="grid-card-rating"><i class="fas fa-star"></i> ${rating}</span>
-                    <span class="grid-card-year">${item.type === 'movie' ? 'Movie' : 'Series'}</span>
-                </div>
-                <div class="grid-card-buttons">
-                    <button class="grid-card-btn play-btn" data-action="play">
-                        <i class="fas fa-play"></i>
-                    </button>
-                    <button class="grid-card-btn" data-action="info">
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
+                    <span class="grid-card-year">${type === 'movie' ? 'Movie' : 'Series'}</span>
                 </div>
             </div>
         </div>
@@ -83,109 +73,37 @@ function createGridCard(item) {
 }
 
 function addCardEventListeners() {
-    MyListDOM.myListGrid?.querySelectorAll('.grid-card').forEach(card => {
-        const id = parseInt(card.dataset.id);
+    const grid = MyListDOM.myListGrid;
+    if (!grid) return;
+    
+    grid.querySelectorAll('.grid-card').forEach(card => {
+        const id = card.dataset.id;
         const type = card.dataset.type;
         
-        card.style.cursor = 'pointer';
+        if (!id) return;
         
-        card.onclick = function(e) {
-            const button = e.target.closest('button');
+        // Click on card - GO TO WATCH PAGE
+        card.addEventListener('click', function(e) {
+            const removeBtn = e.target.closest('[data-action="remove"]');
             
-            if (button) {
+            if (removeBtn) {
+                // Remove button clicked
+                e.preventDefault();
                 e.stopPropagation();
-                const action = button.dataset.action;
-                
-                if (action === 'play') {
-                    window.location.href = `watch.html?id=${id}&type=${type}`;
-                } else if (action === 'remove') {
-                    removeFromList(id, type);
-                } else if (action === 'info') {
-                    openModal(id, type);
-                }
+                removeFromList(parseInt(id), type);
             } else {
-                openModal(id, type);
+                // Card clicked - GO TO WATCH PAGE DIRECTLY
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = `watch.html?id=${id}&type=${type}`;
             }
-        };
+        });
     });
 }
 
 function removeFromList(id, type) {
-    Storage.removeFromMyList(id, type);
-    loadMyList();
-}
-
-function initModal() {
-    MyListDOM.modalClose?.addEventListener('click', closeModal);
-    
-    MyListDOM.modalOverlay?.addEventListener('click', (e) => {
-        if (e.target === MyListDOM.modalOverlay) {
-            closeModal();
-        }
-    });
-    
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeModal();
-    });
-    
-    MyListDOM.modalPlayBtn?.addEventListener('click', () => {
-        if (currentModalItem) {
-            window.location.href = `watch.html?id=${currentModalItem.id}&type=${currentModalItem.type}`;
-        }
-    });
-    
-    MyListDOM.modalAddList?.addEventListener('click', () => {
-        if (currentModalItem) {
-            Storage.removeFromMyList(currentModalItem.id, currentModalItem.type);
-            closeModal();
-            loadMyList();
-        }
-    });
-}
-
-async function openModal(id, type) {
-    if (isModalOpen) return;
-    isModalOpen = true;
-    
-    MyListDOM.modalOverlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    
-    MyListDOM.modalTitle.textContent = 'Loading...';
-    MyListDOM.modalDescription.textContent = '';
-    MyListDOM.modalBanner.style.backgroundImage = '';
-    
-    try {
-        const data = type === 'movie' 
-            ? await API.getMovieDetails(id) 
-            : await API.getTVDetails(id);
-        
-        if (data) {
-            currentModalItem = { ...data, type };
-            
-            MyListDOM.modalBanner.style.backgroundImage = `url(${API.getBackdropUrl(data.backdrop_path)})`;
-            MyListDOM.modalTitle.textContent = data.title || data.name;
-            MyListDOM.modalMatch.textContent = `${Math.round(data.vote_average * 10)}% Match`;
-            MyListDOM.modalYear.textContent = (data.release_date || data.first_air_date || '').split('-')[0];
-            MyListDOM.modalDuration.textContent = type === 'movie' 
-                ? `${Math.floor((data.runtime || 0) / 60)}h ${(data.runtime || 0) % 60}m`
-                : `${data.number_of_seasons || 0} Season${data.number_of_seasons > 1 ? 's' : ''}`;
-            MyListDOM.modalDescription.textContent = data.overview || 'No description available.';
-            MyListDOM.modalGenres.textContent = data.genres ? data.genres.map(g => g.name).join(', ') : 'N/A';
-            MyListDOM.modalRating.textContent = data.vote_average ? data.vote_average.toFixed(1) : 'N/A';
-            
-            // Update button to show "Remove"
-            const icon = MyListDOM.modalAddList?.querySelector('i');
-            if (icon) icon.className = 'fas fa-check';
-        }
-    } catch (error) {
-        console.error('Error loading details:', error);
-        MyListDOM.modalTitle.textContent = 'Error loading content';
+    if (typeof Storage !== 'undefined' && Storage.removeFromMyList) {
+        Storage.removeFromMyList(id, type);
+        loadMyList(); // Refresh the list
     }
-}
-
-function closeModal() {
-    MyListDOM.modalOverlay.classList.remove('active');
-    document.body.style.overflow = '';
-    currentModalItem = null;
-    isModalOpen = false;
 }
