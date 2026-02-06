@@ -10,10 +10,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
-    <!-- Popunder Ad -->
-    <script src="https://pl28663508.effectivegatecpm.com/83/da/42/83da42654c8f32e05cc7eccf2cb42329.js"></script>
+    <!-- Popunder Ad - Controlled Cooldown -->
+    <script>
+        (function() {
+            var COOLDOWN = 5 * 60 * 1000;
+            var lastPop = localStorage.getItem('lastPopunder');
+            var now = Date.now();
+            
+            if (!lastPop || (now - parseInt(lastPop)) > COOLDOWN) {
+                var s = document.createElement('script');
+                s.src = 'https://pl28663508.effectivegatecpm.com/83/da/42/83da42654c8f32e05cc7eccf2cb42329.js';
+                document.head.appendChild(s);
+                localStorage.setItem('lastPopunder', now.toString());
+            }
+        })();
+    </script>
     
-    <!-- Social Bar - Load only on Desktop for Home Page -->
+    <!-- Social Bar - Desktop Only on Home Page -->
     <script>
         if (window.innerWidth > 768) {
             var s = document.createElement('script');
