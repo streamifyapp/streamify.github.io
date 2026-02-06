@@ -1,6 +1,6 @@
 /* ============================================
-   STREAMIFY - HOME PAGE (ENHANCED)
-   Fixed Top 5, Mixed Content, MORE Categories
+   STREAMIFY - HOME PAGE (FULLY OPTIMIZED)
+   Fixed: Korean, Bollywood, Mixed Content, Mobile
 ============================================ */
 
 const $ = id => document.getElementById(id);
@@ -34,8 +34,10 @@ const DOM = {
     continueWatching: $('continueWatching'),
     top5Today: $('top5Today'),
     trendingNow: $('trendingNow'),
+    bollywoodContent: $('bollywoodContent'),
     newReleases: $('newReleases'),
     topRated: $('topRated'),
+    koreanContent: $('koreanContent'),
     actionMovies: $('actionMovies'),
     comedyMovies: $('comedyMovies'),
     horrorMovies: $('horrorMovies'),
@@ -44,8 +46,6 @@ const DOM = {
     scifiMovies: $('scifiMovies'),
     dramaMovies: $('dramaMovies'),
     animationMovies: $('animationMovies'),
-    
-    // NEW CATEGORIES
     adventureContent: $('adventureContent'),
     crimeContent: $('crimeContent'),
     fantasyContent: $('fantasyContent'),
@@ -136,11 +136,13 @@ function initMobileMenu() {
     DOM.menuBtn?.addEventListener('click', () => {
         DOM.mobileMenu.classList.add('active');
         DOM.overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
     });
     
     const close = () => {
         DOM.mobileMenu.classList.remove('active');
         DOM.overlay.classList.remove('active');
+        document.body.style.overflow = '';
     };
     
     DOM.closeMenu?.addEventListener('click', close);
@@ -152,12 +154,14 @@ function initSearch() {
     DOM.searchBtn?.addEventListener('click', () => {
         DOM.searchModal.classList.add('active');
         DOM.searchInput.focus();
+        document.body.style.overflow = 'hidden';
     });
     
     DOM.searchClose?.addEventListener('click', () => {
         DOM.searchModal.classList.remove('active');
         DOM.searchInput.value = '';
         DOM.searchResults.innerHTML = '';
+        document.body.style.overflow = '';
     });
     
     let timeout;
@@ -272,7 +276,7 @@ function updateHero(item) {
     DOM.heroInfo.onclick = () => openDetail(item.id, type);
 }
 
-// FIXED: Top 5 Today with Title & Info on Hover
+// FIXED: Top 5 Today with Title & Info (Mobile Compatible)
 async function loadTop5() {
     if (!DOM.top5Today) return;
     
@@ -309,14 +313,21 @@ async function loadTop5() {
     });
 }
 
-// Load ALL Categories - MIXED Movies & TV Shows + NEW CATEGORIES
+// Load ALL Categories - MIXED Movies & TV Shows
 async function loadAllCategories() {
     // Original Categories
     loadMixed(DOM.trendingNow, 'trending');
+    
+    // BOLLYWOOD CATEGORY - Shows below New Releases
+    loadBollywood();
+    
     loadMixed(DOM.newReleases, 'new');
     loadMixed(DOM.topRated, 'toprated');
     
-    // Genre Categories
+    // KOREAN CATEGORY - Shows after Top Rated
+    loadKorean();
+    
+    // Genre Categories (All Mixed)
     loadMixedGenre(DOM.actionMovies, GENRES.action);
     loadMixedGenre(DOM.comedyMovies, GENRES.comedy);
     loadMixedGenre(DOM.horrorMovies, GENRES.horror);
@@ -325,14 +336,68 @@ async function loadAllCategories() {
     loadMixedGenre(DOM.scifiMovies, GENRES.scifi);
     loadMixedGenre(DOM.dramaMovies, GENRES.drama);
     loadMixedGenre(DOM.animationMovies, GENRES.animation);
-    
-    // NEW Categories
     loadMixedGenre(DOM.adventureContent, GENRES.adventure);
     loadMixedGenre(DOM.crimeContent, GENRES.crime);
     loadMixedGenre(DOM.fantasyContent, GENRES.fantasy);
     loadMixedGenre(DOM.mysteryContent, GENRES.mystery);
     loadMixedGenre(DOM.documentaryContent, GENRES.documentary);
     loadMixedGenre(DOM.familyContent, GENRES.family);
+}
+
+// BOLLYWOOD CATEGORY - Hindi Movies & Series
+async function loadBollywood() {
+    if (!DOM.bollywoodContent) return;
+    DOM.bollywoodContent.innerHTML = Array(10).fill('<div class="skeleton"></div>').join('');
+    
+    // Fetch Hindi (India) content
+    const [movies, tv] = await Promise.all([
+        API.fetchFromTMDB('/discover/movie', {
+            with_original_language: 'hi',
+            sort_by: 'popularity.desc',
+            'vote_count.gte': 50
+        }),
+        API.fetchFromTMDB('/discover/tv', {
+            with_original_language: 'hi',
+            sort_by: 'popularity.desc',
+            'vote_count.gte': 20
+        })
+    ]);
+    
+    const mixed = mixArrays(
+        (movies?.results || []).map(i => ({ ...i, type: 'movie' })),
+        (tv?.results || []).map(i => ({ ...i, type: 'tv' }))
+    );
+    
+    DOM.bollywoodContent.innerHTML = mixed.map(i => createCard(i, i.type)).join('');
+    addCardEvents(DOM.bollywoodContent);
+}
+
+// KOREAN CATEGORY - Korean Movies & Series  
+async function loadKorean() {
+    if (!DOM.koreanContent) return;
+    DOM.koreanContent.innerHTML = Array(10).fill('<div class="skeleton"></div>').join('');
+    
+    // Fetch Korean content
+    const [movies, tv] = await Promise.all([
+        API.fetchFromTMDB('/discover/movie', {
+            with_original_language: 'ko',
+            sort_by: 'popularity.desc',
+            'vote_count.gte': 50
+        }),
+        API.fetchFromTMDB('/discover/tv', {
+            with_original_language: 'ko',
+            sort_by: 'popularity.desc',
+            'vote_count.gte': 20
+        })
+    ]);
+    
+    const mixed = mixArrays(
+        (movies?.results || []).map(i => ({ ...i, type: 'movie' })),
+        (tv?.results || []).map(i => ({ ...i, type: 'tv' }))
+    );
+    
+    DOM.koreanContent.innerHTML = mixed.map(i => createCard(i, i.type)).join('');
+    addCardEvents(DOM.koreanContent);
 }
 
 async function loadMixed(container, category) {
@@ -421,11 +486,20 @@ function createCard(item, type) {
     `;
 }
 
+// FIXED: Card Events - Opens modal on any click (not just play button)
 function addCardEvents(container) {
     container.querySelectorAll('.card').forEach(card => {
-        card.addEventListener('click', () => {
-            openDetail(card.dataset.id, card.dataset.type);
+        // Make entire card clickable
+        card.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const id = card.dataset.id;
+            const type = card.dataset.type;
+            openDetail(id, type);
         });
+        
+        // Prevent double-trigger
+        card.style.cursor = 'pointer';
     });
 }
 
@@ -449,6 +523,8 @@ async function openSeeAll(cat) {
         trending: 'Trending Now',
         new: 'New Releases',
         toprated: 'Top Rated',
+        bollywood: 'Bollywood',
+        korean: 'Korean Drama',
         action: 'Action',
         adventure: 'Adventure',
         animation: 'Animation',
@@ -488,6 +564,32 @@ async function openSeeAll(cat) {
                 API.getTopRatedMovies(),
                 API.getTopRatedTV()
             ]);
+        } else if (cat === 'bollywood') {
+            [movies, tv] = await Promise.all([
+                API.fetchFromTMDB('/discover/movie', {
+                    with_original_language: 'hi',
+                    sort_by: 'popularity.desc',
+                    page: p
+                }),
+                API.fetchFromTMDB('/discover/tv', {
+                    with_original_language: 'hi',
+                    sort_by: 'popularity.desc',
+                    page: p
+                })
+            ]);
+        } else if (cat === 'korean') {
+            [movies, tv] = await Promise.all([
+                API.fetchFromTMDB('/discover/movie', {
+                    with_original_language: 'ko',
+                    sort_by: 'popularity.desc',
+                    page: p
+                }),
+                API.fetchFromTMDB('/discover/tv', {
+                    with_original_language: 'ko',
+                    sort_by: 'popularity.desc',
+                    page: p
+                })
+            ]);
         } else {
             const gid = GENRES[cat] || 28;
             [movies, tv] = await Promise.all([
@@ -525,6 +627,7 @@ async function openSeeAll(cat) {
         `;
     }).join('');
     
+    // FIXED: Make entire card clickable
     DOM.seeAllGrid.querySelectorAll('.see-all-card').forEach(card => {
         card.addEventListener('click', () => {
             closeSeeAll();
@@ -567,6 +670,10 @@ function initDetailModal() {
         if (e.key === 'Escape') {
             closeDetail();
             closeSeeAll();
+            if (DOM.searchModal.classList.contains('active')) {
+                DOM.searchModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
             DOM.welcomePopup.classList.remove('active');
         }
     });
