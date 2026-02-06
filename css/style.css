@@ -374,15 +374,15 @@ button {
     visibility: visible;
 }
 
-/* ============ SEARCH MODAL ============ */
+/* ============ SEARCH MODAL - FIXED GRID ============ */
 .search-modal {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.95);
+    background: rgba(0,0,0,0.98);
     z-index: 200;
-    padding: 30px;
     display: none;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .search-modal.active {
@@ -393,23 +393,26 @@ button {
     display: flex;
     align-items: center;
     gap: 15px;
-    max-width: 650px;
-    margin: 60px auto 30px;
+    max-width: 700px;
+    margin: 0 auto;
     width: 100%;
     background: #1a1a1a;
     border: 2px solid #333;
     border-radius: 50px;
     padding: 12px 25px;
     transition: border-color 0.2s;
+    flex-shrink: 0;
+    margin-top: 80px;
 }
 
 .search-wrapper:focus-within {
     border-color: #e50914;
 }
 
-.search-wrapper i {
+.search-wrapper i.fa-search {
     color: #666;
     font-size: 20px;
+    flex-shrink: 0;
 }
 
 .search-wrapper input {
@@ -419,6 +422,11 @@ button {
     outline: none;
     color: #fff;
     font-size: 18px;
+    min-width: 0;
+}
+
+.search-wrapper input::placeholder {
+    color: #666;
 }
 
 .search-wrapper button {
@@ -427,22 +435,118 @@ button {
     transition: color 0.2s;
     min-width: 44px;
     min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 
 .search-wrapper button:hover {
     color: #fff;
 }
 
+/* SEARCH RESULTS - PROPER GRID WITH SCROLL */
 .search-results {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
+    padding: 30px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.search-results-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 15px;
-    max-width: 1000px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+    max-width: 1400px;
     margin: 0 auto;
+}
+
+/* Individual Search Result Card */
+.search-result-card {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.search-result-card:hover {
+    transform: scale(1.05);
+}
+
+.search-result-card:active {
+    transform: scale(0.97);
+}
+
+.search-result-card img {
     width: 100%;
-    padding: 20px 0;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #1a1a1a;
+    display: block;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+.search-result-info {
+    padding: 10px 2px;
+}
+
+.search-result-title {
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 5px;
+    color: #fff;
+}
+
+.search-result-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: #888;
+}
+
+.search-result-type {
+    background: #e50914;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+/* Search Message Styles */
+.search-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 20px;
+    color: #666;
+}
+
+.search-message i {
+    font-size: 60px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.search-message p {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.search-message span {
+    font-size: 14px;
+    color: #555;
 }
 
 /* ============ HERO - MOBILE OPTIMIZED ============ */
@@ -1165,6 +1269,13 @@ button {
 }
 
 /* ============ RESPONSIVE - TABLET ============ */
+@media (max-width: 1200px) {
+    .search-results-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 18px;
+    }
+}
+
 @media (max-width: 1024px) {
     .navbar { padding: 15px 30px; }
     .hero-content { padding: 0 30px; }
@@ -1174,6 +1285,16 @@ button {
         grid-template-columns: repeat(5, 1fr);
         gap: 12px;
         padding: 15px;
+    }
+    
+    .search-results-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+    }
+    
+    .search-wrapper {
+        margin-top: 60px;
+        max-width: 90%;
     }
 }
 
@@ -1194,6 +1315,76 @@ button {
     .instruction-item i.fab { font-size: 20px; width: 25px; margin: 0 auto; }
     .instruction-item span { font-size: 12px; }
     .popup-btn { padding: 12px 28px; font-size: 14px; }
+    
+    /* Search Mobile */
+    .search-wrapper {
+        margin: 20px 15px 0;
+        padding: 10px 20px;
+        border-radius: 30px;
+        max-width: calc(100% - 30px);
+    }
+    
+    .search-wrapper i.fa-search {
+        font-size: 18px;
+    }
+    
+    .search-wrapper input {
+        font-size: 16px;
+    }
+    
+    .search-wrapper button {
+        font-size: 20px;
+        min-width: 40px;
+        min-height: 40px;
+    }
+    
+    .search-results {
+        padding: 20px 15px;
+    }
+    
+    .search-results-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    
+    .search-result-card img {
+        border-radius: 6px;
+    }
+    
+    .search-result-info {
+        padding: 8px 2px;
+    }
+    
+    .search-result-title {
+        font-size: 11px;
+        margin-bottom: 3px;
+    }
+    
+    .search-result-meta {
+        font-size: 9px;
+        gap: 5px;
+    }
+    
+    .search-result-type {
+        font-size: 8px;
+        padding: 2px 6px;
+    }
+    
+    .search-message {
+        padding: 60px 20px;
+    }
+    
+    .search-message i {
+        font-size: 50px;
+    }
+    
+    .search-message p {
+        font-size: 16px;
+    }
+    
+    .search-message span {
+        font-size: 13px;
+    }
     
     /* Hero Mobile - FIXED CONGESTION */
     .hero { 
@@ -1392,19 +1583,6 @@ button {
         justify-content: center;
     }
     
-    /* Search Modal Mobile */
-    .search-modal { padding: 15px; }
-    .search-wrapper { 
-        margin: 50px auto 15px;
-        padding: 10px 15px;
-    }
-    .search-wrapper i { font-size: 16px; }
-    .search-wrapper input { font-size: 14px; }
-    .search-results { 
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-    }
-    
     /* Footer Mobile */
     .footer { padding: 30px 15px; }
     .footer-logo { font-size: 26px; }
@@ -1457,8 +1635,23 @@ button {
         font-size: 7px; 
     }
     
-    .search-results { 
-        grid-template-columns: repeat(3, 1fr); 
+    .search-results-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+    
+    .search-result-title {
+        font-size: 10px;
+    }
+    
+    .search-result-meta {
+        font-size: 8px;
+        gap: 4px;
+    }
+    
+    .search-result-type {
+        font-size: 7px;
+        padding: 1px 5px;
     }
 }
 
@@ -1470,8 +1663,9 @@ button {
         padding: 8px;
     }
     
-    .search-results { 
-        grid-template-columns: repeat(2, 1fr); 
+    .search-results-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
     }
 }
 
@@ -1958,74 +2152,5 @@ button {
     .similar-card p {
         font-size: 12px;
         padding: 8px 0;
-    }
-}
-
-/* ============ SEARCH RESULTS STYLES ============ */
-.search-result-card {
-    cursor: pointer;
-    transition: transform 0.2s;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.search-result-card:hover {
-    transform: scale(1.05);
-}
-
-.search-result-card:active {
-    transform: scale(0.98);
-}
-
-.search-result-card img {
-    width: 100%;
-    aspect-ratio: 2/3;
-    object-fit: cover;
-    border-radius: 6px;
-    background: #1a1a1a;
-    display: block;
-}
-
-.search-result-info {
-    padding: 8px 2px;
-}
-
-.search-result-title {
-    font-size: 12px;
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 4px;
-    color: #fff;
-}
-
-.search-result-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    font-size: 10px;
-    color: #888;
-}
-
-.search-result-type {
-    background: #333;
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-size: 9px;
-}
-
-/* Mobile Search Results */
-@media (max-width: 768px) {
-    .search-result-title {
-        font-size: 10px;
-    }
-    
-    .search-result-meta {
-        font-size: 9px;
-        gap: 4px;
-    }
-    
-    .search-result-type {
-        font-size: 8px;
     }
 }
