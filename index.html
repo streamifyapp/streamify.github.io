@@ -11,17 +11,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
   <!-- Popunder Ad - Controlled Cooldown -->
+<!-- Popunder Ad - 2 Minute Cooldown -->
 <script>
 (function() {
-    var COOLDOWN = 5 * 60 * 1000; // 5 minutes
+    var COOLDOWN = 2 * 60 * 1000;
     var now = Date.now();
     var lastPop = parseInt(localStorage.getItem('popunder_time') || '0');
     
     if (now - lastPop > COOLDOWN) {
-        // First click allowed - load the script
         localStorage.setItem('popunder_time', now.toString());
         
-        // Delay loading so page loads first
         setTimeout(function() {
             var s = document.createElement('script');
             s.src = 'https://pl28663508.effectivegatecpm.com/83/da/42/83da42654c8f32e05cc7eccf2cb42329.js';
