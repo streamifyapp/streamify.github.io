@@ -1,6 +1,6 @@
 /* ============================================
    STREAMIFY - MOVIES PAGE LOGIC
-   FULLY OPTIMIZED FOR MOBILE
+   FULLY OPTIMIZED FOR MOBILE - NO FREEZE
 ============================================ */
 
 const MoviesDOM = {
@@ -34,6 +34,7 @@ let currentSort = 'popularity.desc';
 let isLoading = false;
 let totalPages = 1;
 let currentModalItem = null;
+let isModalOpen = false;
 
 document.addEventListener('DOMContentLoaded', () => {
     initFilters();
@@ -43,24 +44,24 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initFilters() {
-    MoviesDOM.genreBtn.addEventListener('click', (e) => {
+    MoviesDOM.genreBtn?.addEventListener('click', (e) => {
         e.stopPropagation();
         MoviesDOM.genreBtn.parentElement.classList.toggle('active');
         MoviesDOM.sortBtn.parentElement.classList.remove('active');
     });
     
-    MoviesDOM.sortBtn.addEventListener('click', (e) => {
+    MoviesDOM.sortBtn?.addEventListener('click', (e) => {
         e.stopPropagation();
         MoviesDOM.sortBtn.parentElement.classList.toggle('active');
         MoviesDOM.genreBtn.parentElement.classList.remove('active');
     });
     
     document.addEventListener('click', () => {
-        MoviesDOM.genreBtn.parentElement.classList.remove('active');
-        MoviesDOM.sortBtn.parentElement.classList.remove('active');
+        MoviesDOM.genreBtn?.parentElement.classList.remove('active');
+        MoviesDOM.sortBtn?.parentElement.classList.remove('active');
     });
     
-    MoviesDOM.genreDropdown.querySelectorAll('a').forEach(link => {
+    MoviesDOM.genreDropdown?.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const genre = link.dataset.genre;
@@ -77,7 +78,7 @@ function initFilters() {
         });
     });
     
-    MoviesDOM.sortDropdown.querySelectorAll('a').forEach(link => {
+    MoviesDOM.sortDropdown?.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const sort = link.dataset.sort;
@@ -94,7 +95,7 @@ function initFilters() {
         });
     });
     
-    MoviesDOM.loadMoreBtn.addEventListener('click', () => {
+    MoviesDOM.loadMoreBtn?.addEventListener('click', () => {
         if (!isLoading && currentPage < totalPages) {
             currentPage++;
             loadMovies(true);
@@ -103,14 +104,14 @@ function initFilters() {
 }
 
 function initSearch() {
-    MoviesDOM.searchToggle.addEventListener('click', () => {
+    MoviesDOM.searchToggle?.addEventListener('click', () => {
         MoviesDOM.searchBox.classList.toggle('active');
         if (MoviesDOM.searchBox.classList.contains('active')) {
             MoviesDOM.searchInput.focus();
         }
     });
     
-    MoviesDOM.searchInput.addEventListener('keypress', async (e) => {
+    MoviesDOM.searchInput?.addEventListener('keypress', async (e) => {
         if (e.key === 'Enter' && MoviesDOM.searchInput.value.trim()) {
             const query = MoviesDOM.searchInput.value.trim();
             currentPage = 1;
@@ -166,7 +167,11 @@ function renderMovies(movies, append = false) {
     } else {
         MoviesDOM.moviesGrid.innerHTML = html;
     }
-    addCardEventListeners();
+    
+    // Use requestAnimationFrame to prevent freeze
+    requestAnimationFrame(() => {
+        addCardEventListeners();
+    });
 }
 
 function createGridCard(item, type) {
@@ -202,55 +207,45 @@ function createGridCard(item, type) {
     `;
 }
 
-// FIXED: Card click events - Opens modal on POSTER click too
+// FIXED: Card click events - Works on mobile without freeze
 function addCardEventListeners() {
-    MoviesDOM.moviesGrid.querySelectorAll('.grid-card').forEach(card => {
+    MoviesDOM.moviesGrid?.querySelectorAll('.grid-card').forEach(card => {
         const id = parseInt(card.dataset.id);
         const type = card.dataset.type;
         
-        // FIXED: Clicking card/image opens modal
-        card.addEventListener('click', (e) => {
-            // Don't open modal if clicking button
-            if (!e.target.closest('button')) {
-                e.preventDefault();
+        // Make card clickable - opens modal
+        card.style.cursor = 'pointer';
+        
+        // Single click handler for the whole card
+        card.onclick = function(e) {
+            // Check if clicked on a button
+            const button = e.target.closest('button');
+            
+            if (button) {
                 e.stopPropagation();
+                const action = button.dataset.action;
+                
+                if (action === 'play') {
+                    window.location.href = `watch.html?id=${id}&type=${type}`;
+                } else if (action === 'list') {
+                    toggleListFromCard(card, id, type);
+                } else if (action === 'info') {
+                    openModal(id, type);
+                }
+            } else {
+                // Clicked on card itself - open modal
                 openModal(id, type);
             }
-        });
-        
-        // Play button
-        const playBtn = card.querySelector('[data-action="play"]');
-        if (playBtn) {
-            playBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                window.location.href = `watch.html?id=${id}&type=${type}`;
-            });
-        }
-        
-        // Add to list button
-        const listBtn = card.querySelector('[data-action="list"]');
-        if (listBtn) {
-            listBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                toggleListFromCard(card, id, type);
-            });
-        }
-        
-        // Info button
-        const infoBtn = card.querySelector('[data-action="info"]');
-        if (infoBtn) {
-            infoBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                openModal(id, type);
-            });
-        }
+        };
     });
 }
 
 async function toggleListFromCard(card, id, type) {
     const btn = card.querySelector('[data-action="list"]');
-    const icon = btn.querySelector('i');
-    const title = card.querySelector('.grid-card-title').textContent;
+    const icon = btn?.querySelector('i');
+    if (!icon) return;
+    
+    const title = card.querySelector('.grid-card-title')?.textContent || '';
     const img = card.querySelector('img');
     
     if (Storage.isInMyList(id, type)) {
@@ -261,16 +256,16 @@ async function toggleListFromCard(card, id, type) {
             id: id,
             type: type,
             title: title,
-            poster_path: img.src.includes('image.tmdb.org') ? img.src.split('/').pop() : null
+            poster_path: img?.src.includes('image.tmdb.org') ? img.src.split('/').pop() : null
         });
         icon.className = 'fas fa-check';
     }
 }
 
 function initModal() {
-    MoviesDOM.modalClose.addEventListener('click', closeModal);
+    MoviesDOM.modalClose?.addEventListener('click', closeModal);
     
-    MoviesDOM.modalOverlay.addEventListener('click', (e) => {
+    MoviesDOM.modalOverlay?.addEventListener('click', (e) => {
         if (e.target === MoviesDOM.modalOverlay) {
             closeModal();
         }
@@ -280,13 +275,13 @@ function initModal() {
         if (e.key === 'Escape') closeModal();
     });
     
-    MoviesDOM.modalPlayBtn.addEventListener('click', () => {
+    MoviesDOM.modalPlayBtn?.addEventListener('click', () => {
         if (currentModalItem) {
             window.location.href = `watch.html?id=${currentModalItem.id}&type=movie`;
         }
     });
     
-    MoviesDOM.modalAddList.addEventListener('click', () => {
+    MoviesDOM.modalAddList?.addEventListener('click', () => {
         if (currentModalItem) {
             toggleMyList(currentModalItem);
         }
@@ -294,24 +289,39 @@ function initModal() {
 }
 
 async function openModal(id, type) {
+    // Prevent multiple opens
+    if (isModalOpen) return;
+    isModalOpen = true;
+    
+    // Show modal immediately with loading state
     MoviesDOM.modalOverlay.classList.add('active');
     document.body.style.overflow = 'hidden';
     
-    const data = await API.getMovieDetails(id);
+    // Set loading state
+    MoviesDOM.modalTitle.textContent = 'Loading...';
+    MoviesDOM.modalDescription.textContent = '';
+    MoviesDOM.modalBanner.style.backgroundImage = '';
     
-    if (data) {
-        currentModalItem = { ...data, type: 'movie' };
+    try {
+        const data = await API.getMovieDetails(id);
         
-        MoviesDOM.modalBanner.style.backgroundImage = `url(${API.getBackdropUrl(data.backdrop_path)})`;
-        MoviesDOM.modalTitle.textContent = data.title;
-        MoviesDOM.modalMatch.textContent = `${Math.round(data.vote_average * 10)}% Match`;
-        MoviesDOM.modalYear.textContent = (data.release_date || '').split('-')[0];
-        MoviesDOM.modalDuration.textContent = data.runtime ? `${Math.floor(data.runtime / 60)}h ${data.runtime % 60}m` : 'N/A';
-        MoviesDOM.modalDescription.textContent = data.overview || 'No description available.';
-        MoviesDOM.modalGenres.textContent = data.genres ? data.genres.map(g => g.name).join(', ') : 'N/A';
-        MoviesDOM.modalRating.textContent = data.vote_average ? data.vote_average.toFixed(1) : 'N/A';
-        
-        updateModalListButton();
+        if (data) {
+            currentModalItem = { ...data, type: 'movie' };
+            
+            MoviesDOM.modalBanner.style.backgroundImage = `url(${API.getBackdropUrl(data.backdrop_path)})`;
+            MoviesDOM.modalTitle.textContent = data.title;
+            MoviesDOM.modalMatch.textContent = `${Math.round(data.vote_average * 10)}% Match`;
+            MoviesDOM.modalYear.textContent = (data.release_date || '').split('-')[0];
+            MoviesDOM.modalDuration.textContent = data.runtime ? `${Math.floor(data.runtime / 60)}h ${data.runtime % 60}m` : 'N/A';
+            MoviesDOM.modalDescription.textContent = data.overview || 'No description available.';
+            MoviesDOM.modalGenres.textContent = data.genres ? data.genres.map(g => g.name).join(', ') : 'N/A';
+            MoviesDOM.modalRating.textContent = data.vote_average ? data.vote_average.toFixed(1) : 'N/A';
+            
+            updateModalListButton();
+        }
+    } catch (error) {
+        console.error('Error loading movie details:', error);
+        MoviesDOM.modalTitle.textContent = 'Error loading content';
     }
 }
 
@@ -319,6 +329,7 @@ function closeModal() {
     MoviesDOM.modalOverlay.classList.remove('active');
     document.body.style.overflow = '';
     currentModalItem = null;
+    isModalOpen = false;
 }
 
 function toggleMyList(item) {
@@ -331,7 +342,9 @@ function toggleMyList(item) {
 }
 
 function updateModalListButton() {
-    const icon = MoviesDOM.modalAddList.querySelector('i');
+    const icon = MoviesDOM.modalAddList?.querySelector('i');
+    if (!icon) return;
+    
     if (currentModalItem && Storage.isInMyList(currentModalItem.id, 'movie')) {
         icon.className = 'fas fa-check';
     } else {
@@ -341,22 +354,32 @@ function updateModalListButton() {
 
 function showLoading() {
     isLoading = true;
-    MoviesDOM.loadMoreBtn.classList.add('loading');
-    MoviesDOM.loadMoreBtn.querySelector('span').textContent = 'Loading...';
-    MoviesDOM.loadMoreBtn.querySelector('i').className = 'fas fa-spinner';
+    if (MoviesDOM.loadMoreBtn) {
+        MoviesDOM.loadMoreBtn.classList.add('loading');
+        const span = MoviesDOM.loadMoreBtn.querySelector('span');
+        const icon = MoviesDOM.loadMoreBtn.querySelector('i');
+        if (span) span.textContent = 'Loading...';
+        if (icon) icon.className = 'fas fa-spinner';
+    }
 }
 
 function hideLoading() {
     isLoading = false;
-    MoviesDOM.loadMoreBtn.classList.remove('loading');
-    MoviesDOM.loadMoreBtn.querySelector('span').textContent = 'Load More';
-    MoviesDOM.loadMoreBtn.querySelector('i').className = 'fas fa-chevron-down';
+    if (MoviesDOM.loadMoreBtn) {
+        MoviesDOM.loadMoreBtn.classList.remove('loading');
+        const span = MoviesDOM.loadMoreBtn.querySelector('span');
+        const icon = MoviesDOM.loadMoreBtn.querySelector('i');
+        if (span) span.textContent = 'Load More';
+        if (icon) icon.className = 'fas fa-chevron-down';
+    }
 }
 
 function updateLoadMoreButton() {
-    if (currentPage >= totalPages) {
-        MoviesDOM.loadMoreBtn.style.display = 'none';
-    } else {
-        MoviesDOM.loadMoreBtn.style.display = 'flex';
+    if (MoviesDOM.loadMoreBtn) {
+        if (currentPage >= totalPages) {
+            MoviesDOM.loadMoreBtn.style.display = 'none';
+        } else {
+            MoviesDOM.loadMoreBtn.style.display = 'flex';
+        }
     }
 }
