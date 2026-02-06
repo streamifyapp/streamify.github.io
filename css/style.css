@@ -1488,3 +1488,122 @@ img {
 .content-card:hover::after {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
 }
+
+
+/* ============================================
+   SEE ALL PAGE STYLES
+============================================ */
+.see-all {
+    font-size: 13px;
+    color: var(--netflix-light-gray);
+    transition: color var(--transition-fast);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.see-all:hover {
+    color: var(--netflix-pure-white);
+}
+
+.see-all:hover i {
+    transform: translateX(3px);
+}
+
+.see-all i {
+    font-size: 10px;
+    transition: transform var(--transition-fast);
+}
+
+/* See All Modal/Expanded View */
+.see-all-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 1500;
+    padding: 80px 60px 40px;
+    overflow-y: auto;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.see-all-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.see-all-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.see-all-header h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.see-all-close {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.see-all-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+.see-all-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.see-all-card {
+    border-radius: 5px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.see-all-card:hover {
+    transform: scale(1.05);
+}
+
+.see-all-card img {
+    width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+}
+
+@media (max-width: 768px) {
+    .see-all-modal {
+        padding: 70px 20px 30px;
+    }
+    
+    .see-all-header h2 {
+        font-size: 24px;
+    }
+    
+    .see-all-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+}
