@@ -1,7 +1,7 @@
 /* ============================================
    STREAMIFY - BROWSE PAGES STYLES
    Movies, Series, My List Pages
-   FULLY FIXED FOR MOBILE
+   FULLY OPTIMIZED FOR MOBILE
 ============================================ */
 
 /* ============ BROWSE HEADER ============ */
@@ -134,7 +134,7 @@
     gap: 20px;
 }
 
-/* FIXED: Grid card - entire card clickable */
+/* Grid Card - Entire card clickable */
 .grid-card {
     position: relative;
     border-radius: 8px;
@@ -256,6 +256,10 @@
     opacity: 0;
     z-index: 5;
     pointer-events: auto;
+    width: 32px;
+    height: 32px;
+    background: rgba(0,0,0,0.7);
+    border: 1px solid rgba(255,255,255,0.3);
 }
 
 .grid-card:hover .grid-card-btn.remove-btn {
@@ -267,7 +271,7 @@
     border-color: #e50914;
 }
 
-/* ============ MODAL OVERLAY - COMPLETELY FIXED ============ */
+/* ============ MODAL OVERLAY ============ */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -610,7 +614,7 @@
     font-size: 12px;
 }
 
-/* ============ RESPONSIVE - MOBILE ============ */
+/* ============ RESPONSIVE - TABLET ============ */
 @media (max-width: 992px) {
     .browse-header {
         padding: 100px 40px 30px;
@@ -639,6 +643,7 @@
     }
 }
 
+/* ============ RESPONSIVE - MOBILE ============ */
 @media (max-width: 768px) {
     .browse-header {
         padding: 75px 15px 20px;
@@ -687,30 +692,40 @@
     /* MOBILE: 3 columns grid */
     .content-grid {
         grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
+        gap: 8px;
     }
     
     /* MOBILE: Always show overlay */
     .grid-card-overlay {
         opacity: 1;
         background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 50%);
-        padding: 10px;
+        padding: 8px;
     }
     
     .grid-card-title {
-        font-size: 11px;
+        font-size: 10px;
         -webkit-line-clamp: 1;
-        margin-bottom: 3px;
+        margin-bottom: 2px;
     }
     
     .grid-card-meta {
-        font-size: 10px;
-        gap: 5px;
+        font-size: 9px;
+        gap: 4px;
     }
     
     /* MOBILE: Hide buttons - card is clickable */
     .grid-card-buttons {
         display: none;
+    }
+    
+    /* MOBILE: Remove button always visible */
+    .grid-card-btn.remove-btn {
+        opacity: 1;
+        width: 26px;
+        height: 26px;
+        font-size: 10px;
+        top: 5px;
+        right: 5px;
     }
     
     /* MOBILE: Modal full screen from bottom */
@@ -721,90 +736,4 @@
     
     .detail-modal {
         max-height: 95vh;
-        border-radius: 15px 15px 0 0;
-        margin-top: auto;
-    }
-    
-    .modal-banner {
-        height: 200px;
-    }
-    
-    .modal-banner-content {
-        bottom: 15px;
-        left: 15px;
-        right: 15px;
-    }
-    
-    .modal-title {
-        font-size: 20px;
-        margin-bottom: 12px;
-    }
-    
-    .modal-buttons .btn-play {
-        padding: 10px 20px;
-        font-size: 14px;
-        min-height: 44px;
-    }
-    
-    .btn-circle {
-        width: 40px;
-        height: 40px;
-    }
-    
-    .modal-body {
-        padding: 15px;
-    }
-    
-    .modal-meta {
-        font-size: 12px;
-        gap: 10px;
-    }
-    
-    .modal-description {
-        font-size: 13px;
-    }
-    
-    .empty-icon {
-        font-size: 60px;
-    }
-    
-    .empty-state h2 {
-        font-size: 22px;
-    }
-    
-    .footer-links {
-        gap: 15px 25px;
-    }
-    
-    .footer-links a {
-        font-size: 12px;
-    }
-}
-
-@media (max-width: 480px) {
-    .content-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-    }
-    
-    .grid-card-title {
-        font-size: 10px;
-    }
-    
-    .grid-card-meta {
-        font-size: 9px;
-    }
-    
-    .browse-header h1 {
-        font-size: 22px;
-    }
-    
-    .filter-btn {
-        font-size: 12px;
-        padding: 10px 12px;
-    }
-    
-    .modal-title {
-        font-size: 18px;
-    }
-}
+        border-radius: 15px 15px 0
