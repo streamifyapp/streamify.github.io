@@ -1,17 +1,15 @@
 /* ============================================
    STREAMIFY - HOMEPAGE LOGIC
-   Netflix-Style Homepage Functionality
+   Complete Fixed Version
 ============================================ */
 
 // ============ DOM ELEMENTS ============
 const DOM = {
-    // Navbar
     navbar: document.getElementById('navbar'),
     searchBox: document.getElementById('searchBox'),
     searchToggle: document.getElementById('searchToggle'),
     searchInput: document.getElementById('searchInput'),
     
-    // Hero Banner
     heroBanner: document.getElementById('heroBanner'),
     heroBackground: document.getElementById('heroBackground'),
     heroTitle: document.getElementById('heroTitle'),
@@ -23,7 +21,6 @@ const DOM = {
     heroPlayBtn: document.getElementById('heroPlayBtn'),
     heroInfoBtn: document.getElementById('heroInfoBtn'),
     
-    // Content Rows
     continueSection: document.getElementById('continueSection'),
     continueWatching: document.getElementById('continueWatching'),
     trendingNow: document.getElementById('trendingNow'),
@@ -45,7 +42,6 @@ const DOM = {
     scifiMovies: document.getElementById('scifiMovies'),
     thrillerMovies: document.getElementById('thrillerMovies'),
     
-    // Modal
     modalOverlay: document.getElementById('modalOverlay'),
     detailModal: document.getElementById('detailModal'),
     modalClose: document.getElementById('modalClose'),
@@ -61,13 +57,11 @@ const DOM = {
     modalAddList: document.getElementById('modalAddList'),
     modalLike: document.getElementById('modalLike'),
     
-    // See All Modal
     seeAllModal: document.getElementById('seeAllModal'),
     seeAllTitle: document.getElementById('seeAllTitle'),
     seeAllGrid: document.getElementById('seeAllGrid'),
     seeAllClose: document.getElementById('seeAllClose'),
     
-    // Search Results
     searchResultsPage: document.getElementById('searchResultsPage'),
     searchBack: document.getElementById('searchBack'),
     searchQuery: document.getElementById('searchQuery'),
@@ -92,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadContinueWatching();
 });
 
-// ============ NAVBAR FUNCTIONS ============
+// ============ NAVBAR ============
 function initNavbar() {
     window.addEventListener('scroll', () => {
         if (window.scrollY > 50) {
@@ -103,7 +97,7 @@ function initNavbar() {
     });
 }
 
-// ============ SEARCH FUNCTIONS ============
+// ============ SEARCH ============
 function initSearch() {
     DOM.searchToggle.addEventListener('click', () => {
         DOM.searchBox.classList.toggle('active');
@@ -132,7 +126,7 @@ function initSearch() {
 
 async function performSearch(query) {
     DOM.searchQuery.textContent = query;
-    DOM.searchResults.innerHTML = '<div class="loading">Searching...</div>';
+    DOM.searchResults.innerHTML = '<div class="loading" style="padding: 50px; text-align: center;">Searching...</div>';
     DOM.searchResultsPage.style.display = 'block';
     
     const data = await API.multiSearch(query);
@@ -150,17 +144,15 @@ async function performSearch(query) {
         
         DOM.searchResults.querySelectorAll('.search-card').forEach(card => {
             card.addEventListener('click', () => {
-                const id = card.dataset.id;
-                const type = card.dataset.type;
-                openModal(id, type);
+                openModal(card.dataset.id, card.dataset.type);
             });
         });
     } else {
-        DOM.searchResults.innerHTML = '<p>No results found.</p>';
+        DOM.searchResults.innerHTML = '<p style="padding: 50px; text-align: center;">No results found.</p>';
     }
 }
 
-// ============ MODAL FUNCTIONS ============
+// ============ MODAL ============
 function initModal() {
     DOM.modalClose.addEventListener('click', closeModal);
     
@@ -208,9 +200,13 @@ async function openModal(id, type) {
         DOM.modalTitle.textContent = data.title || data.name;
         DOM.modalMatch.textContent = `${Math.round(data.vote_average * 10)}% Match`;
         DOM.modalYear.textContent = (data.release_date || data.first_air_date || '').split('-')[0];
-        DOM.modalDuration.textContent = type === 'movie' 
-            ? `${data.runtime || 0} min` 
-            : `${data.number_of_seasons || 0} Season${data.number_of_seasons > 1 ? 's' : ''}`;
+        
+        if (type === 'movie') {
+            DOM.modalDuration.textContent = data.runtime ? `${Math.floor(data.runtime / 60)}h ${data.runtime % 60}m` : 'N/A';
+        } else {
+            DOM.modalDuration.textContent = `${data.number_of_seasons || 0} Season${data.number_of_seasons > 1 ? 's' : ''}`;
+        }
+        
         DOM.modalDescription.textContent = data.overview || 'No description available.';
         DOM.modalGenres.textContent = data.genres ? data.genres.map(g => g.name).join(', ') : 'N/A';
         DOM.modalRating.textContent = data.vote_average ? data.vote_average.toFixed(1) : 'N/A';
@@ -243,14 +239,16 @@ function toggleMyList(item) {
 }
 
 // ============ PLAY CONTENT ============
-function playContent(id, type, season = 1, episode = 1) {
-    window.location.href = `watch.html?id=${id}&type=${type}&season=${season}&episode=${episode}`;
+function playContent(id, type) {
+    // For TV shows, go to watch page which will show episode selector
+    // For movies, go directly to watch page
+    window.location.href = `watch.html?id=${id}&type=${type}`;
 }
 
-// ============ SLIDER FUNCTIONS ============
+// ============ SLIDERS ============
 function initSliders() {
     document.querySelectorAll('.slider-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', () => {
             const wrapper = btn.closest('.row-wrapper');
             const content = wrapper.querySelector('.row-content');
             const scrollAmount = content.clientWidth * 0.8;
@@ -264,7 +262,7 @@ function initSliders() {
     });
 }
 
-// ============ SEE ALL FUNCTIONALITY ============
+// ============ SEE ALL - FIXED ============
 function initSeeAll() {
     DOM.seeAllClose?.addEventListener('click', closeSeeAllModal);
     
@@ -279,126 +277,135 @@ function initSeeAll() {
             e.preventDefault();
             const section = link.closest('.content-row');
             const titleElement = section.querySelector('.row-title');
-            const title = titleElement.textContent.trim();
-            const container = section.querySelector('.row-content');
+            let title = titleElement.textContent.trim();
             
-            await openSeeAllModal(title, container);
+            // Clean up title (remove emojis for API matching)
+            title = title.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
+            
+            await openSeeAllModal(title);
         });
     });
 }
 
-async function openSeeAllModal(title, sourceContainer) {
+async function openSeeAllModal(title) {
     DOM.seeAllTitle.textContent = title;
     DOM.seeAllModal.classList.add('active');
     document.body.style.overflow = 'hidden';
     
-    const cards = sourceContainer.querySelectorAll('.content-card, .top-10-card');
+    DOM.seeAllGrid.innerHTML = '<div class="see-all-loading">Loading content...</div>';
     
-    DOM.seeAllGrid.innerHTML = '<div class="loading" style="color: #fff; text-align: center; padding: 50px;">Loading...</div>';
+    // Fetch 60 items based on category
+    const items = await fetchCategoryContent(title, 3); // 3 pages = 60 items
     
-    // First load existing cards
-    let cardsHtml = '';
-    cards.forEach(card => {
-        const id = card.dataset.id;
-        const type = card.dataset.type || 'movie';
-        let imgSrc = '';
+    if (items.length > 0) {
+        renderSeeAllCards(items);
+    } else {
+        DOM.seeAllGrid.innerHTML = '<div class="see-all-loading">No content found.</div>';
+    }
+}
+
+async function fetchCategoryContent(title, pages = 3) {
+    const titleLower = title.toLowerCase();
+    let allItems = [];
+    
+    for (let page = 1; page <= pages; page++) {
+        let data = null;
         
-        const img = card.querySelector('img');
-        if (img) {
-            imgSrc = img.src.replace('/w780/', '/w500/').replace('/original/', '/w500/');
+        if (titleLower.includes('trending')) {
+            data = await API.fetchFromTMDB('/trending/all/week', { page });
+        } else if (titleLower.includes('new release')) {
+            data = await API.fetchFromTMDB('/movie/now_playing', { page });
+        } else if (titleLower.includes('top 10') || titleLower.includes('top rated')) {
+            data = await API.fetchFromTMDB('/movie/top_rated', { page });
+        } else if (titleLower.includes('k-drama') || titleLower.includes('kdrama')) {
+            data = await API.fetchFromTMDB('/discover/tv', { 
+                with_origin_country: 'KR', 
+                sort_by: 'popularity.desc',
+                page 
+            });
+        } else if (titleLower.includes('bollywood')) {
+            data = await API.fetchFromTMDB('/discover/movie', { 
+                with_origin_country: 'IN', 
+                sort_by: 'popularity.desc',
+                page 
+            });
+        } else if (titleLower.includes('action')) {
+            data = await API.fetchFromTMDB('/discover/movie', { with_genres: 28, sort_by: 'popularity.desc', page });
+        } else if (titleLower.includes('adventure')) {
+            data = await API.fetchFromTMDB('/discover/movie', { with_genres: 12, sort_by: 'popularity.desc', page });
+        } else if (titleLower.includes('animation')) {
+            data = await API.fetchFromTMDB('/discover/movie', { with_genres: 16, sort_by: 'popularity.desc', page });
+        } else if (titleLower.includes('comedy')) {
+            data = await API.fetchFromTMDB('/discover/movie', { with_genres: 35, sort_by: 'popularity.desc', page });
+        } else if (titleLower.includes('crime')) {
+            data = await API.fetchFromTMDB('/discover/movie', { with_genres: 80, sort_by: 'popularity.desc', page });
+        } else if (titleLower.includes('documentary')) {
+            data = await API.fetchFromTMDB('/discover/movie', { with_genres: 99, sort_by: 'popularity.desc', page });
+        } else if (titleLower.includes('family')) {
+            data = await API.fetchFromTMDB('/discover/movie', { with_genres: 10751, sort_by: 'popularity.desc', page });
+        } else if (titleLower.includes('history')) {
+            data = await API.fetchFromTMDB('/discover/movie', { with_genres: 36, sort_by: 'popularity.desc', page });
+        } else if (titleLower.includes('horror')) {
+            data = await API.fetchFromTMDB('/discover/movie', { with_genres: 27, sort_by: 'popularity.desc', page });
+        } else if (titleLower.includes('romance')) {
+            data = await API.fetchFromTMDB('/discover/movie', { with_genres: 10749, sort_by: 'popularity.desc', page });
+        } else if (titleLower.includes('science fiction') || titleLower.includes('sci-fi')) {
+            data = await API.fetchFromTMDB('/discover/movie', { with_genres: 878, sort_by: 'popularity.desc', page });
+        } else if (titleLower.includes('thriller')) {
+            data = await API.fetchFromTMDB('/discover/movie', { with_genres: 53, sort_by: 'popularity.desc', page });
+        } else {
+            data = await API.fetchFromTMDB('/movie/popular', { page });
         }
         
-        if (card.classList.contains('top-10-card')) {
-            const poster = card.querySelector('.top-10-poster');
-            if (poster) imgSrc = poster.src;
+        if (data && data.results) {
+            allItems.push(...data.results);
         }
-        
-        cardsHtml += `
-            <div class="see-all-card" data-id="${id}" data-type="${type}">
-                <img src="${imgSrc}" alt="Poster" loading="lazy">
-            </div>
-        `;
+    }
+    
+    // Remove duplicates and filter valid items
+    const uniqueItems = [];
+    const seenIds = new Set();
+    
+    allItems.forEach(item => {
+        if (!seenIds.has(item.id) && (item.poster_path || item.backdrop_path)) {
+            seenIds.add(item.id);
+            uniqueItems.push(item);
+        }
     });
     
-    DOM.seeAllGrid.innerHTML = cardsHtml;
+    return uniqueItems;
+}
+
+function renderSeeAllCards(items) {
+    DOM.seeAllGrid.innerHTML = items.map(item => {
+        const title = item.title || item.name;
+        const year = (item.release_date || item.first_air_date || '').split('-')[0];
+        const rating = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
+        const type = item.media_type || (item.first_air_date ? 'tv' : 'movie');
+        const posterUrl = item.poster_path 
+            ? API.getImageUrl(item.poster_path) 
+            : 'https://via.placeholder.com/300x450?text=No+Image';
+        
+        return `
+            <div class="see-all-card" data-id="${item.id}" data-type="${type}">
+                <img src="${posterUrl}" alt="${title}" loading="lazy">
+                <div class="see-all-card-info">
+                    <p class="see-all-card-title">${title}</p>
+                    <div class="see-all-card-meta">
+                        <span class="see-all-card-rating"><i class="fas fa-star"></i> ${rating}</span>
+                        <span class="see-all-card-year">${year}</span>
+                        <span class="see-all-card-type">${type === 'movie' ? 'Movie' : 'Series'}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
     
     // Add click events
-    addSeeAllCardEvents();
-    
-    // Load more content
-    await loadMoreForSeeAll(title);
-}
-
-async function loadMoreForSeeAll(title) {
-    let data = null;
-    const titleLower = title.toLowerCase();
-    
-    if (titleLower.includes('trending')) {
-        data = await API.getTrendingMovies('week');
-    } else if (titleLower.includes('new release')) {
-        data = await API.getNowPlayingMovies();
-    } else if (titleLower.includes('top rated') || titleLower.includes('top 10')) {
-        data = await API.getTopRatedMovies();
-    } else if (titleLower.includes('k-drama')) {
-        data = await API.getKDrama();
-    } else if (titleLower.includes('bollywood')) {
-        data = await API.getBollywoodMovies();
-    } else if (titleLower.includes('action')) {
-        data = await API.getMoviesByGenre(28);
-    } else if (titleLower.includes('adventure')) {
-        data = await API.getMoviesByGenre(12);
-    } else if (titleLower.includes('animation')) {
-        data = await API.getMoviesByGenre(16);
-    } else if (titleLower.includes('comedy')) {
-        data = await API.getMoviesByGenre(35);
-    } else if (titleLower.includes('crime')) {
-        data = await API.getMoviesByGenre(80);
-    } else if (titleLower.includes('documentary')) {
-        data = await API.getMoviesByGenre(99);
-    } else if (titleLower.includes('family')) {
-        data = await API.getMoviesByGenre(10751);
-    } else if (titleLower.includes('history')) {
-        data = await API.getMoviesByGenre(36);
-    } else if (titleLower.includes('horror')) {
-        data = await API.getMoviesByGenre(27);
-    } else if (titleLower.includes('romance')) {
-        data = await API.getMoviesByGenre(10749);
-    } else if (titleLower.includes('science fiction')) {
-        data = await API.getMoviesByGenre(878);
-    } else if (titleLower.includes('thriller')) {
-        data = await API.getMoviesByGenre(53);
-    }
-    
-    if (data && data.results) {
-        data.results.forEach(item => {
-            const type = item.media_type || (item.first_air_date ? 'tv' : 'movie');
-            
-            const exists = DOM.seeAllGrid.querySelector(`[data-id="${item.id}"]`);
-            if (exists) return;
-            
-            const seeAllCard = document.createElement('div');
-            seeAllCard.className = 'see-all-card';
-            seeAllCard.dataset.id = item.id;
-            seeAllCard.dataset.type = type;
-            seeAllCard.innerHTML = `<img src="${API.getImageUrl(item.poster_path)}" alt="${item.title || item.name}" loading="lazy">`;
-            
-            seeAllCard.addEventListener('click', () => {
-                closeSeeAllModal();
-                openModal(item.id, type);
-            });
-            
-            DOM.seeAllGrid.appendChild(seeAllCard);
-        });
-    }
-}
-
-function addSeeAllCardEvents() {
     DOM.seeAllGrid.querySelectorAll('.see-all-card').forEach(card => {
         card.addEventListener('click', () => {
-            const id = card.dataset.id;
-            const type = card.dataset.type;
             closeSeeAllModal();
-            openModal(id, type);
+            openModal(card.dataset.id, card.dataset.type);
         });
     });
 }
@@ -417,18 +424,18 @@ async function loadAllContent() {
     loadTopRated();
     loadKDrama();
     loadBollywood();
-    loadGenreMovies('actionMovies', CONFIG.GENRES.movie.action);
-    loadGenreMovies('adventureMovies', CONFIG.GENRES.movie.adventure);
-    loadGenreMovies('animationMovies', CONFIG.GENRES.movie.animation);
-    loadGenreMovies('comedyMovies', CONFIG.GENRES.movie.comedy);
-    loadGenreMovies('crimeMovies', CONFIG.GENRES.movie.crime);
-    loadGenreMovies('documentaries', CONFIG.GENRES.movie.documentary);
-    loadGenreMovies('familyMovies', CONFIG.GENRES.movie.family);
-    loadGenreMovies('historyMovies', CONFIG.GENRES.movie.history);
-    loadGenreMovies('horrorMovies', CONFIG.GENRES.movie.horror);
-    loadGenreMovies('romanceMovies', CONFIG.GENRES.movie.romance);
-    loadGenreMovies('scifiMovies', CONFIG.GENRES.movie.scifi);
-    loadGenreMovies('thrillerMovies', CONFIG.GENRES.movie.thriller);
+    loadGenreMovies('actionMovies', 28);
+    loadGenreMovies('adventureMovies', 12);
+    loadGenreMovies('animationMovies', 16);
+    loadGenreMovies('comedyMovies', 35);
+    loadGenreMovies('crimeMovies', 80);
+    loadGenreMovies('documentaries', 99);
+    loadGenreMovies('familyMovies', 10751);
+    loadGenreMovies('historyMovies', 36);
+    loadGenreMovies('horrorMovies', 27);
+    loadGenreMovies('romanceMovies', 10749);
+    loadGenreMovies('scifiMovies', 878);
+    loadGenreMovies('thrillerMovies', 53);
 }
 
 // ============ HERO BANNER ============
@@ -481,36 +488,12 @@ function loadContinueWatching() {
     
     if (items.length > 0) {
         DOM.continueSection.style.display = 'block';
-        DOM.continueWatching.innerHTML = items.map(item => createContinueCard(item)).join('');
+        DOM.continueWatching.innerHTML = items.map(item => createContentCard({ ...item, type: item.type })).join('');
         addCardEventListeners(DOM.continueWatching);
     }
 }
 
-function createContinueCard(item) {
-    return `
-        <div class="content-card" data-id="${item.id}" data-type="${item.type}">
-            <img class="card-image" src="${API.getImageUrl(item.backdrop_path || item.poster_path, 'card')}" alt="${item.title}">
-            <div class="continue-progress">
-                <div class="progress-bar" style="width: ${item.progress}%"></div>
-            </div>
-            <div class="card-info">
-                <div class="card-buttons">
-                    <button class="card-btn play-btn" data-action="play"><i class="fas fa-play"></i></button>
-                    <button class="card-btn" data-action="list"><i class="fas fa-plus"></i></button>
-                    <button class="card-btn" data-action="like"><i class="fas fa-thumbs-up"></i></button>
-                    <button class="card-btn expand-btn" data-action="info"><i class="fas fa-chevron-down"></i></button>
-                </div>
-                <div class="card-meta">
-                    <span class="card-match">${Math.floor(Math.random() * 20) + 80}% Match</span>
-                    <span class="card-hd">HD</span>
-                </div>
-                <p class="card-title">${item.title}</p>
-            </div>
-        </div>
-    `;
-}
-
-// ============ TRENDING NOW ============
+// ============ LOAD CATEGORIES ============
 async function loadTrending() {
     showLoadingSkeletons(DOM.trendingNow);
     
@@ -524,82 +507,57 @@ async function loadTrending() {
     if (tvData?.results) items.push(...tvData.results.map(t => ({ ...t, type: 'tv' })));
     
     items = shuffleArray(items).slice(0, 20);
-    
     renderCards(DOM.trendingNow, items);
 }
 
-// ============ NEW RELEASES ============
 async function loadNewReleases() {
     showLoadingSkeletons(DOM.newReleases);
-    
     const data = await API.getNowPlayingMovies();
-    
     if (data?.results) {
-        const items = data.results.map(m => ({ ...m, type: 'movie' }));
-        renderCards(DOM.newReleases, items);
+        renderCards(DOM.newReleases, data.results.map(m => ({ ...m, type: 'movie' })));
     }
 }
 
-// ============ TOP 10 MOVIES ============
 async function loadTop10Movies() {
     showLoadingSkeletons(DOM.top10Movies);
-    
     const data = await API.getPopularMovies();
-    
     if (data?.results) {
-        const items = data.results.slice(0, 10);
-        renderTop10Cards(DOM.top10Movies, items);
+        renderTop10Cards(DOM.top10Movies, data.results.slice(0, 10));
     }
 }
 
-// ============ TOP RATED ============
 async function loadTopRated() {
     showLoadingSkeletons(DOM.topRated);
-    
     const data = await API.getTopRatedMovies();
-    
     if (data?.results) {
-        const items = data.results.map(m => ({ ...m, type: 'movie' }));
-        renderCards(DOM.topRated, items);
+        renderCards(DOM.topRated, data.results.map(m => ({ ...m, type: 'movie' })));
     }
 }
 
-// ============ K-DRAMA ============
 async function loadKDrama() {
     showLoadingSkeletons(DOM.kDrama);
-    
     const data = await API.getKDrama();
-    
     if (data?.results) {
-        const items = data.results.map(t => ({ ...t, type: 'tv' }));
-        renderCards(DOM.kDrama, items);
+        renderCards(DOM.kDrama, data.results.map(t => ({ ...t, type: 'tv' })));
     }
 }
 
-// ============ BOLLYWOOD ============
 async function loadBollywood() {
     showLoadingSkeletons(DOM.bollywood);
-    
     const data = await API.getBollywoodMovies();
-    
     if (data?.results) {
-        const items = data.results.map(m => ({ ...m, type: 'movie' }));
-        renderCards(DOM.bollywood, items);
+        renderCards(DOM.bollywood, data.results.map(m => ({ ...m, type: 'movie' })));
     }
 }
 
-// ============ GENRE MOVIES ============
 async function loadGenreMovies(containerId, genreId) {
     const container = document.getElementById(containerId);
     if (!container) return;
     
     showLoadingSkeletons(container);
-    
     const data = await API.getMoviesByGenre(genreId);
-    
     if (data?.results) {
-        const items = data.results.map(m => ({ ...m, type: 'movie' }));
-        renderCards(container, items);
+        renderCards(container, data.results.map(m => ({ ...m, type: 'movie' })));
     }
 }
 
@@ -613,9 +571,10 @@ function createContentCard(item) {
     const title = item.title || item.name;
     const year = (item.release_date || item.first_air_date || '').split('-')[0];
     const rating = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
+    const type = item.type || 'movie';
     
     return `
-        <div class="content-card" data-id="${item.id}" data-type="${item.type || 'movie'}">
+        <div class="content-card" data-id="${item.id}" data-type="${type}">
             <img class="card-image" src="${API.getImageUrl(item.backdrop_path || item.poster_path, 'card')}" alt="${title}" loading="lazy">
             <div class="card-info">
                 <div class="card-buttons">
@@ -625,13 +584,14 @@ function createContentCard(item) {
                     <button class="card-btn expand-btn" data-action="info"><i class="fas fa-chevron-down"></i></button>
                 </div>
                 <div class="card-meta">
-                    <span class="card-match">${Math.floor(Math.random() * 20) + 80}% Match</span>
+                    <span class="card-match">${Math.floor(Math.random() * 15) + 85}% Match</span>
                     <span class="card-rating-badge">${rating}</span>
                     <span class="card-hd">HD</span>
                 </div>
                 <p class="card-title">${title}</p>
                 <div class="card-genres">
                     <span>${year}</span>
+                    <span>${type === 'movie' ? 'Movie' : 'Series'}</span>
                 </div>
             </div>
         </div>
@@ -648,9 +608,7 @@ function renderTop10Cards(container, items) {
     
     container.querySelectorAll('.top-10-card').forEach(card => {
         card.addEventListener('click', () => {
-            const id = card.dataset.id;
-            const type = card.dataset.type;
-            openModal(id, type);
+            openModal(card.dataset.id, card.dataset.type);
         });
     });
 }
@@ -685,7 +643,7 @@ function addCardEventListeners(container) {
     });
 }
 
-// ============ UTILITY FUNCTIONS ============
+// ============ UTILITIES ============
 function shuffleArray(array) {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
