@@ -6,105 +6,72 @@
     <title>Watch - Streamify</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/watch.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body class="watch-page">
 
-    <!-- Back Navigation -->
-    <div class="watch-nav" id="watchNav">
-        <a href="index.html" class="back-btn">
-            <i class="fas fa-arrow-left"></i>
-            <span>Back to Browse</span>
-        </a>
-        <div class="watch-title" id="watchTitle">Loading...</div>
-    </div>
+    <!-- Back Button -->
+    <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back</span>
+    </a>
 
-    <!-- Video Player Container -->
-    <div class="player-container" id="playerContainer">
-        <!-- Loading State -->
+    <!-- Player -->
+    <div class="player-wrapper">
         <div class="player-loading" id="playerLoading">
-            <div class="loader"></div>
-            <p>Loading Player...</p>
+            <div class="spinner"></div>
+            <p>Loading...</p>
         </div>
-
-        <!-- Video iframe -->
-        <iframe 
-            id="videoPlayer"
-            src=""
-            frameborder="0"
-            allowfullscreen
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-        ></iframe>
+        <iframe id="videoPlayer" allowfullscreen></iframe>
     </div>
 
-    <!-- Video Info Section -->
-    <div class="watch-info" id="watchInfo">
-        <div class="watch-info-container">
-            <!-- Main Info -->
-            <div class="info-main">
-                <h1 class="info-title" id="infoTitle">Title</h1>
-                <div class="info-meta">
-                    <span class="info-match" id="infoMatch">98% Match</span>
-                    <span class="info-year" id="infoYear">2024</span>
-                    <span class="info-rating-badge">HD</span>
-                    <span class="info-duration" id="infoDuration">2h 15m</span>
-                    <span class="info-age">16+</span>
-                </div>
-                <p class="info-description" id="infoDescription">
-                    Description loading...
-                </p>
-                <div class="info-details">
-                    <p><span class="label">Starring:</span> <span id="infoCast">Loading...</span></p>
-                    <p><span class="label">Genres:</span> <span id="infoGenres">Loading...</span></p>
-                    <p><span class="label">Rating:</span> <span id="infoRating">0.0</span></p>
-                </div>
+    <!-- Content Info -->
+    <div class="watch-content">
+        <div class="content-header">
+            <h1 id="contentTitle">Loading...</h1>
+            <div class="content-meta">
+                <span class="meta-rating" id="contentRating">⭐ 8.5</span>
+                <span id="contentYear">2024</span>
+                <span id="contentDuration">2h 15m</span>
+                <span class="meta-badge">HD</span>
             </div>
+        </div>
 
-            <!-- Action Buttons -->
-            <div class="info-actions">
-                <button class="action-btn" id="addListBtn">
-                    <i class="fas fa-plus"></i>
-                    <span>My List</span>
-                </button>
-                <button class="action-btn" id="likeBtn">
-                    <i class="fas fa-thumbs-up"></i>
-                    <span>Rate</span>
-                </button>
-                <button class="action-btn" id="shareBtn">
-                    <i class="fas fa-share"></i>
-                    <span>Share</span>
+        <!-- Season/Episode Selector (Shows for TV only) -->
+        <div class="episodes-selector" id="episodesSelector" style="display:none;">
+            <div class="selector-row">
+                <select id="seasonSelect"></select>
+                <select id="episodeSelect"></select>
+                <button class="play-episode-btn" id="playEpisodeBtn">
+                    <i class="fas fa-play"></i> Play Episode
                 </button>
             </div>
         </div>
 
-        <!-- Episode Selector (For TV Shows) -->
-        <div class="episodes-section" id="episodesSection" style="display: none;">
-            <div class="episodes-header">
-                <h2>Episodes</h2>
-                <div class="season-selector">
-                    <select id="seasonSelect">
-                        <!-- Seasons will be loaded here -->
-                    </select>
-                </div>
-            </div>
-            <div class="episodes-list" id="episodesList">
-                <!-- Episodes will be loaded here -->
-            </div>
+        <p class="content-description" id="contentDescription">Loading description...</p>
+        
+        <div class="content-details">
+            <p><strong>Genres:</strong> <span id="contentGenres">-</span></p>
+            <p><strong>Cast:</strong> <span id="contentCast">-</span></p>
+        </div>
+
+        <div class="content-actions">
+            <button class="action-btn" id="addListBtn">
+                <i class="fas fa-plus"></i> My List
+            </button>
+            <button class="action-btn" id="shareBtn">
+                <i class="fas fa-share"></i> Share
+            </button>
         </div>
 
         <!-- Similar Content -->
         <div class="similar-section">
             <h2>More Like This</h2>
-            <div class="similar-grid" id="similarContent">
-                <!-- Similar content will be loaded here -->
-            </div>
+            <div class="similar-grid" id="similarGrid"></div>
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/watch.js"></script>
