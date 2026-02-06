@@ -24,15 +24,8 @@
             </ul>
         </div>
         <div class="nav-right">
-            <div class="search-box" id="searchBox">
-                <button class="search-toggle" id="searchToggle">
-                    <i class="fas fa-search"></i>
-                </button>
-                <input type="text" id="searchInput" placeholder="Titles, people, genres">
-            </div>
             <div class="profile-dropdown">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" alt="Profile" class="profile-img">
-                <i class="fas fa-caret-down"></i>
             </div>
         </div>
     </nav>
@@ -40,8 +33,10 @@
     <!-- Page Header -->
     <header class="browse-header">
         <div class="browse-header-content">
-            <h1><i class="fas fa-bookmark"></i> My List</h1>
-            <p class="mylist-subtitle" id="mylistCount">0 titles</p>
+            <div>
+                <h1><i class="fas fa-bookmark"></i> My List</h1>
+                <p class="mylist-subtitle" id="mylistCount">0 titles</p>
+            </div>
         </div>
     </header>
 
@@ -75,65 +70,14 @@
                 <a href="#"><i class="fab fa-youtube"></i></a>
             </div>
             <div class="footer-links">
-                <a href="#">Audio Description</a>
                 <a href="#">Help Center</a>
-                <a href="#">Gift Cards</a>
-                <a href="#">Media Center</a>
-                <a href="#">Investor Relations</a>
-                <a href="#">Jobs</a>
                 <a href="#">Terms of Use</a>
                 <a href="#">Privacy</a>
-                <a href="#">Legal Notices</a>
-                <a href="#">Cookie Preferences</a>
-                <a href="#">Corporate Information</a>
                 <a href="#">Contact Us</a>
             </div>
             <p class="copyright">© 2025 Streamify. All rights reserved.</p>
         </div>
     </footer>
-
-    <!-- Detail Modal -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="detail-modal" id="detailModal">
-            <button class="modal-close" id="modalClose">
-                <i class="fas fa-times"></i>
-            </button>
-            <div class="modal-banner" id="modalBanner">
-                <div class="modal-banner-gradient"></div>
-                <div class="modal-banner-content">
-                    <h1 class="modal-title" id="modalTitle">Title</h1>
-                    <div class="modal-buttons">
-                        <button class="btn-play" id="modalPlayBtn">
-                            <i class="fas fa-play"></i> Play
-                        </button>
-                        <button class="btn-circle" id="modalAddList">
-                            <i class="fas fa-check"></i>
-                        </button>
-                        <button class="btn-circle" id="modalLike">
-                            <i class="fas fa-thumbs-up"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-body">
-                <div class="modal-info-left">
-                    <div class="modal-meta">
-                        <span class="match-score" id="modalMatch">98% Match</span>
-                        <span id="modalYear">2024</span>
-                        <span class="hd-badge">HD</span>
-                        <span id="modalDuration">2h 15m</span>
-                    </div>
-                    <p class="modal-description" id="modalDescription">
-                        Description loading...
-                    </p>
-                </div>
-                <div class="modal-info-right">
-                    <p><span class="info-label">Genres:</span> <span id="modalGenres">Action, Drama</span></p>
-                    <p><span class="info-label">Rating:</span> <span id="modalRating">8.5</span></p>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Scripts -->
     <script src="js/config.js"></script>
