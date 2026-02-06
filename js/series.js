@@ -1,31 +1,47 @@
 /* ============================================
    STREAMIFY - TV SHOWS PAGE LOGIC
-   FULLY OPTIMIZED FOR MOBILE - NO FREEZE
+   COMPLETELY FIXED FOR MOBILE & DESKTOP
 ============================================ */
 
-const SeriesDOM = {
-    seriesGrid: document.getElementById('seriesGrid'),
-    loadMoreBtn: document.getElementById('loadMoreBtn'),
-    genreBtn: document.getElementById('genreBtn'),
-    genreDropdown: document.getElementById('genreDropdown'),
-    sortBtn: document.getElementById('sortBtn'),
-    sortDropdown: document.getElementById('sortDropdown'),
-    searchBox: document.getElementById('searchBox'),
-    searchToggle: document.getElementById('searchToggle'),
-    searchInput: document.getElementById('searchInput'),
+// Wait for DOM and scripts to load
+document.addEventListener('DOMContentLoaded', initSeriesPage);
+
+function initSeriesPage() {
+    // Check if API is loaded
+    if (typeof API === 'undefined') {
+        console.error('API not loaded');
+        return;
+    }
     
-    modalOverlay: document.getElementById('modalOverlay'),
-    modalClose: document.getElementById('modalClose'),
-    modalBanner: document.getElementById('modalBanner'),
-    modalTitle: document.getElementById('modalTitle'),
-    modalMatch: document.getElementById('modalMatch'),
-    modalYear: document.getElementById('modalYear'),
-    modalDuration: document.getElementById('modalDuration'),
-    modalDescription: document.getElementById('modalDescription'),
-    modalGenres: document.getElementById('modalGenres'),
-    modalRating: document.getElementById('modalRating'),
-    modalPlayBtn: document.getElementById('modalPlayBtn'),
-    modalAddList: document.getElementById('modalAddList')
+    initFilters();
+    initSearch();
+    initModal();
+    loadSeries();
+}
+
+// DOM Elements
+const SeriesDOM = {
+    get seriesGrid() { return document.getElementById('seriesGrid'); },
+    get loadMoreBtn() { return document.getElementById('loadMoreBtn'); },
+    get genreBtn() { return document.getElementById('genreBtn'); },
+    get genreDropdown() { return document.getElementById('genreDropdown'); },
+    get sortBtn() { return document.getElementById('sortBtn'); },
+    get sortDropdown() { return document.getElementById('sortDropdown'); },
+    get searchBox() { return document.getElementById('searchBox'); },
+    get searchToggle() { return document.getElementById('searchToggle'); },
+    get searchInput() { return document.getElementById('searchInput'); },
+    get modalOverlay() { return document.getElementById('modalOverlay'); },
+    get modalClose() { return document.getElementById('modalClose'); },
+    get modalBanner() { return document.getElementById('modalBanner'); },
+    get modalTitle() { return document.getElementById('modalTitle'); },
+    get modalMatch() { return document.getElementById('modalMatch'); },
+    get modalYear() { return document.getElementById('modalYear'); },
+    get modalDuration() { return document.getElementById('modalDuration'); },
+    get modalDescription() { return document.getElementById('modalDescription'); },
+    get modalGenres() { return document.getElementById('modalGenres'); },
+    get modalRating() { return document.getElementById('modalRating'); },
+    get modalPlayBtn() { return document.getElementById('modalPlayBtn'); },
+    get modalAddList() { return document.getElementById('modalAddList'); }
 };
 
 let currentPage = 1;
@@ -36,40 +52,38 @@ let totalPages = 1;
 let currentModalItem = null;
 let isModalOpen = false;
 
-document.addEventListener('DOMContentLoaded', () => {
-    initFilters();
-    initSearch();
-    initModal();
-    loadSeries();
-});
-
 function initFilters() {
-    SeriesDOM.genreBtn?.addEventListener('click', (e) => {
+    const genreBtn = SeriesDOM.genreBtn;
+    const sortBtn = SeriesDOM.sortBtn;
+    const genreDropdown = SeriesDOM.genreDropdown;
+    const sortDropdown = SeriesDOM.sortDropdown;
+    
+    genreBtn?.addEventListener('click', (e) => {
         e.stopPropagation();
-        SeriesDOM.genreBtn.parentElement.classList.toggle('active');
-        SeriesDOM.sortBtn.parentElement.classList.remove('active');
+        genreBtn.parentElement.classList.toggle('active');
+        sortBtn?.parentElement.classList.remove('active');
     });
     
-    SeriesDOM.sortBtn?.addEventListener('click', (e) => {
+    sortBtn?.addEventListener('click', (e) => {
         e.stopPropagation();
-        SeriesDOM.sortBtn.parentElement.classList.toggle('active');
-        SeriesDOM.genreBtn.parentElement.classList.remove('active');
+        sortBtn.parentElement.classList.toggle('active');
+        genreBtn?.parentElement.classList.remove('active');
     });
     
     document.addEventListener('click', () => {
-        SeriesDOM.genreBtn?.parentElement.classList.remove('active');
-        SeriesDOM.sortBtn?.parentElement.classList.remove('active');
+        genreBtn?.parentElement.classList.remove('active');
+        sortBtn?.parentElement.classList.remove('active');
     });
     
-    SeriesDOM.genreDropdown?.querySelectorAll('a').forEach(link => {
+    genreDropdown?.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const genre = link.dataset.genre;
             
-            SeriesDOM.genreDropdown.querySelectorAll('a').forEach(a => a.classList.remove('active'));
+            genreDropdown.querySelectorAll('a').forEach(a => a.classList.remove('active'));
             link.classList.add('active');
-            SeriesDOM.genreBtn.querySelector('span').textContent = link.textContent;
-            SeriesDOM.genreBtn.parentElement.classList.remove('active');
+            genreBtn.querySelector('span').textContent = link.textContent;
+            genreBtn.parentElement.classList.remove('active');
             
             currentGenre = genre;
             currentPage = 1;
@@ -78,15 +92,15 @@ function initFilters() {
         });
     });
     
-    SeriesDOM.sortDropdown?.querySelectorAll('a').forEach(link => {
+    sortDropdown?.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const sort = link.dataset.sort;
             
-            SeriesDOM.sortDropdown.querySelectorAll('a').forEach(a => a.classList.remove('active'));
+            sortDropdown.querySelectorAll('a').forEach(a => a.classList.remove('active'));
             link.classList.add('active');
-            SeriesDOM.sortBtn.querySelector('span').textContent = link.textContent;
-            SeriesDOM.sortBtn.parentElement.classList.remove('active');
+            sortBtn.querySelector('span').textContent = link.textContent;
+            sortBtn.parentElement.classList.remove('active');
             
             currentSort = sort;
             currentPage = 1;
@@ -123,11 +137,15 @@ function initSearch() {
 
 async function searchSeries(query) {
     showLoading();
-    const data = await API.searchTV(query, currentPage);
-    if (data && data.results) {
-        totalPages = data.total_pages;
-        renderSeries(data.results, false);
-        updateLoadMoreButton();
+    try {
+        const data = await API.searchTV(query, currentPage);
+        if (data && data.results) {
+            totalPages = data.total_pages;
+            renderSeries(data.results, false);
+            updateLoadMoreButton();
+        }
+    } catch (error) {
+        console.error('Search error:', error);
     }
     hideLoading();
 }
@@ -136,51 +154,59 @@ async function loadSeries(append = false) {
     if (isLoading) return;
     showLoading();
     
-    let data;
-    if (currentGenre === 'all') {
-        data = await API.fetchFromTMDB('/discover/tv', {
-            sort_by: currentSort,
-            page: currentPage,
-            'vote_count.gte': 100
-        });
-    } else {
-        data = await API.fetchFromTMDB('/discover/tv', {
-            with_genres: currentGenre,
-            sort_by: currentSort,
-            page: currentPage,
-            'vote_count.gte': 50
-        });
-    }
-    
-    if (data && data.results) {
-        totalPages = Math.min(data.total_pages, 500);
-        renderSeries(data.results, append);
-        updateLoadMoreButton();
+    try {
+        let data;
+        if (currentGenre === 'all') {
+            data = await API.fetchFromTMDB('/discover/tv', {
+                sort_by: currentSort,
+                page: currentPage,
+                'vote_count.gte': 100
+            });
+        } else {
+            data = await API.fetchFromTMDB('/discover/tv', {
+                with_genres: currentGenre,
+                sort_by: currentSort,
+                page: currentPage,
+                'vote_count.gte': 50
+            });
+        }
+        
+        if (data && data.results) {
+            totalPages = Math.min(data.total_pages, 500);
+            renderSeries(data.results, append);
+            updateLoadMoreButton();
+        }
+    } catch (error) {
+        console.error('Load series error:', error);
     }
     hideLoading();
 }
 
 function renderSeries(shows, append = false) {
+    const grid = SeriesDOM.seriesGrid;
+    if (!grid) return;
+    
     const html = shows.map(show => createGridCard(show, 'tv')).join('');
+    
     if (append) {
-        SeriesDOM.seriesGrid.innerHTML += html;
+        grid.innerHTML += html;
     } else {
-        SeriesDOM.seriesGrid.innerHTML = html;
+        grid.innerHTML = html;
     }
     
-    // Use requestAnimationFrame to prevent freeze
-    requestAnimationFrame(() => {
+    // Add event listeners after render
+    setTimeout(() => {
         addCardEventListeners();
-    });
+    }, 100);
 }
 
 function createGridCard(item, type) {
-    const title = item.title || item.name;
+    const title = item.title || item.name || 'Untitled';
     const year = (item.release_date || item.first_air_date || '').split('-')[0];
     const rating = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
     const posterUrl = item.poster_path 
         ? API.getImageUrl(item.poster_path) 
-        : 'https://via.placeholder.com/300x450?text=No+Image';
+        : 'https://via.placeholder.com/300x450/1a1a1a/666?text=No+Image';
     
     return `
         <div class="grid-card" data-id="${item.id}" data-type="${type}">
@@ -192,13 +218,13 @@ function createGridCard(item, type) {
                     <span class="grid-card-year">${year}</span>
                 </div>
                 <div class="grid-card-buttons">
-                    <button class="grid-card-btn play-btn" data-action="play">
+                    <button class="grid-card-btn play-btn" data-action="play" type="button">
                         <i class="fas fa-play"></i>
                     </button>
-                    <button class="grid-card-btn" data-action="list">
+                    <button class="grid-card-btn" data-action="list" type="button">
                         <i class="fas fa-plus"></i>
                     </button>
-                    <button class="grid-card-btn" data-action="info">
+                    <button class="grid-card-btn" data-action="info" type="button">
                         <i class="fas fa-chevron-down"></i>
                     </button>
                 </div>
@@ -207,81 +233,121 @@ function createGridCard(item, type) {
     `;
 }
 
-// FIXED: Card click events - Works on mobile without freeze
+// FIXED: Event listeners that work on both mobile and desktop
 function addCardEventListeners() {
-    SeriesDOM.seriesGrid?.querySelectorAll('.grid-card').forEach(card => {
-        const id = parseInt(card.dataset.id);
+    const grid = SeriesDOM.seriesGrid;
+    if (!grid) return;
+    
+    const cards = grid.querySelectorAll('.grid-card');
+    
+    cards.forEach(card => {
+        const id = card.dataset.id;
         const type = card.dataset.type;
         
-        // Make card clickable - opens modal
-        card.style.cursor = 'pointer';
+        if (!id) return;
         
-        // Single click handler for the whole card
-        card.onclick = function(e) {
-            // Check if clicked on a button
+        // Remove old listeners by cloning
+        const newCard = card.cloneNode(true);
+        card.parentNode.replaceChild(newCard, card);
+        
+        // Add click listener to entire card
+        newCard.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
             const button = e.target.closest('button');
             
             if (button) {
-                e.stopPropagation();
                 const action = button.dataset.action;
                 
                 if (action === 'play') {
+                    // Go to watch page
                     window.location.href = `watch.html?id=${id}&type=${type}`;
                 } else if (action === 'list') {
-                    toggleListFromCard(card, id, type);
+                    // Toggle my list
+                    toggleListFromCard(newCard, parseInt(id), type);
                 } else if (action === 'info') {
-                    openModal(id, type);
+                    // Open modal
+                    openModal(parseInt(id), type);
                 }
             } else {
-                // Clicked on card itself - open modal
-                openModal(id, type);
+                // Clicked on card (not button) - open modal
+                openModal(parseInt(id), type);
             }
-        };
+        });
+        
+        // Touch support for mobile
+        newCard.addEventListener('touchend', function(e) {
+            // Let click handler deal with it
+        }, { passive: true });
     });
 }
 
-async function toggleListFromCard(card, id, type) {
+function toggleListFromCard(card, id, type) {
     const btn = card.querySelector('[data-action="list"]');
     const icon = btn?.querySelector('i');
     if (!icon) return;
     
     const title = card.querySelector('.grid-card-title')?.textContent || '';
     const img = card.querySelector('img');
+    const posterPath = img?.src.includes('image.tmdb.org') 
+        ? '/' + img.src.split('/').slice(-1)[0] 
+        : null;
     
-    if (Storage.isInMyList(id, type)) {
-        Storage.removeFromMyList(id, type);
-        icon.className = 'fas fa-plus';
-    } else {
-        Storage.addToMyList({
-            id: id,
-            type: type,
-            title: title,
-            poster_path: img?.src.includes('image.tmdb.org') ? img.src.split('/').pop() : null
-        });
-        icon.className = 'fas fa-check';
+    if (typeof Storage !== 'undefined' && Storage.isInMyList) {
+        if (Storage.isInMyList(id, type)) {
+            Storage.removeFromMyList(id, type);
+            icon.className = 'fas fa-plus';
+        } else {
+            Storage.addToMyList({
+                id: id,
+                type: type,
+                title: title,
+                poster_path: posterPath
+            });
+            icon.className = 'fas fa-check';
+        }
     }
 }
 
 function initModal() {
-    SeriesDOM.modalClose?.addEventListener('click', closeModal);
+    const overlay = SeriesDOM.modalOverlay;
+    const closeBtn = SeriesDOM.modalClose;
+    const playBtn = SeriesDOM.modalPlayBtn;
+    const addListBtn = SeriesDOM.modalAddList;
     
-    SeriesDOM.modalOverlay?.addEventListener('click', (e) => {
-        if (e.target === SeriesDOM.modalOverlay) {
+    // Close button
+    closeBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeModal();
+    });
+    
+    // Click outside to close
+    overlay?.addEventListener('click', (e) => {
+        if (e.target === overlay) {
             closeModal();
         }
     });
     
+    // Escape key
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeModal();
+        if (e.key === 'Escape' && isModalOpen) {
+            closeModal();
+        }
     });
     
-    SeriesDOM.modalPlayBtn?.addEventListener('click', () => {
+    // Play button
+    playBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
         if (currentModalItem) {
             window.location.href = `watch.html?id=${currentModalItem.id}&type=tv`;
         }
     });
     
-    SeriesDOM.modalAddList?.addEventListener('click', () => {
+    // Add to list button
+    addListBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
         if (currentModalItem) {
             toggleMyList(currentModalItem);
         }
@@ -290,17 +356,29 @@ function initModal() {
 
 async function openModal(id, type) {
     // Prevent multiple opens
-    if (isModalOpen) return;
+    if (isModalOpen) {
+        console.log('Modal already open');
+        return;
+    }
+    
+    console.log('Opening modal for:', id, type);
     isModalOpen = true;
     
-    // Show modal immediately with loading state
-    SeriesDOM.modalOverlay.classList.add('active');
+    const overlay = SeriesDOM.modalOverlay;
+    if (!overlay) {
+        console.error('Modal overlay not found');
+        isModalOpen = false;
+        return;
+    }
+    
+    // Show modal with loading state
+    overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
     
     // Set loading state
-    SeriesDOM.modalTitle.textContent = 'Loading...';
-    SeriesDOM.modalDescription.textContent = '';
-    SeriesDOM.modalBanner.style.backgroundImage = '';
+    if (SeriesDOM.modalTitle) SeriesDOM.modalTitle.textContent = 'Loading...';
+    if (SeriesDOM.modalDescription) SeriesDOM.modalDescription.textContent = '';
+    if (SeriesDOM.modalBanner) SeriesDOM.modalBanner.style.backgroundImage = 'none';
     
     try {
         const data = await API.getTVDetails(id);
@@ -308,31 +386,64 @@ async function openModal(id, type) {
         if (data) {
             currentModalItem = { ...data, type: 'tv' };
             
-            SeriesDOM.modalBanner.style.backgroundImage = `url(${API.getBackdropUrl(data.backdrop_path)})`;
-            SeriesDOM.modalTitle.textContent = data.name;
-            SeriesDOM.modalMatch.textContent = `${Math.round(data.vote_average * 10)}% Match`;
-            SeriesDOM.modalYear.textContent = (data.first_air_date || '').split('-')[0];
-            SeriesDOM.modalDuration.textContent = `${data.number_of_seasons || 0} Season${data.number_of_seasons > 1 ? 's' : ''}`;
-            SeriesDOM.modalDescription.textContent = data.overview || 'No description available.';
-            SeriesDOM.modalGenres.textContent = data.genres ? data.genres.map(g => g.name).join(', ') : 'N/A';
-            SeriesDOM.modalRating.textContent = data.vote_average ? data.vote_average.toFixed(1) : 'N/A';
+            // Update modal content
+            if (SeriesDOM.modalBanner) {
+                SeriesDOM.modalBanner.style.backgroundImage = data.backdrop_path 
+                    ? `url(${API.getBackdropUrl(data.backdrop_path)})` 
+                    : 'none';
+            }
+            if (SeriesDOM.modalTitle) {
+                SeriesDOM.modalTitle.textContent = data.name || 'Untitled';
+            }
+            if (SeriesDOM.modalMatch) {
+                SeriesDOM.modalMatch.textContent = `${Math.round((data.vote_average || 0) * 10)}% Match`;
+            }
+            if (SeriesDOM.modalYear) {
+                SeriesDOM.modalYear.textContent = (data.first_air_date || '').split('-')[0] || 'N/A';
+            }
+            if (SeriesDOM.modalDuration) {
+                const seasons = data.number_of_seasons || 0;
+                SeriesDOM.modalDuration.textContent = `${seasons} Season${seasons !== 1 ? 's' : ''}`;
+            }
+            if (SeriesDOM.modalDescription) {
+                SeriesDOM.modalDescription.textContent = data.overview || 'No description available.';
+            }
+            if (SeriesDOM.modalGenres) {
+                SeriesDOM.modalGenres.textContent = data.genres 
+                    ? data.genres.map(g => g.name).join(', ') 
+                    : 'N/A';
+            }
+            if (SeriesDOM.modalRating) {
+                SeriesDOM.modalRating.textContent = data.vote_average 
+                    ? data.vote_average.toFixed(1) 
+                    : 'N/A';
+            }
             
             updateModalListButton();
+        } else {
+            if (SeriesDOM.modalTitle) SeriesDOM.modalTitle.textContent = 'Error loading content';
         }
     } catch (error) {
         console.error('Error loading TV show details:', error);
-        SeriesDOM.modalTitle.textContent = 'Error loading content';
+        if (SeriesDOM.modalTitle) SeriesDOM.modalTitle.textContent = 'Error loading content';
     }
 }
 
 function closeModal() {
-    SeriesDOM.modalOverlay.classList.remove('active');
+    console.log('Closing modal');
+    const overlay = SeriesDOM.modalOverlay;
+    
+    if (overlay) {
+        overlay.classList.remove('active');
+    }
     document.body.style.overflow = '';
     currentModalItem = null;
     isModalOpen = false;
 }
 
 function toggleMyList(item) {
+    if (typeof Storage === 'undefined' || !Storage.isInMyList) return;
+    
     if (Storage.isInMyList(item.id, 'tv')) {
         Storage.removeFromMyList(item.id, 'tv');
     } else {
@@ -345,19 +456,22 @@ function updateModalListButton() {
     const icon = SeriesDOM.modalAddList?.querySelector('i');
     if (!icon) return;
     
-    if (currentModalItem && Storage.isInMyList(currentModalItem.id, 'tv')) {
-        icon.className = 'fas fa-check';
-    } else {
-        icon.className = 'fas fa-plus';
+    if (typeof Storage !== 'undefined' && Storage.isInMyList && currentModalItem) {
+        if (Storage.isInMyList(currentModalItem.id, 'tv')) {
+            icon.className = 'fas fa-check';
+        } else {
+            icon.className = 'fas fa-plus';
+        }
     }
 }
 
 function showLoading() {
     isLoading = true;
-    if (SeriesDOM.loadMoreBtn) {
-        SeriesDOM.loadMoreBtn.classList.add('loading');
-        const span = SeriesDOM.loadMoreBtn.querySelector('span');
-        const icon = SeriesDOM.loadMoreBtn.querySelector('i');
+    const btn = SeriesDOM.loadMoreBtn;
+    if (btn) {
+        btn.classList.add('loading');
+        const span = btn.querySelector('span');
+        const icon = btn.querySelector('i');
         if (span) span.textContent = 'Loading...';
         if (icon) icon.className = 'fas fa-spinner';
     }
@@ -365,21 +479,19 @@ function showLoading() {
 
 function hideLoading() {
     isLoading = false;
-    if (SeriesDOM.loadMoreBtn) {
-        SeriesDOM.loadMoreBtn.classList.remove('loading');
-        const span = SeriesDOM.loadMoreBtn.querySelector('span');
-        const icon = SeriesDOM.loadMoreBtn.querySelector('i');
+    const btn = SeriesDOM.loadMoreBtn;
+    if (btn) {
+        btn.classList.remove('loading');
+        const span = btn.querySelector('span');
+        const icon = btn.querySelector('i');
         if (span) span.textContent = 'Load More';
         if (icon) icon.className = 'fas fa-chevron-down';
     }
 }
 
 function updateLoadMoreButton() {
-    if (SeriesDOM.loadMoreBtn) {
-        if (currentPage >= totalPages) {
-            SeriesDOM.loadMoreBtn.style.display = 'none';
-        } else {
-            SeriesDOM.loadMoreBtn.style.display = 'flex';
-        }
+    const btn = SeriesDOM.loadMoreBtn;
+    if (btn) {
+        btn.style.display = (currentPage >= totalPages) ? 'none' : 'flex';
     }
 }
