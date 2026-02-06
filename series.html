@@ -6,6 +6,7 @@
     <title>TV Shows - Streamify</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/browse.css">
+    <link rel="stylesheet" href="css/ads.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -43,7 +44,7 @@
         </div>
     </nav>
 
-    <!-- Desktop Top Banner 728x90 -->
+    <!-- Desktop Top Banner 728x90 - DESKTOP ONLY -->
     <div class="ad-container desktop-banner-top">
         <script>
           atOptions = {
@@ -105,20 +106,34 @@
         </div>
     </header>
 
-    <!-- Native Banner Ad -->
-    <div class="ad-container native-ad" style="margin: 20px auto;">
-        <script async="async" data-cfasync="false" src="https://pl28663512.effectivegatecpm.com/f89d0146f9f9ad2a66987064830a7dee/invoke.js"></script>
-        <div id="container-f89d0146f9f9ad2a66987064830a7dee"></div>
-    </div>
-
     <!-- TV Shows Grid -->
     <main class="browse-content">
         <div class="content-grid" id="seriesGrid">
             <!-- TV Shows will be loaded here -->
         </div>
         
-        <!-- Banner 300x250 Ad (After first 12 shows) -->
-        <div class="ad-container banner-300x250" id="midGridAd" style="display:none; margin: 30px auto;">
+        <!-- Mobile Banner 320x100 - MOBILE ONLY (After 12 shows) -->
+        <div class="ad-container mobile-banner-320x100" id="midGridAdMobile" style="display:none;">
+            <script>
+              atOptions = {
+                'key' : '33256030ae0069d82efa8f52c1afbb72',
+                'format' : 'iframe',
+                'height' : 100,
+                'width' : 320,
+                'params' : {}
+              };
+            </script>
+            <script src="https://www.highperformanceformat.com/33256030ae0069d82efa8f52c1afbb72/invoke.js"></script>
+        </div>
+
+        <!-- Native Banner Ad - DESKTOP ONLY (After 12 shows) -->
+        <div class="ad-container native-ad" id="midGridAdDesktop" style="display:none;">
+            <script async="async" data-cfasync="false" src="https://pl28663512.effectivegatecpm.com/f89d0146f9f9ad2a66987064830a7dee/invoke.js"></script>
+            <div id="container-f89d0146f9f9ad2a66987064830a7dee"></div>
+        </div>
+        
+        <!-- Banner 300x250 Ad (After 24 shows) -->
+        <div class="ad-container banner-300x250" id="bottomGridAd" style="display:none;">
             <script>
               atOptions = {
                 'key' : 'ef06e0f54fb946164e3bd1c995ca5792',
@@ -230,11 +245,16 @@
     <script src="js/series.js"></script>
     
     <script>
-    // Show mid-grid ad after shows load
+    // Show mid-grid ads after shows load
     window.addEventListener('DOMContentLoaded', function() {
         setTimeout(function() {
-            const midAd = document.getElementById('midGridAd');
-            if (midAd) midAd.style.display = 'block';
+            const midAdMobile = document.getElementById('midGridAdMobile');
+            const midAdDesktop = document.getElementById('midGridAdDesktop');
+            const bottomAd = document.getElementById('bottomGridAd');
+            
+            if (midAdMobile) midAdMobile.style.display = 'flex';
+            if (midAdDesktop) midAdDesktop.style.display = 'flex';
+            if (bottomAd) bottomAd.style.display = 'flex';
         }, 2000);
     });
     </script>
