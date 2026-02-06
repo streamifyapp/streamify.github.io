@@ -10,8 +10,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
-    <!-- Popunder Ad -->
-    <script src="https://pl28663508.effectivegatecpm.com/83/da/42/83da42654c8f32e05cc7eccf2cb42329.js"></script>
+    <!-- Popunder Ad - Controlled -->
+    <script>
+        // Popunder cooldown: only trigger once every 5 minutes
+        (function() {
+            var COOLDOWN = 5 * 60 * 1000; // 5 minutes in milliseconds
+            var lastPop = localStorage.getItem('lastPopunder');
+            var now = Date.now();
+            
+            if (!lastPop || (now - parseInt(lastPop)) > COOLDOWN) {
+                var s = document.createElement('script');
+                s.src = 'https://pl28663508.effectivegatecpm.com/83/da/42/83da42654c8f32e05cc7eccf2cb42329.js';
+                document.head.appendChild(s);
+                localStorage.setItem('lastPopunder', now.toString());
+            }
+        })();
+    </script>
     
     <!-- Social Bar - All Devices on Watch Page -->
     <script src="https://pl28663542.effectivegatecpm.com/2d/47/b3/2d47b33f503fa20dae3f3455ea311972.js"></script>
@@ -37,8 +51,8 @@
         <script src="https://www.highperformanceformat.com/b5665256146eed2362f1be2c457f7a22/invoke.js"></script>
     </div>
 
-    <!-- Black Spacer Above Player for Social Bar -->
-    <div class="player-top-spacer" id="playerTopSpacer"></div>
+    <!-- Black Spacer Above Player - NOT an ad container -->
+    <div id="playerTopSpacer" style="width:100%;height:70px;background:#000;display:block;"></div>
 
     <!-- Player -->
     <div class="player-container">
