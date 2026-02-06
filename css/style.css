@@ -1,9 +1,9 @@
 /* ============================================
    STREAMIFY - NETFLIX CLONE CSS
-   Exact Netflix UI Replica
+   Complete Fixed Version
 ============================================ */
 
-/* ---------- CSS Variables (Netflix Colors) ---------- */
+/* ---------- CSS Variables ---------- */
 :root {
     --netflix-red: #e50914;
     --netflix-red-hover: #f40612;
@@ -13,7 +13,6 @@
     --netflix-light-gray: #808080;
     --netflix-white: #e5e5e5;
     --netflix-pure-white: #ffffff;
-    --card-hover-scale: 1.3;
     --transition-fast: 0.15s;
     --transition-medium: 0.3s;
     --transition-slow: 0.5s;
@@ -61,7 +60,7 @@ img {
     display: block;
 }
 
-/* ---------- Scrollbar (Netflix Style) ---------- */
+/* ---------- Scrollbar ---------- */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -81,7 +80,7 @@ img {
 }
 
 /* ============================================
-   NAVBAR - Netflix Exact Style
+   NAVBAR
 ============================================ */
 .navbar {
     position: fixed;
@@ -232,14 +231,14 @@ img {
 }
 
 /* ============================================
-   HERO BANNER - Netflix Style
+   HERO BANNER
 ============================================ */
 .hero-banner {
     position: relative;
     width: 100%;
-    height: 90vh;
-    min-height: 600px;
-    max-height: 900px;
+    height: 85vh;
+    min-height: 500px;
+    max-height: 800px;
     overflow: hidden;
 }
 
@@ -277,7 +276,7 @@ img {
     position: absolute;
     bottom: 25%;
     left: 60px;
-    max-width: 600px;
+    max-width: 550px;
     z-index: 10;
 }
 
@@ -302,7 +301,7 @@ img {
 }
 
 .hero-title {
-    font-size: 56px;
+    font-size: 48px;
     font-weight: 800;
     color: var(--netflix-pure-white);
     line-height: 1.1;
@@ -336,9 +335,9 @@ img {
 }
 
 .hero-description {
-    font-size: 16px;
+    font-size: 15px;
     color: var(--netflix-white);
-    line-height: 1.6;
+    line-height: 1.5;
     margin-bottom: 25px;
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -356,10 +355,10 @@ img {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 12px 30px;
+    padding: 12px 28px;
     background: var(--netflix-pure-white);
     color: #000;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     border-radius: 5px;
     transition: background var(--transition-fast);
@@ -370,17 +369,17 @@ img {
 }
 
 .btn-play i {
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .btn-info {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 12px 30px;
+    padding: 12px 28px;
     background: rgba(109, 109, 110, 0.7);
     color: var(--netflix-pure-white);
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     border-radius: 5px;
     transition: background var(--transition-fast);
@@ -428,18 +427,18 @@ img {
 }
 
 /* ============================================
-   MAIN CONTENT - Row Sections
+   MAIN CONTENT
 ============================================ */
 .main-content {
     position: relative;
-    margin-top: -150px;
+    margin-top: -120px;
     z-index: 20;
     padding-bottom: 50px;
 }
 
 .content-row {
     padding: 0 60px;
-    margin-bottom: 40px;
+    margin-bottom: 50px;
 }
 
 .row-header {
@@ -462,15 +461,23 @@ img {
     font-size: 13px;
     color: var(--netflix-light-gray);
     transition: color var(--transition-fast);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .see-all:hover {
     color: var(--netflix-pure-white);
 }
 
+.see-all:hover i {
+    transform: translateX(3px);
+}
+
 .see-all i {
     font-size: 10px;
-    margin-left: 5px;
+    transition: transform var(--transition-fast);
 }
 
 /* Row Wrapper & Slider */
@@ -480,11 +487,12 @@ img {
 
 .row-content {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     overflow-x: auto;
     overflow-y: visible;
     scroll-behavior: smooth;
-    padding: 30px 0;
+    padding: 80px 0;
+    margin: -80px 0;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
@@ -496,9 +504,10 @@ img {
 /* Slider Buttons */
 .slider-btn {
     position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 55px;
+    height: 180px;
     background: rgba(20, 20, 20, 0.7);
     color: var(--netflix-pure-white);
     font-size: 30px;
@@ -529,26 +538,23 @@ img {
 }
 
 /* ============================================
-   CONTENT CARDS - Netflix Hover Effect
-============================================ */
-/* ============================================
-   CONTENT CARDS - Netflix Hover Effect
+   CONTENT CARDS - FIXED HEIGHT
 ============================================ */
 .content-card {
     position: relative;
     flex-shrink: 0;
-    width: 250px;
-    height: 140px;
+    width: 280px;
+    height: 158px;
     border-radius: var(--card-border-radius);
     overflow: visible;
     cursor: pointer;
-    transition: transform var(--transition-medium) ease, z-index 0s 0.3s;
+    transition: transform 0.4s ease, z-index 0s 0.4s;
 }
 
 .content-card:hover {
-    transform: scale(1.4);
+    transform: scale(1.5);
     z-index: 100;
-    transition: transform var(--transition-medium) ease, z-index 0s;
+    transition: transform 0.4s ease, z-index 0s;
 }
 
 .card-image {
@@ -563,20 +569,19 @@ img {
     border-radius: var(--card-border-radius) var(--card-border-radius) 0 0;
 }
 
-/* Card Info (Shows on Hover) - FIXED HEIGHT */
+/* Card Info - FIXED */
 .card-info {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
     background: var(--netflix-dark);
-    padding: 12px;
+    padding: 15px;
     border-radius: 0 0 var(--card-border-radius) var(--card-border-radius);
     transform: translateY(100%);
     opacity: 0;
     transition: all var(--transition-medium);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
-    min-height: 100px;
 }
 
 .content-card:hover .card-info {
@@ -585,18 +590,18 @@ img {
 
 .card-buttons {
     display: flex;
-    gap: 6px;
-    margin-bottom: 8px;
+    gap: 8px;
+    margin-bottom: 10px;
 }
 
 .card-btn {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.6);
     background: rgba(42, 42, 42, 0.6);
     color: var(--netflix-pure-white);
-    font-size: 12px;
+    font-size: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -606,7 +611,7 @@ img {
 
 .card-btn:hover {
     border-color: var(--netflix-pure-white);
-    background: rgba(42, 42, 42, 0.9);
+    background: rgba(60, 60, 60, 0.9);
     transform: scale(1.1);
 }
 
@@ -627,159 +632,10 @@ img {
 .card-meta {
     display: flex;
     align-items: center;
-    gap: 6px;
-    margin-bottom: 6px;
-    font-size: 11px;
-    flex-wrap: wrap;
-}
-
-.card-match {
-    color: #46d369;
-    font-weight: 700;
-}
-
-.card-rating-badge {
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    padding: 1px 4px;
-    font-size: 9px;
-}
-
-.card-hd {
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    padding: 1px 4px;
-    font-size: 9px;
-}
-
-.card-genres {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    font-size: 10px;
-    color: var(--netflix-white);
-}
-
-.card-genres span {
-    display: flex;
-    align-items: center;
-}
-
-.card-genres span::after {
-    content: "•";
-    margin-left: 4px;
-    color: var(--netflix-light-gray);
-}
-
-.card-genres span:last-child::after {
-    content: "";
-}
-
-.card-title {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--netflix-pure-white);
-    margin-bottom: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Continue Watching Progress Bar */
-.continue-progress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.3);
-}
-
-.progress-bar {
-    height: 100%;
-    background: #e50914;
-}
-
-.content-card:hover {
-    transform: scale(var(--card-hover-scale));
-    z-index: 100;
-    transition: transform var(--transition-medium), z-index 0s;
-}
-
-.card-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: var(--card-border-radius);
-    transition: border-radius var(--transition-medium);
-}
-
-.content-card:hover .card-image {
-    border-radius: var(--card-border-radius) var(--card-border-radius) 0 0;
-}
-
-/* Card Info (Shows on Hover) */
-.card-info {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--netflix-dark);
-    padding: 15px;
-    border-radius: 0 0 var(--card-border-radius) var(--card-border-radius);
-    transform: translateY(100%);
-    opacity: 0;
-    transition: all var(--transition-medium);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-}
-
-.content-card:hover .card-info {
-    opacity: 1;
-}
-
-.card-buttons {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 10px;
-}
-
-.card-btn {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.5);
-    background: rgba(42, 42, 42, 0.6);
-    color: var(--netflix-pure-white);
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all var(--transition-fast);
-}
-
-.card-btn:hover {
-    border-color: var(--netflix-pure-white);
-    background: rgba(42, 42, 42, 0.9);
-}
-
-.card-btn.play-btn {
-    background: var(--netflix-pure-white);
-    color: #000;
-    border: none;
-}
-
-.card-btn.play-btn:hover {
-    background: rgba(255, 255, 255, 0.85);
-}
-
-.card-btn.expand-btn {
-    margin-left: auto;
-}
-
-.card-meta {
-    display: flex;
-    align-items: center;
     gap: 8px;
     margin-bottom: 8px;
     font-size: 12px;
+    flex-wrap: wrap;
 }
 
 .card-match {
@@ -789,14 +645,26 @@ img {
 
 .card-rating-badge {
     border: 1px solid rgba(255, 255, 255, 0.4);
-    padding: 1px 5px;
+    padding: 2px 6px;
     font-size: 10px;
+    border-radius: 3px;
 }
 
 .card-hd {
     border: 1px solid rgba(255, 255, 255, 0.4);
-    padding: 1px 5px;
+    padding: 2px 6px;
     font-size: 10px;
+    border-radius: 3px;
+}
+
+.card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--netflix-pure-white);
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .card-genres {
@@ -805,11 +673,6 @@ img {
     gap: 5px;
     font-size: 11px;
     color: var(--netflix-white);
-}
-
-.card-genres span {
-    display: flex;
-    align-items: center;
 }
 
 .card-genres span::after {
@@ -822,53 +685,59 @@ img {
     content: "";
 }
 
-.card-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--netflix-pure-white);
-    margin-bottom: 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+/* Continue Watching Progress */
+.continue-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    z-index: 5;
+}
+
+.progress-bar {
+    height: 100%;
+    background: var(--netflix-red);
 }
 
 /* ============================================
    TOP 10 STYLING
 ============================================ */
 .top-10-row .row-content {
-    gap: 20px;
+    gap: 30px;
 }
 
 .top-10-content .top-10-card {
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    width: 280px;
-    height: 180px;
+    width: 300px;
+    height: 200px;
     overflow: visible;
     cursor: pointer;
     transition: transform var(--transition-medium);
 }
 
 .top-10-content .top-10-card:hover {
-    transform: scale(1.05);
+    transform: scale(1.08);
     z-index: 10;
 }
 
 .top-10-number {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 180px;
+    font-size: 200px;
     font-weight: 800;
     color: var(--netflix-black);
     -webkit-text-stroke: 4px #595959;
-    margin-right: -40px;
+    margin-right: -50px;
     z-index: 1;
     line-height: 1;
 }
 
 .top-10-poster {
-    width: 130px;
-    height: 180px;
+    width: 140px;
+    height: 200px;
     object-fit: cover;
     border-radius: 5px;
     z-index: 2;
@@ -886,7 +755,7 @@ img {
 }
 
 /* ============================================
-   MODAL - Detail Popup
+   DETAIL MODAL
 ============================================ */
 .modal-overlay {
     position: fixed;
@@ -1056,6 +925,143 @@ img {
 }
 
 /* ============================================
+   SEE ALL MODAL - FIXED
+============================================ */
+.see-all-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--netflix-black);
+    z-index: 1500;
+    padding: 0;
+    overflow-y: auto;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.see-all-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.see-all-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 25px 60px;
+    position: sticky;
+    top: 0;
+    background: var(--netflix-black);
+    z-index: 10;
+    border-bottom: 1px solid #333;
+}
+
+.see-all-header h2 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.see-all-close {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.see-all-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+.see-all-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 25px;
+    padding: 30px 60px 60px;
+}
+
+.see-all-card {
+    border-radius: 5px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: var(--netflix-gray);
+}
+
+.see-all-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
+    z-index: 10;
+}
+
+.see-all-card img {
+    width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+}
+
+.see-all-card-info {
+    padding: 12px;
+    background: var(--netflix-dark);
+}
+
+.see-all-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--netflix-pure-white);
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.see-all-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--netflix-light-gray);
+}
+
+.see-all-card-rating {
+    color: #46d369;
+    font-weight: 600;
+}
+
+.see-all-card-year {
+    color: var(--netflix-light-gray);
+}
+
+.see-all-card-type {
+    background: var(--netflix-red);
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.see-all-loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 50px;
+    color: var(--netflix-light-gray);
+    font-size: 16px;
+}
+
+/* ============================================
    SEARCH RESULTS
 ============================================ */
 .search-results-page {
@@ -1099,7 +1105,7 @@ img {
 
 .search-results-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 15px;
 }
 
@@ -1121,7 +1127,7 @@ img {
 }
 
 /* ============================================
-   FOOTER - Netflix Style
+   FOOTER
 ============================================ */
 .footer {
     padding: 60px;
@@ -1207,16 +1213,14 @@ img {
 }
 
 .card-skeleton {
-    width: 250px;
-    height: 141px;
+    width: 280px;
+    height: 158px;
     flex-shrink: 0;
 }
 
 /* ============================================
    RESPONSIVE DESIGN
 ============================================ */
-
-/* Tablets */
 @media (max-width: 1200px) {
     .navbar {
         padding: 0 40px;
@@ -1224,11 +1228,11 @@ img {
     
     .hero-content {
         left: 40px;
-        max-width: 500px;
+        max-width: 450px;
     }
     
     .hero-title {
-        font-size: 42px;
+        font-size: 38px;
     }
     
     .content-row {
@@ -1238,21 +1242,28 @@ img {
     .hero-controls {
         right: 40px;
     }
+    
+    .see-all-header {
+        padding: 20px 40px;
+    }
+    
+    .see-all-grid {
+        padding: 25px 40px 50px;
+    }
 }
 
-/* Mobile Landscape */
 @media (max-width: 992px) {
     .nav-links {
         display: none;
     }
     
     .hero-banner {
-        height: 70vh;
-        min-height: 500px;
+        height: 65vh;
+        min-height: 450px;
     }
     
     .hero-title {
-        font-size: 36px;
+        font-size: 32px;
     }
     
     .hero-description {
@@ -1261,8 +1272,13 @@ img {
     }
     
     .content-card {
-        width: 200px;
-        height: 113px;
+        width: 220px;
+        height: 124px;
+    }
+    
+    .card-skeleton {
+        width: 220px;
+        height: 124px;
     }
     
     .modal-body {
@@ -1272,9 +1288,13 @@ img {
     .footer-links {
         grid-template-columns: repeat(2, 1fr);
     }
+    
+    .see-all-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 15px;
+    }
 }
 
-/* Mobile Portrait */
 @media (max-width: 768px) {
     .navbar {
         padding: 0 20px;
@@ -1295,19 +1315,19 @@ img {
     }
     
     .hero-banner {
-        height: 60vh;
-        min-height: 400px;
+        height: 55vh;
+        min-height: 380px;
     }
     
     .hero-content {
         left: 20px;
         right: 20px;
-        bottom: 20%;
+        bottom: 18%;
         max-width: 100%;
     }
     
     .hero-title {
-        font-size: 28px;
+        font-size: 26px;
     }
     
     .hero-meta {
@@ -1319,14 +1339,13 @@ img {
     }
     
     .hero-buttons {
-        flex-direction: column;
+        flex-direction: row;
         gap: 10px;
     }
     
     .btn-play, .btn-info {
-        padding: 10px 20px;
+        padding: 10px 18px;
         font-size: 14px;
-        justify-content: center;
     }
     
     .hero-controls {
@@ -1334,12 +1353,12 @@ img {
     }
     
     .main-content {
-        margin-top: -80px;
+        margin-top: -60px;
     }
     
     .content-row {
         padding: 0 20px;
-        margin-bottom: 25px;
+        margin-bottom: 35px;
     }
     
     .row-title {
@@ -1347,8 +1366,13 @@ img {
     }
     
     .content-card {
-        width: 150px;
-        height: 85px;
+        width: 160px;
+        height: 90px;
+    }
+    
+    .card-skeleton {
+        width: 160px;
+        height: 90px;
     }
     
     .content-card:hover {
@@ -1363,19 +1387,24 @@ img {
         display: none;
     }
     
+    .row-content {
+        padding: 10px 0;
+        margin: 0;
+    }
+    
     .top-10-content .top-10-card {
-        width: 180px;
-        height: 120px;
+        width: 200px;
+        height: 140px;
     }
     
     .top-10-number {
-        font-size: 100px;
-        margin-right: -25px;
+        font-size: 120px;
+        margin-right: -30px;
     }
     
     .top-10-poster {
-        width: 80px;
-        height: 120px;
+        width: 90px;
+        height: 130px;
     }
     
     .modal-banner {
@@ -1407,29 +1436,55 @@ img {
         grid-template-columns: repeat(3, 1fr);
         gap: 10px;
     }
+    
+    .see-all-header {
+        padding: 15px 20px;
+    }
+    
+    .see-all-header h2 {
+        font-size: 24px;
+    }
+    
+    .see-all-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        padding: 20px;
+    }
+    
+    .see-all-close {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
 }
 
-/* Small Mobile */
 @media (max-width: 480px) {
     .hero-title {
         font-size: 22px;
     }
     
     .content-card {
-        width: 120px;
-        height: 68px;
+        width: 130px;
+        height: 73px;
+    }
+    
+    .card-skeleton {
+        width: 130px;
+        height: 73px;
     }
     
     .search-results-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+    
+    .see-all-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 /* ============================================
-   ANIMATIONS & EFFECTS
+   ANIMATIONS
 ============================================ */
-
-/* Fade In Animation */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -1445,7 +1500,6 @@ img {
     animation: fadeIn 0.6s ease forwards;
 }
 
-/* Pulse Effect for Loading */
 @keyframes pulse {
     0%, 100% {
         opacity: 1;
@@ -1457,153 +1511,4 @@ img {
 
 .loading {
     animation: pulse 1.5s infinite;
-}
-
-/* Card Appear Animation */
-@keyframes cardAppear {
-    from {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.content-card {
-    animation: cardAppear 0.4s ease forwards;
-}
-
-/* Hover Glow Effect */
-.content-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: var(--card-border-radius);
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
-    transition: box-shadow var(--transition-medium);
-}
-
-.content-card:hover::after {
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
-}
-
-
-/* ============================================
-   SEE ALL PAGE STYLES
-============================================ */
-.see-all {
-    font-size: 13px;
-    color: var(--netflix-light-gray);
-    transition: color var(--transition-fast);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.see-all:hover {
-    color: var(--netflix-pure-white);
-}
-
-.see-all:hover i {
-    transform: translateX(3px);
-}
-
-.see-all i {
-    font-size: 10px;
-    transition: transform var(--transition-fast);
-}
-
-/* See All Modal/Expanded View */
-.see-all-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.95);
-    z-index: 1500;
-    padding: 80px 60px 40px;
-    overflow-y: auto;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-}
-
-.see-all-modal.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.see-all-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 30px;
-}
-
-.see-all-header h2 {
-    font-size: 32px;
-    font-weight: 700;
-    color: #fff;
-}
-
-.see-all-close {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    color: #fff;
-    font-size: 24px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-}
-
-.see-all-close:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: rotate(90deg);
-}
-
-.see-all-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 20px;
-}
-
-.see-all-card {
-    border-radius: 5px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.see-all-card:hover {
-    transform: scale(1.05);
-}
-
-.see-all-card img {
-    width: 100%;
-    aspect-ratio: 2/3;
-    object-fit: cover;
-}
-
-@media (max-width: 768px) {
-    .see-all-modal {
-        padding: 70px 20px 30px;
-    }
-    
-    .see-all-header h2 {
-        font-size: 24px;
-    }
-    
-    .see-all-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-    }
 }
