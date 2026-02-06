@@ -1,9 +1,8 @@
 /* ============================================
-   STREAMIFY - TV SHOWS PAGE LOGIC (FIXED)
-   Browse All TV Shows with Filters
+   STREAMIFY - TV SHOWS PAGE LOGIC
+   FULLY OPTIMIZED FOR MOBILE
 ============================================ */
 
-// ============ DOM ELEMENTS ============
 const SeriesDOM = {
     seriesGrid: document.getElementById('seriesGrid'),
     loadMoreBtn: document.getElementById('loadMoreBtn'),
@@ -15,7 +14,6 @@ const SeriesDOM = {
     searchToggle: document.getElementById('searchToggle'),
     searchInput: document.getElementById('searchInput'),
     
-    // Modal
     modalOverlay: document.getElementById('modalOverlay'),
     modalClose: document.getElementById('modalClose'),
     modalBanner: document.getElementById('modalBanner'),
@@ -30,7 +28,6 @@ const SeriesDOM = {
     modalAddList: document.getElementById('modalAddList')
 };
 
-// ============ STATE ============
 let currentPage = 1;
 let currentGenre = 'all';
 let currentSort = 'popularity.desc';
@@ -38,7 +35,6 @@ let isLoading = false;
 let totalPages = 1;
 let currentModalItem = null;
 
-// ============ INITIALIZATION ============
 document.addEventListener('DOMContentLoaded', () => {
     initFilters();
     initSearch();
@@ -46,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSeries();
 });
 
-// ============ FILTERS ============
 function initFilters() {
     SeriesDOM.genreBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -107,7 +102,6 @@ function initFilters() {
     });
 }
 
-// ============ SEARCH ============
 function initSearch() {
     SeriesDOM.searchToggle.addEventListener('click', () => {
         SeriesDOM.searchBox.classList.toggle('active');
@@ -137,7 +131,6 @@ async function searchSeries(query) {
     hideLoading();
 }
 
-// ============ LOAD TV SHOWS ============
 async function loadSeries(append = false) {
     if (isLoading) return;
     showLoading();
@@ -209,14 +202,18 @@ function createGridCard(item, type) {
     `;
 }
 
+// FIXED: Card click events - Opens modal on POSTER click too
 function addCardEventListeners() {
     SeriesDOM.seriesGrid.querySelectorAll('.grid-card').forEach(card => {
         const id = parseInt(card.dataset.id);
         const type = card.dataset.type;
         
-        // FIXED: Card click opens modal
+        // FIXED: Clicking card/image opens modal
         card.addEventListener('click', (e) => {
+            // Don't open modal if clicking button
             if (!e.target.closest('button')) {
+                e.preventDefault();
+                e.stopPropagation();
                 openModal(id, type);
             }
         });
@@ -267,7 +264,6 @@ async function toggleListFromCard(card, id, type) {
     }
 }
 
-// ============ MODAL ============
 function initModal() {
     SeriesDOM.modalClose.addEventListener('click', closeModal);
     
@@ -340,7 +336,6 @@ function updateModalListButton() {
     }
 }
 
-// ============ UTILITIES ============
 function showLoading() {
     isLoading = true;
     SeriesDOM.loadMoreBtn.classList.add('loading');
