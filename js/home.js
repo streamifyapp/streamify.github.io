@@ -1,11 +1,15 @@
 /* ============================================
    STREAMIFY - HOME PAGE
-   Final Premium Version
+   Final Complete Version
 ============================================ */
 
 const $ = id => document.getElementById(id);
 
 const DOM = {
+    welcomePopup: $('welcomePopup'),
+    popupClose: $('popupClose'),
+    dontShowAgain: $('dontShowAgain'),
+    
     navbar: $('navbar'),
     menuBtn: $('menuBtn'),
     mobileMenu: $('mobileMenu'),
@@ -29,6 +33,7 @@ const DOM = {
     
     continueSection: $('continueSection'),
     continueWatching: $('continueWatching'),
+    top5Today: $('top5Today'),
     trendingNow: $('trendingNow'),
     newReleases: $('newReleases'),
     topRated: $('topRated'),
@@ -76,6 +81,7 @@ const GENRES = {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+    initWelcomePopup();
     initNavbar();
     initMobileMenu();
     initSearch();
@@ -84,8 +90,33 @@ document.addEventListener('DOMContentLoaded', () => {
     initDetailModal();
     loadContinueWatching();
     loadHero();
+    loadTop5();
     loadAllCategories();
 });
+
+// Welcome Popup
+function initWelcomePopup() {
+    const hidePopup = localStorage.getItem('streamify_hide_popup');
+    
+    if (!hidePopup) {
+        setTimeout(() => {
+            DOM.welcomePopup.classList.add('active');
+        }, 1500);
+    }
+    
+    DOM.popupClose?.addEventListener('click', () => {
+        if (DOM.dontShowAgain.checked) {
+            localStorage.setItem('streamify_hide_popup', 'true');
+        }
+        DOM.welcomePopup.classList.remove('active');
+    });
+    
+    DOM.welcomePopup?.addEventListener('click', (e) => {
+        if (e.target === DOM.welcomePopup) {
+            DOM.welcomePopup.classList.remove('active');
+        }
+    });
+}
 
 // Navbar scroll
 function initNavbar() {
@@ -189,15 +220,13 @@ function loadContinueWatching() {
     }
 }
 
-// Hero - Mixed Hollywood + Bollywood with Animation
+// Hero - Mixed Hollywood + Bollywood
 async function loadHero() {
-    // Fetch both Hollywood and Bollywood trending
     const [hollywood, bollywood] = await Promise.all([
         API.getTrendingMovies('day'),
         API.fetchFromTMDB('/discover/movie', { with_origin_country: 'IN', sort_by: 'popularity.desc' })
     ]);
     
-    // Mix them together
     let hwItems = (hollywood?.results || []).filter(i => i.backdrop_path).slice(0, 5);
     let bwItems = (bollywood?.results || []).filter(i => i.backdrop_path).slice(0, 5);
     
@@ -218,11 +247,9 @@ async function loadHero() {
 }
 
 function animateHeroChange(item) {
-    // Fade out
     DOM.heroBg.classList.add('fade-out');
     DOM.heroContent.classList.add('fade-out');
     
-    // After fade out, update content and fade in
     setTimeout(() => {
         updateHero(item);
         DOM.heroBg.classList.remove('fade-out');
@@ -244,7 +271,37 @@ function updateHero(item) {
     DOM.heroInfo.onclick = () => openDetail(item.id, type);
 }
 
-// Load Categories - Mixed content
+// Top 5 Today - Premium Ranking
+async function loadTop5() {
+    if (!DOM.top5Today) return;
+    
+    DOM.top5Today.innerHTML = Array(5).fill('<div class="skeleton" style="width:200px;height:225px;"></div>').join('');
+    
+    const [hw, bw] = await Promise.all([
+        API.fetchFromTMDB('/movie/popular'),
+        API.fetchFromTMDB('/discover/movie', { with_origin_country: 'IN', sort_by: 'popularity.desc' })
+    ]);
+    
+    const mixed = mixArrays(
+        (hw?.results || []).map(i => ({ ...i, type: 'movie' })),
+        (bw?.results || []).map(i => ({ ...i, type: 'movie' }))
+    ).slice(0, 5);
+    
+    DOM.top5Today.innerHTML = mixed.map((item, idx) => `
+        <div class="top-5-card" data-id="${item.id}" data-type="${item.type}">
+            <span class="rank-number">${idx + 1}</span>
+            <img class="top-5-poster" src="${API.getImageUrl(item.poster_path)}" alt="${item.title || item.name}">
+        </div>
+    `).join('');
+    
+    DOM.top5Today.querySelectorAll('.top-5-card').forEach(card => {
+        card.addEventListener('click', () => {
+            openDetail(card.dataset.id, card.dataset.type);
+        });
+    });
+}
+
+// Load Categories
 async function loadAllCategories() {
     loadMixed(DOM.trendingNow, '/trending/all/week');
     loadMixed(DOM.newReleases, '/movie/now_playing');
@@ -345,7 +402,6 @@ function initSeeAll() {
     });
     
     DOM.seeAllClose?.addEventListener('click', closeSeeAll);
-    
     DOM.seeAllModal?.addEventListener('click', e => {
         if (e.target === DOM.seeAllModal) closeSeeAll();
     });
@@ -437,7 +493,6 @@ function closeSeeAll() {
 // Detail Modal
 function initDetailModal() {
     DOM.detailClose?.addEventListener('click', closeDetail);
-    
     DOM.detailModal?.addEventListener('click', e => {
         if (e.target === DOM.detailModal) closeDetail();
     });
@@ -464,6 +519,7 @@ function initDetailModal() {
         if (e.key === 'Escape') {
             closeDetail();
             closeSeeAll();
+            DOM.welcomePopup.classList.remove('active');
         }
     });
 }
