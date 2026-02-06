@@ -23,14 +23,14 @@
             </ul>
         </div>
         <div class="nav-right">
-            <button class="search-btn" id="searchBtn">
+            <button class="nav-btn" id="searchBtn">
                 <i class="fas fa-search"></i>
             </button>
-            <button class="menu-btn mobile-only" id="menuBtn">
+            <button class="nav-btn mobile-only" id="menuBtn">
                 <i class="fas fa-bars"></i>
             </button>
-            <div class="profile-dropdown desktop-only">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" alt="Profile" class="profile-img">
+            <div class="profile-box desktop-only">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" alt="Profile">
             </div>
         </div>
     </nav>
@@ -39,217 +39,222 @@
     <div class="mobile-menu" id="mobileMenu">
         <div class="mobile-menu-header">
             <span class="logo">STREAMIFY</span>
-            <button class="close-menu" id="closeMenu">
-                <i class="fas fa-times"></i>
-            </button>
+            <button id="closeMenu"><i class="fas fa-times"></i></button>
         </div>
-        <ul class="mobile-nav-links">
+        <ul class="mobile-nav">
             <li><a href="index.html" class="active"><i class="fas fa-home"></i> Home</a></li>
             <li><a href="movies.html"><i class="fas fa-film"></i> Movies</a></li>
             <li><a href="series.html"><i class="fas fa-tv"></i> TV Shows</a></li>
             <li><a href="mylist.html"><i class="fas fa-bookmark"></i> My List</a></li>
         </ul>
     </div>
+    <div class="menu-overlay" id="menuOverlay"></div>
 
     <!-- Search Modal -->
     <div class="search-modal" id="searchModal">
-        <div class="search-container">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
             <input type="text" id="searchInput" placeholder="Search movies, TV shows...">
-            <button class="search-close" id="searchClose">
-                <i class="fas fa-times"></i>
-            </button>
+            <button id="searchClose"><i class="fas fa-times"></i></button>
         </div>
         <div class="search-results" id="searchResults"></div>
     </div>
 
     <!-- Hero Banner -->
-    <section class="hero-banner" id="heroBanner">
-        <div class="hero-background" id="heroBackground"></div>
+    <section class="hero" id="hero">
+        <div class="hero-bg" id="heroBg"></div>
         <div class="hero-gradient"></div>
         <div class="hero-content">
-            <h1 class="hero-title" id="heroTitle">Loading...</h1>
-            <div class="hero-meta">
-                <span class="hero-rating" id="heroRating"><i class="fas fa-star"></i> 8.5</span>
-                <span class="hero-year" id="heroYear">2024</span>
-                <span class="hero-badge">HD</span>
+            <div class="hero-badge">
+                <i class="fas fa-play-circle"></i>
+                <span id="heroType">MOVIE</span>
             </div>
-            <p class="hero-description" id="heroDescription">Loading...</p>
-            <div class="hero-buttons">
-                <button class="btn-play" id="heroPlayBtn">
-                    <i class="fas fa-play"></i> Play
-                </button>
-                <button class="btn-info" id="heroInfoBtn">
-                    <i class="fas fa-info-circle"></i> Info
-                </button>
+            <h1 id="heroTitle">Loading...</h1>
+            <div class="hero-meta">
+                <span class="hero-rating"><i class="fas fa-star"></i> <span id="heroRating">8.5</span></span>
+                <span id="heroYear">2024</span>
+                <span class="hero-quality">HD</span>
+            </div>
+            <p class="hero-desc" id="heroDesc">Loading description...</p>
+            <div class="hero-btns">
+                <button class="btn-primary" id="heroPlay"><i class="fas fa-play"></i> Play</button>
+                <button class="btn-secondary" id="heroInfo"><i class="fas fa-info-circle"></i> More Info</button>
             </div>
         </div>
     </section>
 
     <!-- Main Content -->
-    <main class="main-content">
+    <main class="main">
+
+        <!-- Continue Watching -->
+        <section class="row-section" id="continueSection" style="display: none;">
+            <div class="row-header">
+                <h2><i class="fas fa-history"></i> Continue Watching</h2>
+            </div>
+            <div class="row-scroll" id="continueWatching"></div>
+        </section>
 
         <!-- Trending Now -->
-        <section class="content-row">
+        <section class="row-section">
             <div class="row-header">
-                <h2 class="row-title">🔥 Trending Now</h2>
-                <button class="see-all-btn" data-category="trending">See All →</button>
+                <h2><i class="fas fa-fire"></i> Trending Now</h2>
+                <button class="see-all" data-category="trending">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="row-container" id="trendingNow"></div>
+            <div class="row-scroll" id="trendingNow"></div>
         </section>
 
         <!-- New Releases -->
-        <section class="content-row">
+        <section class="row-section">
             <div class="row-header">
-                <h2 class="row-title">✨ New Releases</h2>
-                <button class="see-all-btn" data-category="new">See All →</button>
+                <h2><i class="fas fa-sparkles"></i> New Releases</h2>
+                <button class="see-all" data-category="new">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="row-container" id="newReleases"></div>
+            <div class="row-scroll" id="newReleases"></div>
         </section>
 
         <!-- Top Rated -->
-        <section class="content-row">
+        <section class="row-section">
             <div class="row-header">
-                <h2 class="row-title">⭐ Top Rated</h2>
-                <button class="see-all-btn" data-category="toprated">See All →</button>
+                <h2><i class="fas fa-trophy"></i> Top Rated</h2>
+                <button class="see-all" data-category="toprated">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="row-container" id="topRated"></div>
-        </section>
-
-        <!-- K-Drama -->
-        <section class="content-row">
-            <div class="row-header">
-                <h2 class="row-title">🇰🇷 K-Drama</h2>
-                <button class="see-all-btn" data-category="kdrama">See All →</button>
-            </div>
-            <div class="row-container" id="kDrama"></div>
-        </section>
-
-        <!-- Bollywood -->
-        <section class="content-row">
-            <div class="row-header">
-                <h2 class="row-title">🇮🇳 Bollywood</h2>
-                <button class="see-all-btn" data-category="bollywood">See All →</button>
-            </div>
-            <div class="row-container" id="bollywood"></div>
+            <div class="row-scroll" id="topRated"></div>
         </section>
 
         <!-- Action -->
-        <section class="content-row">
+        <section class="row-section">
             <div class="row-header">
-                <h2 class="row-title">💥 Action</h2>
-                <button class="see-all-btn" data-category="action">See All →</button>
+                <h2><i class="fas fa-burst"></i> Action</h2>
+                <button class="see-all" data-category="action">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="row-container" id="actionMovies"></div>
+            <div class="row-scroll" id="actionMovies"></div>
         </section>
 
         <!-- Comedy -->
-        <section class="content-row">
+        <section class="row-section">
             <div class="row-header">
-                <h2 class="row-title">😂 Comedy</h2>
-                <button class="see-all-btn" data-category="comedy">See All →</button>
+                <h2><i class="fas fa-face-laugh-squint"></i> Comedy</h2>
+                <button class="see-all" data-category="comedy">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="row-container" id="comedyMovies"></div>
+            <div class="row-scroll" id="comedyMovies"></div>
         </section>
 
         <!-- Horror -->
-        <section class="content-row">
+        <section class="row-section">
             <div class="row-header">
-                <h2 class="row-title">👻 Horror</h2>
-                <button class="see-all-btn" data-category="horror">See All →</button>
+                <h2><i class="fas fa-ghost"></i> Horror</h2>
+                <button class="see-all" data-category="horror">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="row-container" id="horrorMovies"></div>
+            <div class="row-scroll" id="horrorMovies"></div>
         </section>
 
         <!-- Romance -->
-        <section class="content-row">
+        <section class="row-section">
             <div class="row-header">
-                <h2 class="row-title">❤️ Romance</h2>
-                <button class="see-all-btn" data-category="romance">See All →</button>
+                <h2><i class="fas fa-heart"></i> Romance</h2>
+                <button class="see-all" data-category="romance">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="row-container" id="romanceMovies"></div>
-        </section>
-
-        <!-- Sci-Fi -->
-        <section class="content-row">
-            <div class="row-header">
-                <h2 class="row-title">🚀 Science Fiction</h2>
-                <button class="see-all-btn" data-category="scifi">See All →</button>
-            </div>
-            <div class="row-container" id="scifiMovies"></div>
+            <div class="row-scroll" id="romanceMovies"></div>
         </section>
 
         <!-- Thriller -->
-        <section class="content-row">
+        <section class="row-section">
             <div class="row-header">
-                <h2 class="row-title">😱 Thriller</h2>
-                <button class="see-all-btn" data-category="thriller">See All →</button>
+                <h2><i class="fas fa-user-secret"></i> Thriller</h2>
+                <button class="see-all" data-category="thriller">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="row-container" id="thrillerMovies"></div>
+            <div class="row-scroll" id="thrillerMovies"></div>
+        </section>
+
+        <!-- Sci-Fi -->
+        <section class="row-section">
+            <div class="row-header">
+                <h2><i class="fas fa-rocket"></i> Science Fiction</h2>
+                <button class="see-all" data-category="scifi">See All <i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="row-scroll" id="scifiMovies"></div>
+        </section>
+
+        <!-- Drama -->
+        <section class="row-section">
+            <div class="row-header">
+                <h2><i class="fas fa-masks-theater"></i> Drama</h2>
+                <button class="see-all" data-category="drama">See All <i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="row-scroll" id="dramaMovies"></div>
         </section>
 
         <!-- Animation -->
-        <section class="content-row">
+        <section class="row-section">
             <div class="row-header">
-                <h2 class="row-title">🎨 Animation</h2>
-                <button class="see-all-btn" data-category="animation">See All →</button>
+                <h2><i class="fas fa-wand-magic-sparkles"></i> Animation</h2>
+                <button class="see-all" data-category="animation">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="row-container" id="animationMovies"></div>
+            <div class="row-scroll" id="animationMovies"></div>
+        </section>
+
+        <!-- Crime -->
+        <section class="row-section">
+            <div class="row-header">
+                <h2><i class="fas fa-handcuffs"></i> Crime</h2>
+                <button class="see-all" data-category="crime">See All <i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="row-scroll" id="crimeMovies"></div>
         </section>
 
         <!-- Documentary -->
-        <section class="content-row">
+        <section class="row-section">
             <div class="row-header">
-                <h2 class="row-title">📽️ Documentary</h2>
-                <button class="see-all-btn" data-category="documentary">See All →</button>
+                <h2><i class="fas fa-video"></i> Documentary</h2>
+                <button class="see-all" data-category="documentary">See All <i class="fas fa-chevron-right"></i></button>
             </div>
-            <div class="row-container" id="documentaries"></div>
+            <div class="row-scroll" id="documentaries"></div>
+        </section>
+
+        <!-- Family -->
+        <section class="row-section">
+            <div class="row-header">
+                <h2><i class="fas fa-people-roof"></i> Family</h2>
+                <button class="see-all" data-category="family">See All <i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="row-scroll" id="familyMovies"></div>
         </section>
 
     </main>
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-logo">STREAMIFY</div>
-            <p>© 2025 Streamify. All rights reserved.</p>
-        </div>
+        <div class="footer-logo">STREAMIFY</div>
+        <p>© 2025 Streamify. All rights reserved.</p>
     </footer>
 
     <!-- See All Modal -->
-    <div class="see-all-modal" id="seeAllModal">
-        <div class="see-all-header">
+    <div class="modal see-all-modal" id="seeAllModal">
+        <div class="modal-header">
             <h2 id="seeAllTitle">Category</h2>
-            <button class="see-all-close" id="seeAllClose">
-                <i class="fas fa-times"></i>
-            </button>
+            <button class="modal-close" id="seeAllClose"><i class="fas fa-times"></i></button>
         </div>
         <div class="see-all-grid" id="seeAllGrid"></div>
     </div>
 
     <!-- Detail Modal -->
-    <div class="detail-modal" id="detailModal">
+    <div class="modal detail-modal" id="detailModal">
         <div class="detail-content">
-            <button class="detail-close" id="detailClose">
-                <i class="fas fa-times"></i>
-            </button>
+            <button class="modal-close" id="detailClose"><i class="fas fa-times"></i></button>
             <div class="detail-banner" id="detailBanner"></div>
-            <div class="detail-info">
+            <div class="detail-body">
                 <h1 id="detailTitle">Title</h1>
                 <div class="detail-meta">
-                    <span class="detail-rating" id="detailRating">⭐ 8.5</span>
+                    <span class="rating"><i class="fas fa-star"></i> <span id="detailRating">8.5</span></span>
                     <span id="detailYear">2024</span>
                     <span id="detailDuration">2h 15m</span>
-                    <span class="detail-badge">HD</span>
+                    <span class="quality">HD</span>
                 </div>
-                <p class="detail-description" id="detailDescription">Description...</p>
-                <p class="detail-genres"><strong>Genres:</strong> <span id="detailGenres">Action, Drama</span></p>
-                <div class="detail-buttons">
-                    <button class="btn-play" id="detailPlayBtn">
-                        <i class="fas fa-play"></i> Play
-                    </button>
-                    <button class="btn-list" id="detailListBtn">
-                        <i class="fas fa-plus"></i> My List
-                    </button>
+                <p class="detail-desc" id="detailDesc">Description...</p>
+                <p class="detail-genres"><span>Genres:</span> <span id="detailGenres">Action, Drama</span></p>
+                <div class="detail-btns">
+                    <button class="btn-primary" id="detailPlay"><i class="fas fa-play"></i> Play</button>
+                    <button class="btn-secondary" id="detailList"><i class="fas fa-plus"></i> My List</button>
                 </div>
             </div>
         </div>
