@@ -489,8 +489,8 @@
 ============================================ */
 #playerTopSpacer {
     width: 100% !important;
-    height: 96px !important;
-    min-height: 96px !important;
+    height: 125px !important;
+    min-height: 125px !important;
     max-height: none !important;
     background: #000000 !important;
     display: block !important;
@@ -511,11 +511,10 @@
     transform: none !important;
 }
 
-/* All screen sizes - always 1 inch */
 @media (max-width: 768px) {
     #playerTopSpacer {
-        height: 96px !important;
-        min-height: 96px !important;
+        height: 125px !important;
+        min-height: 125px !important;
         max-height: none !important;
         display: block !important;
         visibility: visible !important;
@@ -524,8 +523,8 @@
 
 @media (max-width: 480px) {
     #playerTopSpacer {
-        height: 96px !important;
-        min-height: 96px !important;
+        height: 125px !important;
+        min-height: 125px !important;
         max-height: none !important;
         display: block !important;
         visibility: visible !important;
