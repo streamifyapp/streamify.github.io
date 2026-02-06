@@ -481,3 +481,48 @@
         gap: 12px;
     }
 }
+
+/* ============================================
+   PLAYER TOP SPACER - Social Bar Landing Zone
+   Inline styled in HTML but CSS backup here
+============================================ */
+#playerTopSpacer {
+    width: 100% !important;
+    background: #000 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 2 !important;
+    left: auto !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Desktop spacer */
+@media (min-width: 769px) {
+    #playerTopSpacer {
+        height: 90px !important;
+        min-height: 90px !important;
+        max-height: none !important;
+    }
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+    #playerTopSpacer {
+        height: 65px !important;
+        min-height: 65px !important;
+        max-height: none !important;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    #playerTopSpacer {
+        height: 55px !important;
+        min-height: 55px !important;
+        max-height: none !important;
+    }
+}
