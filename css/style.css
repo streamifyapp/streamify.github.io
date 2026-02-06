@@ -1,6 +1,6 @@
 /* ============================================
    STREAMIFY - PREMIUM NETFLIX CLONE
-   Final Complete Version
+   Updated Version - Fixed Top 5 & Popup
 ============================================ */
 
 * {
@@ -53,7 +53,7 @@ button {
     border: 1px solid #333;
     border-radius: 20px;
     padding: 40px;
-    max-width: 450px;
+    max-width: 500px;
     width: 100%;
     text-align: center;
     transform: scale(0.9);
@@ -86,37 +86,75 @@ button {
     color: #fff;
 }
 
-.popup-box p {
+.popup-box > p {
     font-size: 15px;
     color: #b3b3b3;
     line-height: 1.6;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
 }
 
 .popup-box p strong {
     color: #e50914;
 }
 
-.popup-hint {
-    background: rgba(255,255,255,0.05);
-    padding: 12px 20px;
-    border-radius: 10px;
-    font-size: 13px !important;
-    color: #888 !important;
-    margin-bottom: 25px !important;
+.popup-instructions {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    text-align: left;
 }
 
-.popup-hint i {
-    margin-right: 8px;
-    color: #e50914;
+.instruction-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 0;
+    border-bottom: 1px solid #222;
 }
 
-.popup-hint span {
+.instruction-item:last-child {
+    border-bottom: none;
+}
+
+.instruction-item i.fab {
+    font-size: 24px;
+    width: 30px;
+    text-align: center;
+}
+
+.instruction-item i.fa-windows {
+    color: #00a4ef;
+}
+
+.instruction-item i.fa-apple {
+    color: #a2aaad;
+}
+
+.instruction-item i.fa-android {
+    color: #3ddc84;
+}
+
+.instruction-item span {
+    font-size: 14px;
+    color: #b3b3b3;
+    line-height: 1.5;
+}
+
+.instruction-item strong {
+    color: #fff;
+    font-weight: 600;
+}
+
+.instruction-item kbd {
     background: #333;
     padding: 3px 10px;
     border-radius: 5px;
     color: #fff;
     font-weight: 600;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
 }
 
 .popup-btn {
@@ -136,23 +174,6 @@ button {
 .popup-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(229,9,20,0.5);
-}
-
-.popup-checkbox {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
-    font-size: 13px;
-    color: #666;
-    cursor: pointer;
-}
-
-.popup-checkbox input {
-    width: 16px;
-    height: 16px;
-    accent-color: #e50914;
 }
 
 /* ============ NAVBAR ============ */
@@ -669,9 +690,9 @@ button {
     border-radius: 5px 0 0 5px;
 }
 
-/* ============ TOP 5 RANKING CARDS ============ */
+/* ============ TOP 5 RANKING CARDS - IMPROVED ============ */
 .top-5-row {
-    gap: 30px;
+    gap: 35px;
 }
 
 .top-5-card {
@@ -680,52 +701,59 @@ button {
     align-items: flex-end;
     cursor: pointer;
     transition: transform 0.3s;
+    position: relative;
 }
 
 .top-5-card:hover {
     transform: scale(1.05);
+    z-index: 5;
 }
 
 .rank-number {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 200px;
+    font-size: 240px;
     font-weight: 900;
-    line-height: 0.8;
+    line-height: 0.75;
     color: transparent;
-    -webkit-text-stroke: 4px #404040;
-    margin-right: -45px;
+    -webkit-text-stroke: 3px #2a2a2a;
+    margin-right: -35px;
     z-index: 1;
-    text-shadow: 0 0 30px rgba(0,0,0,0.8);
+    text-shadow: 0 0 40px rgba(0,0,0,0.9);
+    position: relative;
 }
 
 .top-5-card:nth-child(1) .rank-number {
     background: linear-gradient(180deg, #ffd700 0%, #ff8c00 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    -webkit-text-stroke: 0;
+    -webkit-text-stroke: 2px #b8860b;
+    filter: drop-shadow(0 0 15px rgba(255,215,0,0.5));
 }
 
 .top-5-card:nth-child(2) .rank-number {
-    background: linear-gradient(180deg, #c0c0c0 0%, #808080 100%);
+    background: linear-gradient(180deg, #e8e8e8 0%, #9a9a9a 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    -webkit-text-stroke: 0;
+    -webkit-text-stroke: 2px #707070;
+    filter: drop-shadow(0 0 15px rgba(192,192,192,0.4));
 }
 
 .top-5-card:nth-child(3) .rank-number {
-    background: linear-gradient(180deg, #cd7f32 0%, #8b4513 100%);
+    background: linear-gradient(180deg, #d4915d 0%, #8b4513 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    -webkit-text-stroke: 0;
+    -webkit-text-stroke: 2px #6b3410;
+    filter: drop-shadow(0 0 15px rgba(205,127,50,0.4));
 }
 
 .top-5-poster {
-    width: 150px;
-    height: 225px;
+    width: 180px;
+    height: 270px;
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: 10px;
     z-index: 2;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+    position: relative;
 }
 
 /* ============ REGULAR CARDS ============ */
@@ -1063,9 +1091,13 @@ button {
     .navbar { padding: 12px 20px; }
     .logo { font-size: 26px; }
     
-    .popup-box { padding: 30px 25px; }
+    .popup-box { padding: 30px 25px; max-width: 95%; }
     .popup-icon { width: 60px; height: 60px; font-size: 24px; }
     .popup-box h2 { font-size: 22px; }
+    .popup-instructions { padding: 15px; }
+    .instruction-item { padding: 10px 0; }
+    .instruction-item i.fab { font-size: 20px; width: 25px; }
+    .instruction-item span { font-size: 13px; }
     .popup-btn { padding: 12px 30px; font-size: 14px; }
     
     .hero { height: 65vh; min-height: 450px; padding-bottom: 80px; }
@@ -1085,8 +1117,9 @@ button {
     .card-title { font-size: 13px; }
     .skeleton { width: 150px; height: 225px; }
     
-    .rank-number { font-size: 120px; margin-right: -25px; }
-    .top-5-poster { width: 100px; height: 150px; }
+    .rank-number { font-size: 150px; margin-right: -20px; -webkit-text-stroke: 2px #2a2a2a; }
+    .top-5-poster { width: 120px; height: 180px; }
+    .top-5-row { gap: 25px; }
     
     .scroll-arrow { display: none; }
     
@@ -1107,7 +1140,13 @@ button {
     .card { width: 130px; }
     .card-img { height: 195px; }
     .skeleton { width: 130px; height: 195px; }
-    .rank-number { font-size: 100px; margin-right: -20px; }
-    .top-5-poster { width: 85px; height: 128px; }
+    
+    .rank-number { font-size: 120px; margin-right: -15px; }
+    .top-5-poster { width: 100px; height: 150px; }
+    .top-5-row { gap: 20px; }
+    
     .see-all-grid { grid-template-columns: repeat(2, 1fr); }
+    
+    .instruction-item { flex-direction: column; text-align: center; gap: 8px; }
+    .instruction-item i.fab { margin: 0 auto; }
 }
