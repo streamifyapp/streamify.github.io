@@ -1,0 +1,417 @@
+/* ============================================
+   STREAMIFY - BROWSE PAGES STYLES
+   Movies, Series, My List Pages
+============================================ */
+
+/* ============ BROWSE HEADER ============ */
+.browse-header {
+    padding: 120px 60px 40px;
+    background: linear-gradient(180deg, rgba(20,20,20,1) 0%, rgba(20,20,20,0.8) 100%);
+}
+
+.browse-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.browse-header h1 {
+    font-size: 42px;
+    font-weight: 700;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.browse-header h1 i {
+    color: #e50914;
+}
+
+.mylist-subtitle {
+    font-size: 16px;
+    color: #808080;
+    margin-top: 10px;
+}
+
+/* ============ FILTER CONTROLS ============ */
+.filter-controls {
+    display: flex;
+    gap: 15px;
+}
+
+.filter-dropdown {
+    position: relative;
+}
+
+.filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    background: #141414;
+    border: 1px solid #808080;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+    background: #333;
+    border-color: #fff;
+}
+
+.filter-btn i {
+    font-size: 12px;
+    transition: transform 0.2s ease;
+}
+
+.filter-dropdown.active .filter-btn i {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    background: rgba(30, 30, 30, 0.98);
+    border: 1px solid #404040;
+    border-radius: 5px;
+    padding: 10px 0;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.2s ease;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.filter-dropdown.active .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(5px);
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 10px 20px;
+    color: #b3b3b3;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.dropdown-menu a:hover {
+    background: #333;
+    color: #fff;
+}
+
+.dropdown-menu a.active {
+    color: #fff;
+    background: #e50914;
+}
+
+/* ============ BROWSE CONTENT ============ */
+.browse-content {
+    padding: 20px 60px 60px;
+    min-height: 50vh;
+}
+
+/* ============ CONTENT GRID ============ */
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.grid-card {
+    position: relative;
+    border-radius: 5px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.grid-card:hover {
+    transform: scale(1.05);
+    z-index: 10;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+.grid-card img {
+    width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    background: #232323;
+}
+
+.grid-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 15px;
+}
+
+.grid-card:hover .grid-card-overlay {
+    opacity: 1;
+}
+
+.grid-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.grid-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.grid-card-rating {
+    color: #46d369;
+    font-weight: 600;
+}
+
+.grid-card-year {
+    color: #aaa;
+}
+
+.grid-card-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.grid-card-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(30, 30, 30, 0.8);
+    color: #fff;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.grid-card-btn:hover {
+    border-color: #fff;
+    background: rgba(50, 50, 50, 0.9);
+    transform: scale(1.1);
+}
+
+.grid-card-btn.play-btn {
+    background: #fff;
+    color: #000;
+    border: none;
+}
+
+.grid-card-btn.play-btn:hover {
+    background: #e5e5e5;
+}
+
+/* Remove Button */
+.grid-card-btn.remove-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    opacity: 0;
+    z-index: 5;
+}
+
+.grid-card:hover .grid-card-btn.remove-btn {
+    opacity: 1;
+}
+
+.grid-card-btn.remove-btn:hover {
+    background: #e50914;
+    border-color: #e50914;
+}
+
+/* ============ LOAD MORE ============ */
+.load-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.load-more-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 40px;
+    background: transparent;
+    border: 1px solid #808080;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.load-more-btn:hover {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+}
+
+.load-more-btn i {
+    transition: transform 0.3s ease;
+}
+
+.load-more-btn:hover i {
+    transform: translateY(3px);
+}
+
+.load-more-btn.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.load-more-btn.loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============ EMPTY STATE ============ */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 20px;
+    min-height: 40vh;
+}
+
+.empty-icon {
+    font-size: 80px;
+    color: #404040;
+    margin-bottom: 30px;
+}
+
+.empty-state h2 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+.empty-state p {
+    font-size: 16px;
+    color: #808080;
+    margin-bottom: 30px;
+    max-width: 400px;
+}
+
+.btn-browse {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 30px;
+    background: #e50914;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 5px;
+    transition: background 0.2s ease;
+}
+
+.btn-browse:hover {
+    background: #f40612;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 992px) {
+    .browse-header {
+        padding: 100px 40px 30px;
+    }
+    
+    .browse-header h1 {
+        font-size: 32px;
+    }
+    
+    .browse-content {
+        padding: 20px 40px 50px;
+    }
+    
+    .content-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .browse-header {
+        padding: 80px 20px 25px;
+    }
+    
+    .browse-header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .browse-header h1 {
+        font-size: 28px;
+    }
+    
+    .filter-controls {
+        width: 100%;
+    }
+    
+    .filter-btn {
+        flex: 1;
+        justify-content: center;
+    }
+    
+    .browse-content {
+        padding: 15px 20px 40px;
+    }
+    
+    .content-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    
+    .grid-card-overlay {
+        opacity: 1;
+        background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 60%);
+    }
+    
+    .grid-card-buttons {
+        display: none;
+    }
+    
+    .empty-icon {
+        font-size: 60px;
+    }
+    
+    .empty-state h2 {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 480px) {
+    .content-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
