@@ -245,3 +245,47 @@
     background: #e50914;
     transform: scale(1.1);
 }
+
+/* Single small banner - visible on ALL devices */
+.small-banner-below-continue,
+.small-banner-below-title {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    margin: 15px auto;
+    max-width: 320px;
+    overflow: hidden;
+}
+
+/* Medium banner below trending - visible on ALL devices */
+.banner-below-trending {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    max-width: 300px;
+    overflow: hidden;
+}
+
+/* Black spacer above player for social bar */
+.player-top-spacer {
+    width: 100%;
+    height: 70px;
+    background: #000;
+    position: relative;
+    z-index: 1;
+}
+
+/* Desktop spacer height */
+@media (min-width: 769px) {
+    .player-top-spacer {
+        height: 80px;
+    }
+}
+
+/* Mobile spacer height */
+@media (max-width: 768px) {
+    .player-top-spacer {
+        height: 60px;
+    }
+}
