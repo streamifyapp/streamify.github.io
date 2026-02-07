@@ -47,10 +47,20 @@
     border: 1px solid rgba(255,255,255,0.05);
 }
 
-/* Hide medium banner above native ad on DESKTOP ONLY (Watch Page) */
+/* Hide specific banner on DESKTOP ONLY */
 @media (min-width: 769px) {
-    .episode-selector + .banner-300x250 {
+    .hide-on-desktop {
         display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        max-height: 0 !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        opacity: 0 !important;
+        position: absolute !important;
+        left: -9999px !important;
     }
 }
 
@@ -246,6 +256,21 @@
         height: auto !important;
         max-height: none !important;
         min-height: 250px !important;
+    }
+    
+    /* Show the hide-on-desktop banner on mobile */
+    .hide-on-desktop {
+        display: flex !important;
+        visibility: visible !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 250px !important;
+        overflow: visible !important;
+        margin: 20px auto !important;
+        padding: 10px !important;
+        opacity: 1 !important;
+        position: relative !important;
+        left: auto !important;
     }
 }
 
