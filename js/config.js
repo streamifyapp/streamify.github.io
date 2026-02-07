@@ -18,7 +18,7 @@ const CONFIG = {
     },
     
     // Streaming API Configuration
-    STREAMING_BASE_URL: 'https://vidrock.net',
+    STREAMING_BASE_URL: 'https://player.vidify.top',
     
     // Build streaming URL for movies
     getMovieStreamUrl: function(tmdbId) {
