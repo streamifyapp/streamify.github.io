@@ -47,6 +47,13 @@
     border: 1px solid rgba(255,255,255,0.05);
 }
 
+/* Hide medium banner above native ad on DESKTOP ONLY (Watch Page) */
+@media (min-width: 769px) {
+    .episode-selector + .banner-300x250 {
+        display: none !important;
+    }
+}
+
 /* Mobile Banner 320x100 - MOBILE ONLY */
 .mobile-banner-320x100 {
     display: none;
