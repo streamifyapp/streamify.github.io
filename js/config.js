@@ -18,7 +18,7 @@ const CONFIG = {
     },
     
     // Streaming API Configuration
-    STREAMING_BASE_URL: 'https://player.vidify.top/embed',
+    STREAMING_BASE_URL: 'https://player.videasy.net',
     
     // Build streaming URL for movies
     getMovieStreamUrl: function(tmdbId) {
