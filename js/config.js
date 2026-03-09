@@ -18,16 +18,16 @@ const CONFIG = {
     },
     
     // Streaming API Configuration
-    STREAMING_BASE_URL: 'https://player.videasy.net',
+    STREAMING_BASE_URL: 'https://peachify.top',
     
     // Build streaming URL for movies
     getMovieStreamUrl: function(tmdbId) {
-        return `${this.STREAMING_BASE_URL}/movie/${tmdbId}`;
+        return `${this.STREAMING_BASE_URL}/?type=movie&id=${tmdbId}`;
     },
     
     // Build streaming URL for TV shows
     getTVStreamUrl: function(tmdbId, season = 1, episode = 1) {
-        return `${this.STREAMING_BASE_URL}/tv/${tmdbId}/${season}/${episode}`;
+        return `${this.STREAMING_BASE_URL}/?type=tv&id=${tmdbId}&s=${season}&e=${episode}`;
     },
     
     // TMDB Genre IDs
