@@ -1,421 +1,420 @@
 /* ============================================
    STREAMIFY - WATCH PAGE
-   Complete Final Version
+   Player & Server Management
 ============================================ */
 
-// Helper function
-const $ = id => document.getElementById(id);
-
-// DOM Elements
-const DOM = {
-    playerLoader: $('playerLoader'),
-    player: $('player'),
-    watchTitle: $('watchTitle'),
-    watchRating: $('watchRating'),
-    watchYear: $('watchYear'),
-    watchDuration: $('watchDuration'),
-    watchDesc: $('watchDesc'),
-    watchGenres: $('watchGenres'),
-    watchCast: $('watchCast'),
-    episodeSelector: $('episodeSelector'),
-    seasonSelect: $('seasonSelect'),
-    episodesGrid: $('episodesGrid'),
-    listBtn: $('listBtn'),
-    shareBtn: $('shareBtn'),
-    likeBtn: $('likeBtn'),
-    similarGrid: $('similarGrid')
-};
-
-// State
-let content = null;
-let contentType = 'movie';
+// Global variables
+let currentType = 'movie';
+let currentId = null;
 let currentSeason = 1;
 let currentEpisode = 1;
+let currentServer = null;
+let mediaData = null;
 
-// Initialize
-document.addEventListener('DOMContentLoaded', init);
+// ============ INITIALIZATION ============
 
-async function init() {
-    const params = new URLSearchParams(location.search);
-    const id = params.get('id');
-    const type = params.get('type') || 'movie';
-    
-    if (!id) {
-        location.href = 'index.html';
+document.addEventListener('DOMContentLoaded', () => {
+    initWatchPage();
+});
+
+async function initWatchPage() {
+    // Get URL parameters
+    const params = new URLSearchParams(window.location.search);
+    currentId = params.get('id');
+    currentType = params.get('type') || 'movie';
+    currentSeason = parseInt(params.get('season')) || 1;
+    currentEpisode = parseInt(params.get('episode')) || 1;
+
+    if (!currentId) {
+        showError('No content ID provided');
         return;
     }
-    
-    contentType = type;
-    await loadContent(id, type);
-    initButtons();
+
+    // Load saved server or use default
+    currentServer = localStorage.getItem(CONFIG.STORAGE_KEYS.selectedServer) || CONFIG.DEFAULT_SERVER;
+
+    // Initialize server buttons
+    initServerButtons();
+
+    // Load content data
+    await loadContentData();
+
+    // Load player
+    loadPlayer();
+
+    // Setup action buttons
+    setupActionButtons();
 }
 
-// Load Content Details
-async function loadContent(id, type) {
-    let data;
-    
-    if (type === 'movie') {
-        data = await API.getMovieDetails(id);
-    } else {
-        data = await API.getTVDetails(id);
-    }
-    
-    if (!data) {
-        alert('Failed to load content');
-        location.href = 'index.html';
-        return;
-    }
-    
-    content = { ...data, type };
-    
-    // Update Page Title
-    document.title = `${data.title || data.name} - Streamify`;
-    
-    // Update UI Elements
-    DOM.watchTitle.textContent = data.title || data.name;
-    DOM.watchRating.textContent = data.vote_average?.toFixed(1) || 'N/A';
-    DOM.watchYear.textContent = (data.release_date || data.first_air_date || '').split('-')[0];
-    DOM.watchDesc.textContent = data.overview || 'No description available.';
-    DOM.watchGenres.textContent = data.genres?.map(g => g.name).join(', ') || '-';
-    
-    // Cast
-    if (data.credits && data.credits.cast) {
-        const castNames = data.credits.cast.slice(0, 6).map(c => c.name).join(', ');
-        DOM.watchCast.textContent = castNames || '-';
-    } else {
-        DOM.watchCast.textContent = '-';
-    }
-    
-    // Handle Movie vs TV Show
-    if (type === 'movie') {
-        // Movie duration
-        const hours = Math.floor((data.runtime || 0) / 60);
-        const mins = (data.runtime || 0) % 60;
-        DOM.watchDuration.textContent = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
-        
-        // Play movie immediately
-        playVideo(id, 'movie');
-    } else {
-        // TV Show
-        DOM.watchDuration.textContent = `${data.number_of_seasons || 0} Season${data.number_of_seasons > 1 ? 's' : ''}`;
-        
-        // Load seasons and episodes
-        await loadSeasons(id, data.seasons);
-        
-        // Auto-play first episode
-        playVideo(id, 'tv', 1, 1);
-    }
-    
-    // Load similar content
-    loadSimilar(data);
-    
-    // Update My List button state
-    updateListBtn();
-    
-    // Save to continue watching
-    saveToContinue();
-}
+// ============ SERVER MANAGEMENT ============
 
-// Load Seasons
-async function loadSeasons(tvId, seasons) {
-    if (!seasons || seasons.length === 0) return;
-    
-    // Filter out season 0 (specials)
-    const validSeasons = seasons.filter(s => s.season_number > 0);
-    
-    if (validSeasons.length === 0) return;
-    
-    // Show episode selector
-    DOM.episodeSelector.style.display = 'block';
-    
-    // Populate season dropdown
-    DOM.seasonSelect.innerHTML = validSeasons.map(s => 
-        `<option value="${s.season_number}">Season ${s.season_number} (${s.episode_count} Episodes)</option>`
-    ).join('');
-    
-    // Load first season episodes
-    await loadEpisodes(tvId, 1);
-    
-    // Season change event listener
-    DOM.seasonSelect.addEventListener('change', async () => {
-        currentSeason = parseInt(DOM.seasonSelect.value);
-        currentEpisode = 1;
-        await loadEpisodes(tvId, currentSeason);
+function initServerButtons() {
+    const serverButtonsContainer = document.getElementById('serverButtons');
+    serverButtonsContainer.innerHTML = '';
+
+    const serverKeys = CONFIG.getServerKeys();
+
+    serverKeys.forEach((key, index) => {
+        const btn = document.createElement('button');
+        btn.className = `server-btn ${key === currentServer ? 'active' : ''}`;
+        btn.dataset.server = key;
+        btn.innerHTML = `
+            <i class="fas fa-play-circle"></i>
+            <span>${CONFIG.getServerName(key)}</span>
+        `;
+        btn.addEventListener('click', () => switchServer(key));
+        serverButtonsContainer.appendChild(btn);
     });
 }
 
-// Load Episodes
-async function loadEpisodes(tvId, seasonNum) {
-    // Show loading
-    DOM.episodesGrid.innerHTML = `
-        <div style="text-align:center; padding:50px; color:#666;">
-            <div class="spinner" style="margin:0 auto 15px; width:40px; height:40px; border:3px solid #333; border-top-color:#e50914; border-radius:50%; animation:spin 1s linear infinite;"></div>
-            <p>Loading episodes...</p>
-        </div>
-    `;
-    
-    const data = await API.getSeasonDetails(tvId, seasonNum);
-    
-    if (!data || !data.episodes || data.episodes.length === 0) {
-        DOM.episodesGrid.innerHTML = '<p style="text-align:center; padding:40px; color:#666;">No episodes found for this season.</p>';
+function switchServer(serverKey) {
+    if (serverKey === currentServer) return;
+
+    // Update current server
+    currentServer = serverKey;
+
+    // Save preference
+    localStorage.setItem(CONFIG.STORAGE_KEYS.selectedServer, serverKey);
+
+    // Update button states
+    document.querySelectorAll('.server-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.server === serverKey) {
+            btn.classList.add('active');
+        }
+    });
+
+    // Reload player with new server
+    loadPlayer();
+
+    // Show notification
+    showNotification(`Switched to ${CONFIG.getServerName(serverKey)}`);
+}
+
+// ============ PLAYER MANAGEMENT ============
+
+function loadPlayer() {
+    const player = document.getElementById('player');
+    const loader = document.getElementById('playerLoader');
+
+    // Show loader
+    loader.style.display = 'flex';
+    player.style.opacity = '0';
+
+    // Get stream URL based on type and server
+    let streamUrl;
+    if (currentType === 'movie') {
+        streamUrl = CONFIG.getMovieStreamUrl(currentId, currentServer);
+    } else {
+        streamUrl = CONFIG.getTVStreamUrl(currentId, currentSeason, currentEpisode, currentServer);
+    }
+
+    // Set iframe source
+    player.src = streamUrl;
+
+    // Hide loader when iframe loads
+    player.onload = () => {
+        loader.style.display = 'none';
+        player.style.opacity = '1';
+    };
+
+    // Handle load error
+    player.onerror = () => {
+        loader.innerHTML = `
+            <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #e50914;"></i>
+            <p>Failed to load player. Try another server.</p>
+        `;
+    };
+}
+
+// ============ CONTENT DATA ============
+
+async function loadContentData() {
+    try {
+        if (currentType === 'movie') {
+            mediaData = await API.getMovieDetails(currentId);
+            displayMovieData(mediaData);
+        } else {
+            mediaData = await API.getTVDetails(currentId);
+            displayTVData(mediaData);
+        }
+    } catch (error) {
+        console.error('Error loading content:', error);
+        showError('Failed to load content details');
+    }
+}
+
+function displayMovieData(movie) {
+    // Update page title
+    document.title = `${movie.title} - Streamify`;
+
+    // Update content info
+    document.getElementById('watchTitle').textContent = movie.title;
+    document.getElementById('watchRating').textContent = movie.vote_average?.toFixed(1) || 'N/A';
+    document.getElementById('watchYear').textContent = movie.release_date?.split('-')[0] || 'N/A';
+    document.getElementById('watchDuration').textContent = formatRuntime(movie.runtime);
+    document.getElementById('watchDesc').textContent = movie.overview || 'No description available.';
+
+    // Genres
+    const genres = movie.genres?.map(g => g.name).join(', ') || 'N/A';
+    document.getElementById('watchGenres').textContent = genres;
+
+    // Cast
+    const cast = movie.credits?.cast?.slice(0, 5).map(c => c.name).join(', ') || 'N/A';
+    document.getElementById('watchCast').textContent = cast;
+
+    // Load similar movies
+    loadSimilarContent(movie.similar?.results || movie.recommendations?.results || []);
+}
+
+function displayTVData(show) {
+    // Update page title
+    document.title = `${show.name} - Streamify`;
+
+    // Update content info
+    document.getElementById('watchTitle').textContent = show.name;
+    document.getElementById('watchRating').textContent = show.vote_average?.toFixed(1) || 'N/A';
+    document.getElementById('watchYear').textContent = show.first_air_date?.split('-')[0] || 'N/A';
+    document.getElementById('watchDuration').textContent = `${show.number_of_seasons} Season${show.number_of_seasons > 1 ? 's' : ''}`;
+    document.getElementById('watchDesc').textContent = show.overview || 'No description available.';
+
+    // Genres
+    const genres = show.genres?.map(g => g.name).join(', ') || 'N/A';
+    document.getElementById('watchGenres').textContent = genres;
+
+    // Cast
+    const cast = show.credits?.cast?.slice(0, 5).map(c => c.name).join(', ') || 'N/A';
+    document.getElementById('watchCast').textContent = cast;
+
+    // Show episode selector
+    initEpisodeSelector(show);
+
+    // Load similar shows
+    loadSimilarContent(show.similar?.results || show.recommendations?.results || []);
+}
+
+// ============ EPISODE SELECTOR ============
+
+function initEpisodeSelector(show) {
+    const episodeSelector = document.getElementById('episodeSelector');
+    const seasonSelect = document.getElementById('seasonSelect');
+
+    if (!show.seasons || show.seasons.length === 0) {
+        episodeSelector.style.display = 'none';
         return;
     }
-    
-    // Render episode cards
-    DOM.episodesGrid.innerHTML = data.episodes.map(ep => {
-        const isActive = ep.episode_number === currentEpisode && seasonNum === currentSeason;
+
+    episodeSelector.style.display = 'block';
+
+    // Filter out season 0 (specials) and populate season select
+    const seasons = show.seasons.filter(s => s.season_number > 0);
+    seasonSelect.innerHTML = seasons.map(s => 
+        `<option value="${s.season_number}" ${s.season_number === currentSeason ? 'selected' : ''}>
+            Season ${s.season_number}
+        </option>`
+    ).join('');
+
+    // Load episodes for current season
+    loadEpisodes(currentSeason);
+
+    // Season change event
+    seasonSelect.addEventListener('change', (e) => {
+        currentSeason = parseInt(e.target.value);
+        loadEpisodes(currentSeason);
+    });
+}
+
+async function loadEpisodes(seasonNumber) {
+    const episodesGrid = document.getElementById('episodesGrid');
+    episodesGrid.innerHTML = '<div class="loading-episodes">Loading episodes...</div>';
+
+    try {
+        const seasonData = await API.getSeasonDetails(currentId, seasonNumber);
         
-        // Episode still image
-        const stillImage = ep.still_path 
-            ? API.getImageUrl(ep.still_path, 'card') 
-            : 'https://via.placeholder.com/320x180/1a1a1a/666666?text=No+Preview';
-        
-        // Episode runtime
-        const runtime = ep.runtime ? `${ep.runtime} min` : '';
-        
-        // Episode description
-        const description = ep.overview || 'No description available for this episode.';
-        
-        return `
-            <div class="episode-card ${isActive ? 'active' : ''}" 
-                 data-season="${seasonNum}" 
-                 data-episode="${ep.episode_number}">
+        if (!seasonData || !seasonData.episodes) {
+            episodesGrid.innerHTML = '<p>No episodes found</p>';
+            return;
+        }
+
+        episodesGrid.innerHTML = seasonData.episodes.map(ep => `
+            <div class="episode-card ${ep.episode_number === currentEpisode && seasonNumber === currentSeason ? 'active' : ''}" 
+                 data-episode="${ep.episode_number}"
+                 onclick="playEpisode(${seasonNumber}, ${ep.episode_number})">
                 <div class="episode-thumb">
-                    <img src="${stillImage}" alt="${ep.name}" loading="lazy">
-                    <span class="episode-number">E${ep.episode_number}</span>
+                    <img src="${ep.still_path ? API.getImageUrl(ep.still_path, 'card') : 'https://via.placeholder.com/300x170?text=No+Image'}" 
+                         alt="${ep.name}"
+                         loading="lazy">
                     <div class="episode-play">
                         <i class="fas fa-play"></i>
                     </div>
                 </div>
                 <div class="episode-info">
-                    <div class="episode-header">
-                        <span class="episode-title">${ep.name || 'Episode ' + ep.episode_number}</span>
-                        <span class="episode-duration">${runtime}</span>
-                    </div>
-                    <p class="episode-desc">${description}</p>
+                    <h4>E${ep.episode_number}: ${ep.name}</h4>
+                    <p>${ep.overview?.slice(0, 100) || 'No description'}${ep.overview?.length > 100 ? '...' : ''}</p>
                 </div>
             </div>
-        `;
-    }).join('');
-    
-    // Add click events to episode cards
-    DOM.episodesGrid.querySelectorAll('.episode-card').forEach(card => {
-        card.addEventListener('click', () => {
-            const season = parseInt(card.dataset.season);
-            const episode = parseInt(card.dataset.episode);
-            
-            // Update current state
-            currentSeason = season;
-            currentEpisode = episode;
-            
-            // Update active class
-            DOM.episodesGrid.querySelectorAll('.episode-card').forEach(c => {
-                c.classList.remove('active');
-            });
+        `).join('');
+
+    } catch (error) {
+        console.error('Error loading episodes:', error);
+        episodesGrid.innerHTML = '<p>Failed to load episodes</p>';
+    }
+}
+
+function playEpisode(season, episode) {
+    currentSeason = season;
+    currentEpisode = episode;
+
+    // Update URL without refresh
+    const newUrl = `watch.html?type=tv&id=${currentId}&season=${season}&episode=${episode}`;
+    window.history.pushState({}, '', newUrl);
+
+    // Update active episode
+    document.querySelectorAll('.episode-card').forEach(card => {
+        card.classList.remove('active');
+        if (parseInt(card.dataset.episode) === episode) {
             card.classList.add('active');
-            
-            // Play the episode
-            playVideo(content.id, 'tv', season, episode);
-            
-            // Scroll to player
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-            // Save progress
-            saveToContinue();
-        });
+        }
     });
+
+    // Reload player
+    loadPlayer();
+
+    // Scroll to player
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Play Video
-function playVideo(id, type, season = 1, episode = 1) {
-    let streamUrl;
-    
-    if (type === 'movie') {
-        streamUrl = CONFIG.getMovieStreamUrl(id);
-    } else {
-        streamUrl = CONFIG.getTVStreamUrl(id, season, episode);
-    }
-    
-    // Set iframe source
-    DOM.player.src = streamUrl;
-    
-    // Hide loader when iframe loads
-    DOM.player.onload = () => {
-        DOM.playerLoader.classList.add('hidden');
-    };
-    
-    // Update browser URL without reload
-    let newUrl;
-    if (type === 'movie') {
-        newUrl = `watch.html?id=${id}&type=movie`;
-    } else {
-        newUrl = `watch.html?id=${id}&type=tv&s=${season}&e=${episode}`;
-    }
-    history.replaceState(null, '', newUrl);
-}
+// ============ SIMILAR CONTENT ============
 
-// Load Similar Content
-function loadSimilar(data) {
-    // Get similar or recommendations
-    const items = data.similar?.results || data.recommendations?.results || [];
-    
-    if (items.length === 0) {
-        DOM.similarGrid.innerHTML = '<p style="color:#666; padding:20px 0;">No similar content found.</p>';
+function loadSimilarContent(items) {
+    const similarGrid = document.getElementById('similarGrid');
+
+    if (!items || items.length === 0) {
+        similarGrid.innerHTML = '<p>No similar content found</p>';
         return;
     }
-    
-    // Render similar cards
-    DOM.similarGrid.innerHTML = items.slice(0, 12).map(item => {
-        const title = item.title || item.name;
-        const posterUrl = item.poster_path 
-            ? API.getImageUrl(item.poster_path)
-            : 'https://via.placeholder.com/200x300/1a1a1a/666666?text=No+Image';
-        
-        return `
-            <div class="similar-card" onclick="window.location.href='watch.html?id=${item.id}&type=${contentType}'">
-                <img src="${posterUrl}" alt="${title}" loading="lazy">
-                <p>${title}</p>
+
+    similarGrid.innerHTML = items.slice(0, 12).map(item => `
+        <a href="watch.html?type=${currentType}&id=${item.id}" class="similar-card">
+            <img src="${item.poster_path ? API.getImageUrl(item.poster_path, 'poster') : 'https://via.placeholder.com/200x300?text=No+Image'}" 
+                 alt="${item.title || item.name}"
+                 loading="lazy">
+            <div class="similar-info">
+                <h4>${item.title || item.name}</h4>
+                <span><i class="fas fa-star"></i> ${item.vote_average?.toFixed(1) || 'N/A'}</span>
             </div>
-        `;
-    }).join('');
+        </a>
+    `).join('');
 }
 
-// Initialize Buttons
-function initButtons() {
-    // My List Button
-    DOM.listBtn.addEventListener('click', () => {
-        if (!content) return;
-        
-        if (Storage.isInMyList(content.id, contentType)) {
-            Storage.removeFromMyList(content.id, contentType);
-        } else {
-            Storage.addToMyList({ ...content, type: contentType });
-        }
-        
-        updateListBtn();
+// ============ ACTION BUTTONS ============
+
+function setupActionButtons() {
+    // My List button
+    const listBtn = document.getElementById('listBtn');
+    updateListButton();
+    listBtn.addEventListener('click', toggleMyList);
+
+    // Share button
+    const shareBtn = document.getElementById('shareBtn');
+    shareBtn.addEventListener('click', shareContent);
+
+    // Like button
+    const likeBtn = document.getElementById('likeBtn');
+    likeBtn.addEventListener('click', () => {
+        likeBtn.classList.toggle('liked');
+        likeBtn.querySelector('i').classList.toggle('fas');
+        likeBtn.querySelector('i').classList.toggle('far');
+        showNotification(likeBtn.classList.contains('liked') ? 'Added to Liked!' : 'Removed from Liked');
     });
-    
-    // Share Button
-    DOM.shareBtn.addEventListener('click', async () => {
-        const title = content?.title || content?.name || 'Streamify';
-        const shareData = {
-            title: title,
-            text: `Watch ${title} on Streamify!`,
-            url: window.location.href
-        };
-        
-        try {
-            if (navigator.share) {
-                await navigator.share(shareData);
-            } else {
-                await navigator.clipboard.writeText(window.location.href);
-                alert('Link copied to clipboard!');
-            }
-        } catch (err) {
-            console.log('Share error:', err);
-            // Fallback - copy to clipboard
-            try {
-                await navigator.clipboard.writeText(window.location.href);
-                alert('Link copied to clipboard!');
-            } catch (e) {
-                console.log('Clipboard error:', e);
-            }
-        }
-    });
-    
-    // Like Button
-    DOM.likeBtn.addEventListener('click', () => {
-        DOM.likeBtn.classList.toggle('active');
-        
-        // Optional: Save like state to localStorage
-        const likedItems = JSON.parse(localStorage.getItem('streamify_liked') || '[]');
-        const itemId = `${contentType}_${content?.id}`;
-        
-        if (DOM.likeBtn.classList.contains('active')) {
-            if (!likedItems.includes(itemId)) {
-                likedItems.push(itemId);
-            }
-        } else {
-            const index = likedItems.indexOf(itemId);
-            if (index > -1) {
-                likedItems.splice(index, 1);
-            }
-        }
-        
-        localStorage.setItem('streamify_liked', JSON.stringify(likedItems));
-    });
-    
-    // Check if already liked
-    if (content) {
-        const likedItems = JSON.parse(localStorage.getItem('streamify_liked') || '[]');
-        const itemId = `${contentType}_${content?.id}`;
-        if (likedItems.includes(itemId)) {
-            DOM.likeBtn.classList.add('active');
-        }
-    }
 }
 
-// Update My List Button State
-function updateListBtn() {
-    if (!content) return;
+function updateListButton() {
+    const listBtn = document.getElementById('listBtn');
+    const isInList = Storage.isInMyList(parseInt(currentId), currentType);
     
-    if (Storage.isInMyList(content.id, contentType)) {
-        DOM.listBtn.classList.add('active');
-        DOM.listBtn.innerHTML = '<i class="fas fa-check"></i><span>Added</span>';
+    if (isInList) {
+        listBtn.innerHTML = '<i class="fas fa-check"></i><span>In My List</span>';
+        listBtn.classList.add('in-list');
     } else {
-        DOM.listBtn.classList.remove('active');
-        DOM.listBtn.innerHTML = '<i class="fas fa-plus"></i><span>My List</span>';
+        listBtn.innerHTML = '<i class="fas fa-plus"></i><span>My List</span>';
+        listBtn.classList.remove('in-list');
     }
 }
 
-// Save to Continue Watching
-function saveToContinue() {
-    if (!content) return;
+function toggleMyList() {
+    const isInList = Storage.isInMyList(parseInt(currentId), currentType);
     
-    // Random progress between 10-50%
-    const progress = Math.floor(Math.random() * 40) + 10;
+    if (isInList) {
+        Storage.removeFromMyList(parseInt(currentId), currentType);
+        showNotification('Removed from My List');
+    } else {
+        Storage.addToMyList({
+            id: parseInt(currentId),
+            type: currentType,
+            title: mediaData?.title || mediaData?.name,
+            poster_path: mediaData?.poster_path,
+            backdrop_path: mediaData?.backdrop_path,
+            vote_average: mediaData?.vote_average
+        });
+        showNotification('Added to My List');
+    }
     
-    Storage.updateContinueWatching({
-        id: content.id,
-        type: contentType,
-        title: content.title || content.name,
-        poster_path: content.poster_path,
-        backdrop_path: content.backdrop_path,
-        season: contentType === 'tv' ? currentSeason : null,
-        episode: contentType === 'tv' ? currentEpisode : null
-    }, progress);
+    updateListButton();
 }
 
-// Keyboard Shortcuts
-document.addEventListener('keydown', (e) => {
-    // Escape - Go back to home
-    if (e.key === 'Escape') {
-        window.location.href = 'index.html';
-    }
+function shareContent() {
+    const url = window.location.href;
+    const title = mediaData?.title || mediaData?.name || 'Check this out!';
     
-    // F - Toggle Fullscreen
-    if (e.key === 'f' || e.key === 'F') {
-        const playerContainer = DOM.player.parentElement;
-        
-        if (document.fullscreenElement) {
-            document.exitFullscreen();
-        } else {
-            if (playerContainer.requestFullscreen) {
-                playerContainer.requestFullscreen();
-            } else if (playerContainer.webkitRequestFullscreen) {
-                playerContainer.webkitRequestFullscreen();
-            } else if (playerContainer.msRequestFullscreen) {
-                playerContainer.msRequestFullscreen();
-            }
-        }
+    if (navigator.share) {
+        navigator.share({
+            title: title,
+            text: `Watch ${title} on Streamify`,
+            url: url
+        });
+    } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(url).then(() => {
+            showNotification('Link copied to clipboard!');
+        });
     }
-});
+}
 
-// Add spinner animation CSS dynamically
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-`;
-document.head.appendChild(style);
+// ============ UTILITIES ============
+
+function formatRuntime(minutes) {
+    if (!minutes) return 'N/A';
+    const hrs = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return hrs > 0 ? `${hrs}h ${mins}m` : `${mins}m`;
+}
+
+function showError(message) {
+    document.getElementById('watchTitle').textContent = 'Error';
+    document.getElementById('watchDesc').textContent = message;
+}
+
+function showNotification(message) {
+    // Remove existing notification
+    const existing = document.querySelector('.notification');
+    if (existing) existing.remove();
+
+    // Create notification
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>${message}</span>
+    `;
+    document.body.appendChild(notification);
+
+    // Show notification
+    setTimeout(() => notification.classList.add('show'), 10);
+
+    // Hide after 3 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
