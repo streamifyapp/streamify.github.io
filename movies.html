@@ -4,44 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movies - Streamify</title>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3GTEG9YQHV"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-3GTEG9YQHV');
-</script>
     
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3GTEG9YQHV"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3GTEG9YQHV');
+    </script>
+    
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/browse.css">
-    <link rel="stylesheet" href="css/ads.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
-   <!-- Popunder Ad - 2 Minute Cooldown -->
-<script>
-(function() {
-    var COOLDOWN = 2 * 60 * 1000;
-    var now = Date.now();
-    var lastPop = parseInt(localStorage.getItem('popunder_time') || '0');
-    
-    if (now - lastPop > COOLDOWN) {
-        localStorage.setItem('popunder_time', now.toString());
-        
-        setTimeout(function() {
-            var s = document.createElement('script');
-            s.src = 'https://pl28663508.effectivegatecpm.com/83/da/42/83da42654c8f32e05cc7eccf2cb42329.js';
-            document.head.appendChild(s);
-        }, 2000);
-    }
-})();
-</script>
-    
-    <!-- Social Bar -->
-    <script src="https://pl28663542.effectivegatecpm.com/2d/47/b3/2d47b33f503fa20dae3f3455ea311972.js"></script>
 </head>
 <body>
 
@@ -69,20 +47,6 @@
             </div>
         </div>
     </nav>
-
-    <!-- Desktop Top Banner 728x90 - DESKTOP ONLY -->
-    <div class="ad-container desktop-banner-top">
-        <script>
-          atOptions = {
-            'key' : 'b5665256146eed2362f1be2c457f7a22',
-            'format' : 'iframe',
-            'height' : 90,
-            'width' : 728,
-            'params' : {}
-          };
-        </script>
-        <script src="https://www.highperformanceformat.com/b5665256146eed2362f1be2c457f7a22/invoke.js"></script>
-    </div>
 
     <!-- Page Header -->
     <header class="browse-header">
@@ -140,40 +104,6 @@
             <!-- Movies will be loaded here -->
         </div>
         
-        <!-- Mobile Banner 320x100 - MOBILE ONLY (After 12 movies) -->
-        <div class="ad-container mobile-banner-320x100" id="midGridAdMobile" style="display:none;">
-            <script>
-              atOptions = {
-                'key' : '33256030ae0069d82efa8f52c1afbb72',
-                'format' : 'iframe',
-                'height' : 100,
-                'width' : 320,
-                'params' : {}
-              };
-            </script>
-            <script src="https://www.highperformanceformat.com/33256030ae0069d82efa8f52c1afbb72/invoke.js"></script>
-        </div>
-
-        <!-- Native Banner Ad - DESKTOP ONLY (After 12 movies) -->
-        <div class="ad-container native-ad" id="midGridAdDesktop" style="display:none;">
-            <script async="async" data-cfasync="false" src="https://pl28663512.effectivegatecpm.com/f89d0146f9f9ad2a66987064830a7dee/invoke.js"></script>
-            <div id="container-f89d0146f9f9ad2a66987064830a7dee"></div>
-        </div>
-        
-        <!-- Banner 300x250 Ad (After 24 movies) -->
-        <div class="ad-container banner-300x250" id="bottomGridAd" style="display:none;">
-            <script>
-              atOptions = {
-                'key' : 'ef06e0f54fb946164e3bd1c995ca5792',
-                'format' : 'iframe',
-                'height' : 250,
-                'width' : 300,
-                'params' : {}
-              };
-            </script>
-            <script src="https://www.highperformanceformat.com/ef06e0f54fb946164e3bd1c995ca5792/invoke.js"></script>
-        </div>
-        
         <!-- Load More Button -->
         <div class="load-more-container">
             <button class="load-more-btn" id="loadMoreBtn">
@@ -182,20 +112,6 @@
             </button>
         </div>
     </main>
-
-    <!-- Mobile Sticky Bottom Banner 320x50 -->
-    <div class="ad-container mobile-sticky-bottom">
-        <script>
-          atOptions = {
-            'key' : '33256030ae0069d82efa8f52c1afbb72',
-            'format' : 'iframe',
-            'height' : 50,
-            'width' : 320,
-            'params' : {}
-          };
-        </script>
-        <script src="https://www.highperformanceformat.com/33256030ae0069d82efa8f52c1afbb72/invoke.js"></script>
-    </div>
 
     <!-- Footer -->
     <footer class="footer">
@@ -271,21 +187,5 @@
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/movies.js"></script>
-    <script src="js/mobile-ad-blocker.js"></script>
-    
-    <script>
-    // Show mid-grid ads after movies load
-    window.addEventListener('DOMContentLoaded', function() {
-        setTimeout(function() {
-            const midAdMobile = document.getElementById('midGridAdMobile');
-            const midAdDesktop = document.getElementById('midGridAdDesktop');
-            const bottomAd = document.getElementById('bottomGridAd');
-            
-            if (midAdMobile) midAdMobile.style.display = 'flex';
-            if (midAdDesktop) midAdDesktop.style.display = 'flex';
-            if (bottomAd) bottomAd.style.display = 'flex';
-        }, 2000);
-    });
-    </script>
 </body>
 </html>
