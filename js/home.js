@@ -1021,3 +1021,72 @@ function closeDetail() {
     document.body.style.overflow = '';
     currentItem = null;
 }
+
+// ============ BUTTON RIPPLE EFFECT ============
+document.addEventListener('click', function(e) {
+    const target = e.target.closest('.btn-play, .btn-info, .popup-btn, .action-btn');
+    if (!target) return;
+    
+    const ripple = document.createElement('span');
+    ripple.classList.add('ripple');
+    
+    const rect = target.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = e.clientX - rect.left - size / 2 + 'px';
+    ripple.style.top = e.clientY - rect.top - size / 2 + 'px';
+    
+    target.appendChild(ripple);
+    
+    ripple.addEventListener('animationend', () => {
+        ripple.remove();
+    });
+});
+
+// ============ SCROLL REVEAL ANIMATION ============
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+        }
+    });
+}, observerOptions);
+
+// Observe all content sections after they load
+setTimeout(() => {
+    document.querySelectorAll('.content-section').forEach(section => {
+        observer.observe(section);
+    });
+}, 100);
+
+// ============ PARALLAX HERO EFFECT ============
+window.addEventListener('scroll', () => {
+    const hero = document.querySelector('.hero-bg');
+    if (hero) {
+        const scrolled = window.pageYOffset;
+        hero.style.transform = `translateY(${scrolled * 0.3}px) scale(${1 + scrolled * 0.0002})`;
+    }
+});
+
+// ============ SMOOTH CARD HOVER SOUND (Optional) ============
+// Uncomment if you want subtle hover sounds
+/*
+const hoverSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF...');
+hoverSound.volume = 0.1;
+
+document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('mouseenter', () => {
+        hoverSound.currentTime = 0;
+        hoverSound.play().catch(() => {});
+    });
+});
+*/
+
+console.log('🎬 Streamify Premium UI Loaded!');
