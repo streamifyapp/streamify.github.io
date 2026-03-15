@@ -17,17 +17,60 @@ const CONFIG = {
         profile: '/w185'
     },
     
-    // Streaming API Configuration
-    STREAMING_BASE_URL: 'https://peachify.top',
-    
-    // Build streaming URL for movies
-    getMovieStreamUrl: function(tmdbId) {
-        return `${this.STREAMING_BASE_URL}/?type=movie&id=${tmdbId}`;
+    // ============ STREAMING SERVERS ============
+    SERVERS: {
+        server1: {
+            name: 'Server 1 - VidRock',
+            getMovieUrl: function(tmdbId) {
+                return `https://vidrock.net/movie/${tmdbId}`;
+            },
+            getTVUrl: function(tmdbId, season, episode) {
+                return `https://vidrock.net/tv/${tmdbId}/${season}/${episode}`;
+            }
+        },
+        server2: {
+            name: 'Server 2 - Peachify',
+            getMovieUrl: function(tmdbId) {
+                return `https://peachify.top/?type=movie&id=${tmdbId}`;
+            },
+            getTVUrl: function(tmdbId, season, episode) {
+                return `https://peachify.top/?type=tv&id=${tmdbId}&s=${season}&e=${episode}`;
+            }
+        },
+        server3: {
+            name: 'Server 3 - Videasy',
+            getMovieUrl: function(tmdbId) {
+                return `https://player.videasy.net/movie/${tmdbId}`;
+            },
+            getTVUrl: function(tmdbId, season, episode) {
+                return `https://player.videasy.net/tv/${tmdbId}/${season}/${episode}`;
+            }
+        }
     },
-    
-    // Build streaming URL for TV shows
-    getTVStreamUrl: function(tmdbId, season = 1, episode = 1) {
-        return `${this.STREAMING_BASE_URL}/?type=tv&id=${tmdbId}&s=${season}&e=${episode}`;
+
+    // Default server
+    DEFAULT_SERVER: 'server1',
+
+    // Get movie stream URL
+    getMovieStreamUrl: function(tmdbId, server) {
+        const srv = server || this.DEFAULT_SERVER;
+        return this.SERVERS[srv].getMovieUrl(tmdbId);
+    },
+
+    // Get TV stream URL
+    getTVStreamUrl: function(tmdbId, season = 1, episode = 1, server) {
+        const srv = server || this.DEFAULT_SERVER;
+        return this.SERVERS[srv].getTVUrl(tmdbId, season, episode);
+    },
+
+    // Get all server keys
+    getServerKeys: function() {
+        return Object.keys(this.SERVERS);
+    },
+
+    // Get server name
+    getServerName: function(key) {
+        return this.SERVERS[key]?.name || key;
     },
     
     // TMDB Genre IDs
@@ -71,7 +114,7 @@ const CONFIG = {
         }
     },
     
-    // Country/Region Codes for K-Drama, Bollywood
+    // Country/Region Codes
     REGIONS: {
         korea: 'KR',
         india: 'IN',
@@ -85,15 +128,15 @@ const CONFIG = {
         myList: 'streamify_mylist',
         continueWatching: 'streamify_continue',
         watchHistory: 'streamify_history',
-        preferences: 'streamify_preferences'
+        preferences: 'streamify_preferences',
+        selectedServer: 'streamify_server'
     },
     
-    // Number of items to fetch per request
+    // Number of items per request
     ITEMS_PER_PAGE: 20
 };
 
-// Freeze config to prevent accidental changes
-Object.freeze(CONFIG);
+// Freeze config
 Object.freeze(CONFIG.IMAGE_SIZES);
 Object.freeze(CONFIG.GENRES);
 Object.freeze(CONFIG.REGIONS);
