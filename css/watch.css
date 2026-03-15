@@ -44,6 +44,8 @@
     width: 100%;
     height: 100%;
     border: none;
+    opacity: 1;
+    transition: opacity 0.3s ease;
 }
 
 .player-loader {
@@ -80,7 +82,129 @@
     font-size: 14px;
 }
 
-/* Main Content */
+/* ============================================
+   SERVER SELECTOR - PREMIUM
+============================================ */
+
+.server-selector {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 25px 40px;
+    background: linear-gradient(180deg, rgba(20,20,20,0.9) 0%, rgba(10,10,10,0.9) 100%);
+    border-bottom: 1px solid #222;
+}
+
+.server-selector h3 {
+    color: #fff;
+    font-size: 18px;
+    margin-bottom: 6px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.server-selector h3 i {
+    color: #e50914;
+    font-size: 20px;
+}
+
+.server-hint {
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.server-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.server-btn {
+    padding: 14px 28px;
+    background: linear-gradient(145deg, #1e1e2e, #151520);
+    border: 2px solid #2a2a3a;
+    color: #ccc;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Inter', sans-serif;
+}
+
+.server-btn:hover {
+    border-color: #e50914;
+    color: #fff;
+    background: linear-gradient(145deg, #2a1a2e, #1e1e2e);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(229, 9, 20, 0.2);
+}
+
+.server-btn.active {
+    border-color: #e50914;
+    background: linear-gradient(145deg, #e50914, #b8070f);
+    color: #fff;
+    box-shadow: 0 8px 30px rgba(229, 9, 20, 0.4);
+    transform: translateY(-2px);
+}
+
+.server-btn i {
+    font-size: 18px;
+}
+
+.server-btn.active i {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* ============================================
+   NOTIFICATION TOAST
+============================================ */
+
+.notification {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: linear-gradient(145deg, #1a1a2e, #0f0f1a);
+    border: 1px solid #e50914;
+    color: #fff;
+    padding: 16px 28px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 9999;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(229, 9, 20, 0.2);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.notification.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.notification i {
+    color: #4CAF50;
+    font-size: 20px;
+}
+
+/* ============================================
+   MAIN CONTENT
+============================================ */
+
 .watch-main {
     max-width: 1200px;
     margin: 0 auto;
@@ -125,7 +249,10 @@
     font-weight: 600;
 }
 
-/* Episode Selector - PREMIUM */
+/* ============================================
+   EPISODE SELECTOR - PREMIUM
+============================================ */
+
 .episode-selector {
     background: linear-gradient(180deg, #1a1a1a 0%, #141414 100%);
     border-radius: 15px;
@@ -173,7 +300,10 @@
     border-color: #e50914;
 }
 
-/* Episode Cards - PREMIUM */
+/* ============================================
+   EPISODE CARDS - PREMIUM
+============================================ */
+
 .episodes-grid {
     display: flex;
     flex-direction: column;
@@ -187,9 +317,18 @@
     width: 6px;
 }
 
+.episodes-grid::-webkit-scrollbar-track {
+    background: #111;
+    border-radius: 10px;
+}
+
 .episodes-grid::-webkit-scrollbar-thumb {
     background: #444;
     border-radius: 10px;
+}
+
+.episodes-grid::-webkit-scrollbar-thumb:hover {
+    background: #e50914;
 }
 
 .episode-card {
@@ -212,6 +351,7 @@
 .episode-card.active {
     border-color: #e50914;
     background: linear-gradient(90deg, rgba(229,9,20,0.15) 0%, #222 100%);
+    box-shadow: 0 0 20px rgba(229, 9, 20, 0.2);
 }
 
 .episode-thumb {
@@ -228,6 +368,11 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.episode-card:hover .episode-thumb img {
+    transform: scale(1.05);
 }
 
 .episode-number {
@@ -267,6 +412,11 @@
     align-items: center;
     justify-content: center;
     font-size: 18px;
+    transition: transform 0.2s ease;
+}
+
+.episode-card:hover .episode-play i {
+    transform: scale(1.1);
 }
 
 .episode-info {
@@ -274,6 +424,23 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+.episode-info h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.episode-info p {
+    font-size: 13px;
+    color: #888;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .episode-header {
@@ -305,7 +472,17 @@
     overflow: hidden;
 }
 
-/* Description */
+.loading-episodes {
+    color: #888;
+    text-align: center;
+    padding: 30px;
+    font-size: 14px;
+}
+
+/* ============================================
+   DESCRIPTION
+============================================ */
+
 .watch-desc {
     margin-bottom: 30px;
 }
@@ -327,7 +504,10 @@
     color: #ccc;
 }
 
-/* Actions */
+/* ============================================
+   ACTION BUTTONS
+============================================ */
+
 .watch-actions {
     display: flex;
     gap: 20px;
@@ -342,29 +522,55 @@
     padding: 15px 25px;
     background: rgba(255,255,255,0.08);
     color: #fff;
-    border-radius: 10px;
-    transition: all 0.2s;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .action-btn:hover {
     background: rgba(255,255,255,0.15);
     transform: translateY(-3px);
+    border-color: #333;
 }
 
-.action-btn.active {
-    background: #46d369;
+.action-btn.active,
+.action-btn.in-list {
+    background: linear-gradient(145deg, #e50914, #b8070f);
+    border-color: #e50914;
+}
+
+.action-btn.liked {
+    color: #e50914;
+}
+
+.action-btn.liked i {
+    color: #e50914;
 }
 
 .action-btn i {
     font-size: 22px;
+    transition: transform 0.2s ease;
+}
+
+.action-btn:hover i {
+    transform: scale(1.1);
 }
 
 .action-btn span {
     font-size: 12px;
     color: #aaa;
+    font-weight: 500;
 }
 
-/* Similar */
+.action-btn.in-list span {
+    color: #fff;
+}
+
+/* ============================================
+   SIMILAR CONTENT
+============================================ */
+
 .similar-section {
     margin-bottom: 50px;
 }
@@ -389,32 +595,86 @@
 }
 
 .similar-card {
+    display: block;
     cursor: pointer;
-    transition: transform 0.3s;
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
 }
 
 .similar-card:hover {
-    transform: scale(1.03);
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .similar-card img {
     width: 100%;
     aspect-ratio: 2/3;
     object-fit: cover;
-    border-radius: 10px;
     background: #1a1a1a;
+    transition: transform 0.3s ease;
+}
+
+.similar-card:hover img {
+    transform: scale(1.1);
 }
 
 .similar-card p {
-    padding: 10px 0;
+    padding: 12px;
     font-size: 14px;
     font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    background: #1a1a1a;
+    color: #fff;
 }
 
-/* Responsive */
+.similar-info {
+    padding: 12px;
+    background: linear-gradient(180deg, #1a1a2e 0%, #141420 100%);
+}
+
+.similar-info h4 {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.similar-info span {
+    color: #ffd700;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.similar-info span i {
+    margin-right: 4px;
+}
+
+/* ============================================
+   RESPONSIVE
+============================================ */
+
+@media (max-width: 992px) {
+    .server-selector {
+        padding: 20px 25px;
+    }
+    
+    .server-buttons {
+        gap: 10px;
+    }
+    
+    .server-btn {
+        padding: 12px 20px;
+        font-size: 13px;
+    }
+}
+
 @media (max-width: 768px) {
     .back-btn {
         top: 10px;
@@ -431,6 +691,31 @@
         max-height: 50vh;
     }
     
+    /* Server Selector Mobile */
+    .server-selector {
+        padding: 20px;
+    }
+    
+    .server-selector h3 {
+        font-size: 16px;
+    }
+    
+    .server-hint {
+        font-size: 12px;
+        margin-bottom: 12px;
+    }
+    
+    .server-buttons {
+        flex-direction: column;
+    }
+    
+    .server-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 14px 20px;
+    }
+    
+    /* Main Content Mobile */
     .watch-main {
         padding: 20px;
     }
@@ -444,8 +729,10 @@
         gap: 12px;
     }
     
+    /* Episode Selector Mobile */
     .episode-selector {
         padding: 15px;
+        border-radius: 12px;
     }
     
     .selector-header {
@@ -454,31 +741,105 @@
         gap: 15px;
     }
     
+    .selector-header h2 {
+        font-size: 18px;
+    }
+    
     .selector-header select {
         width: 100%;
+    }
+    
+    .episodes-grid {
+        max-height: 400px;
     }
     
     .episode-card {
         flex-direction: column;
         gap: 12px;
+        padding: 12px;
     }
     
     .episode-thumb {
         width: 100%;
+        min-width: 100%;
         height: 180px;
     }
     
+    .episode-info h4 {
+        font-size: 15px;
+    }
+    
+    .episode-info p {
+        font-size: 12px;
+    }
+    
+    /* Actions Mobile */
     .watch-actions {
         justify-content: space-around;
+        gap: 10px;
+        margin-bottom: 30px;
     }
     
     .action-btn {
         padding: 12px 18px;
+        flex: 1;
+    }
+    
+    .action-btn i {
+        font-size: 20px;
+    }
+    
+    .action-btn span {
+        font-size: 11px;
+    }
+    
+    /* Similar Mobile */
+    .similar-section h2 {
+        font-size: 18px;
     }
     
     .similar-grid {
         grid-template-columns: repeat(3, 1fr);
         gap: 12px;
     }
+    
+    .similar-info {
+        padding: 8px;
+    }
+    
+    .similar-info h4 {
+        font-size: 11px;
+    }
+    
+    .similar-info span {
+        font-size: 10px;
+    }
+    
+    /* Notification Mobile */
+    .notification {
+        bottom: 20px;
+        padding: 14px 20px;
+        font-size: 13px;
+        max-width: 90%;
+    }
 }
 
+@media (max-width: 480px) {
+    .watch-header h1 {
+        font-size: 20px;
+    }
+    
+    .similar-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .server-btn {
+        font-size: 13px;
+        padding: 12px 16px;
+    }
+    
+    .server-btn i {
+        font-size: 16px;
+    }
+}
