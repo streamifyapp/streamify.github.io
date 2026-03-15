@@ -21,7 +21,68 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        /* Do Not Ask Again Checkbox Styles */
+        .popup-dont-ask {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 14px 0 4px 0;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .popup-dont-ask input[type="checkbox"] {
+            display: none;
+        }
+
+        .popup-dont-ask .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff55;
+            border-radius: 5px;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.25s ease;
+        }
+
+        .popup-dont-ask input[type="checkbox"]:checked + .custom-checkbox {
+            background: #e50914;
+            border-color: #e50914;
+        }
+
+        .popup-dont-ask input[type="checkbox"]:checked + .custom-checkbox::after {
+            content: '';
+            display: block;
+            width: 5px;
+            height: 9px;
+            border: 2px solid #fff;
+            border-top: none;
+            border-left: none;
+            transform: rotate(45deg) translate(-1px, -1px);
+        }
+
+        .popup-dont-ask .checkbox-label {
+            font-size: 13.5px;
+            color: #ccc;
+            transition: color 0.2s;
+        }
+
+        .popup-dont-ask:hover .checkbox-label {
+            color: #fff;
+        }
+
+        .popup-dont-ask:hover .custom-checkbox {
+            border-color: #ffffff99;
+        }
+    </style>
 </head>
+<body>
 
     <!-- Welcome Popup -->
     <div class="welcome-popup" id="welcomePopup">
@@ -45,6 +106,14 @@
                     <span><strong>Android:</strong> Tap <i class="fas fa-ellipsis-v"></i> menu, then ⭐ Add to bookmarks</span>
                 </div>
             </div>
+
+            <!-- Do Not Ask Again -->
+            <label class="popup-dont-ask" id="dontAskLabel">
+                <input type="checkbox" id="dontAskCheckbox">
+                <span class="custom-checkbox"></span>
+                <span class="checkbox-label">Don't show this again</span>
+            </label>
+
             <button class="popup-btn" id="popupClose">
                 <i class="fas fa-check"></i> Got it, Thanks!
             </button>
@@ -441,5 +510,30 @@
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/home.js"></script>
+
+    <!-- Bookmark Popup Logic -->
+    <script>
+        (function () {
+            const STORAGE_KEY = 'streamify_bookmark_popup_dismissed';
+            const popup = document.getElementById('welcomePopup');
+            const closeBtn = document.getElementById('popupClose');
+            const checkbox = document.getElementById('dontAskCheckbox');
+
+            // Only show popup if user hasn't dismissed it permanently
+            if (localStorage.getItem(STORAGE_KEY) === 'true') {
+                popup.style.display = 'none';
+            }
+
+            closeBtn.addEventListener('click', function () {
+                // If checkbox is checked, save preference to localStorage
+                if (checkbox.checked) {
+                    localStorage.setItem(STORAGE_KEY, 'true');
+                }
+                // Hide popup
+                popup.style.display = 'none';
+            });
+        })();
+    </script>
+
 </body>
 </html>
