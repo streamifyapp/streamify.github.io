@@ -22,6 +22,147 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+<style>
+    /* Additional Premium Animations */
+    
+    /* Floating Animation for Hero */
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    /* Glow Pulse */
+    @keyframes glowPulse {
+        0%, 100% { box-shadow: 0 0 20px rgba(229, 9, 20, 0.3); }
+        50% { box-shadow: 0 0 40px rgba(229, 9, 20, 0.6); }
+    }
+    
+    /* Text Gradient Animation */
+    @keyframes textGradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    /* Ripple Effect for Buttons */
+    .btn-play, .btn-info, .popup-btn {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        transform: scale(0);
+        animation: ripple 0.6s linear;
+        pointer-events: none;
+    }
+    
+    @keyframes ripple {
+        to {
+            transform: scale(4);
+            opacity: 0;
+        }
+    }
+    
+    /* Smooth Page Load */
+    body {
+        animation: pageLoad 0.8s ease-out;
+    }
+    
+    @keyframes pageLoad {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    
+    /* Card Shine Effect */
+    .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.1),
+            transparent
+        );
+        transition: 0.5s;
+        z-index: 4;
+    }
+    
+    .card:hover::before {
+        left: 100%;
+    }
+    
+    /* Do Not Ask Again Checkbox Styles - Updated */
+    .popup-dont-ask {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin: 18px 0 8px 0;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .popup-dont-ask input[type="checkbox"] {
+        display: none;
+    }
+
+    .popup-dont-ask .custom-checkbox {
+        width: 22px;
+        height: 22px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.05);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .popup-dont-ask input[type="checkbox"]:checked + .custom-checkbox {
+        background: linear-gradient(135deg, #e50914 0%, #b20710 100%);
+        border-color: #e50914;
+        box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
+    }
+
+    .popup-dont-ask input[type="checkbox"]:checked + .custom-checkbox::after {
+        content: '';
+        display: block;
+        width: 6px;
+        height: 10px;
+        border: 2px solid #fff;
+        border-top: none;
+        border-left: none;
+        transform: rotate(45deg) translate(-1px, -1px);
+    }
+
+    .popup-dont-ask .checkbox-label {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.6);
+        transition: color 0.3s;
+    }
+
+    .popup-dont-ask:hover .checkbox-label {
+        color: #fff;
+    }
+
+    .popup-dont-ask:hover .custom-checkbox {
+        border-color: rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.1);
+    }
+</style>
+    
     <style>
         /* Do Not Ask Again Checkbox Styles */
         .popup-dont-ask {
