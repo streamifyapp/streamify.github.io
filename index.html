@@ -1,176 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-    <meta name="ca0c749dbe92ba6b379f7bc797edfdc575386360" content="ca0c749dbe92ba6b379f7bc797edfdc575386360" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="ca0c749dbe92ba6b379f7bc797edfdc575386360" content="ca0c749dbe92ba6b379f7bc797edfdc575386360" />
     <title>Streamify - Watch Movies & TV Shows Free</title>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3GTEG9YQHV"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-3GTEG9YQHV');
-</script>
     
-   <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/ads.css">
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Watch unlimited movies and TV shows for free. Stream the latest releases in HD quality. No signup required.">
+    <meta name="keywords" content="free movies, watch movies online, free TV shows, streaming, netflix alternative">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Streamify - Free Movies & TV Shows">
+    <meta property="og:description" content="Watch unlimited movies and TV shows for free">
+    <meta property="og:type" content="website">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3GTEG9YQHV"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3GTEG9YQHV');
+    </script>
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/ads.css">
 
-<style>
-    /* Additional Premium Animations */
-    
-    /* Floating Animation for Hero */
-    @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-10px); }
-    }
-    
-    /* Glow Pulse */
-    @keyframes glowPulse {
-        0%, 100% { box-shadow: 0 0 20px rgba(229, 9, 20, 0.3); }
-        50% { box-shadow: 0 0 40px rgba(229, 9, 20, 0.6); }
-    }
-    
-    /* Text Gradient Animation */
-    @keyframes textGradient {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-    
-    /* Ripple Effect for Buttons */
-    .btn-play, .btn-info, .popup-btn {
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .ripple {
-        position: absolute;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.4);
-        transform: scale(0);
-        animation: ripple 0.6s linear;
-        pointer-events: none;
-    }
-    
-    @keyframes ripple {
-        to {
-            transform: scale(4);
-            opacity: 0;
-        }
-    }
-    
-    /* Smooth Page Load */
-    body {
-        animation: pageLoad 0.8s ease-out;
-    }
-    
-    @keyframes pageLoad {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
-    
-    /* Card Shine Effect */
-    .card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 50%;
-        height: 100%;
-        background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(255, 255, 255, 0.1),
-            transparent
-        );
-        transition: 0.5s;
-        z-index: 4;
-    }
-    
-    .card:hover::before {
-        left: 100%;
-    }
-    
-    /* Do Not Ask Again Checkbox Styles - Updated */
-    .popup-dont-ask {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        margin: 18px 0 8px 0;
-        cursor: pointer;
-        user-select: none;
-    }
-
-    .popup-dont-ask input[type="checkbox"] {
-        display: none;
-    }
-
-    .popup-dont-ask .custom-checkbox {
-        width: 22px;
-        height: 22px;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        border-radius: 6px;
-        background: rgba(255, 255, 255, 0.05);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .popup-dont-ask input[type="checkbox"]:checked + .custom-checkbox {
-        background: linear-gradient(135deg, #e50914 0%, #b20710 100%);
-        border-color: #e50914;
-        box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
-    }
-
-    .popup-dont-ask input[type="checkbox"]:checked + .custom-checkbox::after {
-        content: '';
-        display: block;
-        width: 6px;
-        height: 10px;
-        border: 2px solid #fff;
-        border-top: none;
-        border-left: none;
-        transform: rotate(45deg) translate(-1px, -1px);
-    }
-
-    .popup-dont-ask .checkbox-label {
-        font-size: 14px;
-        color: rgba(255, 255, 255, 0.6);
-        transition: color 0.3s;
-    }
-
-    .popup-dont-ask:hover .checkbox-label {
-        color: #fff;
-    }
-
-    .popup-dont-ask:hover .custom-checkbox {
-        border-color: rgba(255, 255, 255, 0.5);
-        background: rgba(255, 255, 255, 0.1);
-    }
-</style>
-    
+    <!-- Premium Animations -->
     <style>
+        /* Floating Animation for Hero */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* Glow Pulse */
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(229, 9, 20, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(229, 9, 20, 0.6); }
+        }
+        
+        /* Text Gradient Animation */
+        @keyframes textGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Ripple Effect for Buttons */
+        .btn-play, .btn-info, .popup-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+        
+        /* Smooth Page Load */
+        body {
+            animation: pageLoad 0.8s ease-out;
+        }
+        
+        @keyframes pageLoad {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Card Shine Effect */
+        .card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card .shine {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+            transition: 0.5s;
+            z-index: 4;
+            pointer-events: none;
+        }
+        
+        .card:hover .shine {
+            left: 100%;
+        }
+
         /* Do Not Ask Again Checkbox Styles */
         .popup-dont-ask {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            margin: 14px 0 4px 0;
+            gap: 12px;
+            margin: 18px 0 8px 0;
             cursor: pointer;
             user-select: none;
         }
@@ -180,28 +133,29 @@
         }
 
         .popup-dont-ask .custom-checkbox {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #ffffff55;
-            border-radius: 5px;
-            background: transparent;
+            width: 22px;
+            height: 22px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            transition: all 0.25s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .popup-dont-ask input[type="checkbox"]:checked + .custom-checkbox {
-            background: #e50914;
+            background: linear-gradient(135deg, #e50914 0%, #b20710 100%);
             border-color: #e50914;
+            box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
         }
 
         .popup-dont-ask input[type="checkbox"]:checked + .custom-checkbox::after {
             content: '';
             display: block;
-            width: 5px;
-            height: 9px;
+            width: 6px;
+            height: 10px;
             border: 2px solid #fff;
             border-top: none;
             border-left: none;
@@ -209,9 +163,9 @@
         }
 
         .popup-dont-ask .checkbox-label {
-            font-size: 13.5px;
-            color: #ccc;
-            transition: color 0.2s;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            transition: color 0.3s;
         }
 
         .popup-dont-ask:hover .checkbox-label {
@@ -219,11 +173,191 @@
         }
 
         .popup-dont-ask:hover .custom-checkbox {
-            border-color: #ffffff99;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Loading Overlay */
+        .page-loader {
+            position: fixed;
+            inset: 0;
+            background: #0a0a0f;
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 48px;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, #e50914 0%, #ff6b6b 50%, #e50914 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 2s ease infinite;
+        }
+
+        .loader-bar {
+            width: 200px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .loader-bar::after {
+            content: '';
+            display: block;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, #e50914, #ff6b6b, #e50914);
+            border-radius: 10px;
+            animation: loading 1s ease-in-out infinite;
+        }
+
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(300%); }
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Floating Particles Background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(229, 9, 20, 0.3);
+            border-radius: 50%;
+            animation: floatParticle 15s infinite;
+        }
+
+        .particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 20s; }
+        .particle:nth-child(2) { left: 20%; animation-delay: 2s; animation-duration: 18s; }
+        .particle:nth-child(3) { left: 30%; animation-delay: 4s; animation-duration: 22s; }
+        .particle:nth-child(4) { left: 40%; animation-delay: 1s; animation-duration: 19s; }
+        .particle:nth-child(5) { left: 50%; animation-delay: 3s; animation-duration: 21s; }
+        .particle:nth-child(6) { left: 60%; animation-delay: 5s; animation-duration: 17s; }
+        .particle:nth-child(7) { left: 70%; animation-delay: 2s; animation-duration: 23s; }
+        .particle:nth-child(8) { left: 80%; animation-delay: 4s; animation-duration: 20s; }
+        .particle:nth-child(9) { left: 90%; animation-delay: 1s; animation-duration: 18s; }
+        .particle:nth-child(10) { left: 95%; animation-delay: 3s; animation-duration: 22s; }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Tooltip Styles */
+        [data-tooltip] {
+            position: relative;
+        }
+
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-5px);
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            pointer-events: none;
+            z-index: 100;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        [data-tooltip]:hover::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(-10px);
+        }
+
+        /* Focus Styles for Accessibility */
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible {
+            outline: 2px solid #e50914;
+            outline-offset: 2px;
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Better Text Rendering */
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
         }
     </style>
 </head>
 <body>
+
+    <!-- Page Loader -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-logo">STREAMIFY</div>
+        <div class="loader-bar"></div>
+    </div>
+
+    <!-- Floating Particles -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
 
     <!-- Welcome Popup -->
     <div class="welcome-popup" id="welcomePopup">
@@ -264,7 +398,7 @@
     <!-- Navbar -->
     <nav class="navbar" id="navbar">
         <div class="nav-left">
-            <a href="index.html" class="logo">STREAMIFY</a>
+            <a href="index.html" class="logo" data-tooltip="Home">STREAMIFY</a>
             <ul class="nav-links">
                 <li><a href="index.html" class="active">Home</a></li>
                 <li><a href="movies.html">Movies</a></li>
@@ -273,13 +407,13 @@
             </ul>
         </div>
         <div class="nav-right">
-            <a href="https://streamifyapp.github.io/" target="_blank" class="download-btn">
+            <a href="https://streamifyapp.github.io/" target="_blank" class="download-btn" data-tooltip="Download Android App">
                 <i class="fab fa-android"></i>
                 <span>Get App</span>
             </a>
-            <button class="nav-btn" id="searchBtn"><i class="fas fa-search"></i></button>
-            <button class="nav-btn menu-toggle" id="menuBtn"><i class="fas fa-bars"></i></button>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" alt="Profile" class="profile-img">
+            <button class="nav-btn" id="searchBtn" data-tooltip="Search"><i class="fas fa-search"></i></button>
+            <button class="nav-btn menu-toggle" id="menuBtn" data-tooltip="Menu"><i class="fas fa-bars"></i></button>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" alt="Profile" class="profile-img" data-tooltip="Profile">
         </div>
     </nav>
 
@@ -304,7 +438,7 @@
     <div class="search-modal" id="searchModal">
         <div class="search-wrapper">
             <i class="fas fa-search"></i>
-            <input type="text" id="searchInput" placeholder="Search movies, TV shows...">
+            <input type="text" id="searchInput" placeholder="Search movies, TV shows..." autocomplete="off">
             <button id="searchClose"><i class="fas fa-times"></i></button>
         </div>
         <div class="search-results" id="searchResults"></div>
@@ -648,9 +782,28 @@
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/home.js"></script>
+
+    <!-- Page Loader Script -->
+    <script>
+        // Hide loader when page is fully loaded
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('pageLoader').classList.add('hidden');
+            }, 800);
+        });
+
+        // Fallback: hide loader after 3 seconds max
+        setTimeout(function() {
+            const loader = document.getElementById('pageLoader');
+            if (loader && !loader.classList.contains('hidden')) {
+                loader.classList.add('hidden');
+            }
+        }, 3000);
+    </script>
 
     <!-- Bookmark Popup Logic -->
     <script>
@@ -674,6 +827,120 @@
                 popup.style.display = 'none';
             });
         })();
+    </script>
+
+    <!-- Premium Effects Script -->
+    <script>
+        // ============ BUTTON RIPPLE EFFECT ============
+        document.addEventListener('click', function(e) {
+            const target = e.target.closest('.btn-play, .btn-info, .popup-btn, .action-btn');
+            if (!target) return;
+            
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            
+            const rect = target.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = e.clientX - rect.left - size / 2 + 'px';
+            ripple.style.top = e.clientY - rect.top - size / 2 + 'px';
+            
+            target.appendChild(ripple);
+            
+            ripple.addEventListener('animationend', () => {
+                ripple.remove();
+            });
+        });
+
+        // ============ SCROLL REVEAL ANIMATION ============
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all content sections after they load
+        setTimeout(() => {
+            document.querySelectorAll('.content-section').forEach(section => {
+                observer.observe(section);
+            });
+        }, 100);
+
+        // ============ PARALLAX HERO EFFECT ============
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const hero = document.querySelector('.hero-bg');
+                    if (hero) {
+                        const scrolled = window.pageYOffset;
+                        if (scrolled < window.innerHeight) {
+                            hero.style.transform = `translateY(${scrolled * 0.3}px) scale(${1 + scrolled * 0.0002})`;
+                        }
+                    }
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        // ============ CARD SHINE EFFECT ============
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add shine element to cards dynamically
+            const addShineEffect = () => {
+                document.querySelectorAll('.card:not(.shine-added)').forEach(card => {
+                    const shine = document.createElement('div');
+                    shine.classList.add('shine');
+                    card.appendChild(shine);
+                    card.classList.add('shine-added');
+                });
+            };
+
+            // Initial run
+            setTimeout(addShineEffect, 1000);
+
+            // Run again when new cards are added (for dynamic content)
+            const contentObserver = new MutationObserver(addShineEffect);
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent) {
+                contentObserver.observe(mainContent, { childList: true, subtree: true });
+            }
+        });
+
+        // ============ KEYBOARD NAVIGATION ============
+        document.addEventListener('keydown', function(e) {
+            // ESC to close modals
+            if (e.key === 'Escape') {
+                document.getElementById('searchModal')?.classList.remove('active');
+                document.getElementById('seeAllModal')?.classList.remove('active');
+                document.getElementById('detailModal')?.classList.remove('active');
+                document.getElementById('mobileMenu')?.classList.remove('active');
+                document.getElementById('overlay')?.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            
+            // Forward slash to open search
+            if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
+                const activeElement = document.activeElement;
+                const isInputFocused = activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA';
+                
+                if (!isInputFocused) {
+                    e.preventDefault();
+                    document.getElementById('searchBtn')?.click();
+                }
+            }
+        });
+
+        console.log('🎬 Streamify Premium UI Loaded!');
     </script>
 
 </body>
