@@ -37,6 +37,9 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/ads.css">
 
+    <!-- Video.js for VAST ads -->
+    <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet" />
+
     <!-- Premium Animations -->
     <style>
         /* Floating Animation for Hero */
@@ -335,6 +338,240 @@
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
         }
+
+        /* ═══════════════════════════════════════════════════════════════
+           VAST AD SECTION STYLES
+           ═══════════════════════════════════════════════════════════════ */
+        .vast-ad-section {
+            background: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 50%, #0a0a0f 100%);
+            padding: 60px 20px;
+            margin: 40px 0;
+            border-top: 1px solid rgba(229, 9, 20, 0.2);
+            border-bottom: 1px solid rgba(229, 9, 20, 0.2);
+        }
+
+        .vast-ad-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .vast-ad-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .vast-ad-header h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            letter-spacing: 3px;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .vast-ad-header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+
+        .vast-ad-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(229, 9, 20, 0.2);
+            border: 1px solid rgba(229, 9, 20, 0.4);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #FFD700;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .vast-ad-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #FFD700;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .vast-player-wrapper {
+            position: relative;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(229, 9, 20, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .vast-player-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #e50914, transparent, #e50914);
+            border-radius: 18px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        /* Video.js custom styling */
+        .video-js {
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            border-radius: 16px;
+        }
+
+        .video-js .vjs-big-play-button {
+            background: linear-gradient(135deg, #e50914 0%, #b20710 100%);
+            border: none;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            line-height: 80px;
+            font-size: 40px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 10px 40px rgba(229, 9, 20, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .video-js .vjs-big-play-button:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 15px 50px rgba(229, 9, 20, 0.7);
+        }
+
+        .video-js .vjs-control-bar {
+            background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+            height: 50px;
+            padding: 0 10px;
+        }
+
+        .video-js .vjs-play-progress {
+            background: #e50914;
+        }
+
+        .video-js .vjs-volume-level {
+            background: #e50914;
+        }
+
+        .vast-ad-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .vast-ad-info span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+        }
+
+        .vast-ad-info i {
+            color: #e50914;
+        }
+
+        .vast-status {
+            text-align: center;
+            margin-top: 15px;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .vast-status.loading {
+            color: #FFD700;
+        }
+
+        .vast-status.playing {
+            color: #4CAF50;
+        }
+
+        .vast-status.error {
+            color: #f44336;
+        }
+
+        .vast-status.completed {
+            color: #2196F3;
+        }
+
+        /* Play Ad Button */
+        .play-ad-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px auto 0;
+            padding: 14px 40px;
+            background: linear-gradient(135deg, #e50914 0%, #b20710 100%);
+            border: none;
+            border-radius: 30px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(229, 9, 20, 0.4);
+        }
+
+        .play-ad-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(229, 9, 20, 0.6);
+        }
+
+        .play-ad-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Debug Console */
+        .vast-debug {
+            max-width: 900px;
+            margin: 20px auto 0;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .vast-debug-title {
+            color: #FFD700;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .vast-debug-log {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+
+        .vast-debug-log .info { color: #2196F3; }
+        .vast-debug-log .success { color: #4CAF50; }
+        .vast-debug-log .error { color: #f44336; }
+        .vast-debug-log .warning { color: #FF9800; }
     </style>
 </head>
 <body>
@@ -741,6 +978,58 @@
 
     </main>
 
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         VAST 4.0 VIDEO AD SECTION - TEST AREA
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    <section class="vast-ad-section" id="vastAdSection">
+        <div class="vast-ad-container">
+            <div class="vast-ad-header">
+                <span class="vast-ad-badge">ADVERTISEMENT</span>
+                <h2><i class="fas fa-play-circle"></i> Video Ad Test</h2>
+                <p>Testing VAST 4.0 video ad integration</p>
+            </div>
+
+            <div class="vast-player-wrapper">
+                <video
+                    id="vast-video-player"
+                    class="video-js vjs-big-play-centered vjs-fluid"
+                    controls
+                    preload="auto"
+                    width="100%"
+                    height="100%"
+                    poster="https://via.placeholder.com/1280x720/1a1a2e/e50914?text=Click+Play+to+Load+Ad"
+                    data-setup='{}'>
+                    <p class="vjs-no-js">
+                        To view this video please enable JavaScript, and consider upgrading to a
+                        web browser that supports HTML5 video
+                    </p>
+                </video>
+            </div>
+
+            <button class="play-ad-btn" id="playAdBtn">
+                <i class="fas fa-play"></i> Load & Play VAST Ad
+            </button>
+
+            <div class="vast-status" id="vastStatus">
+                <i class="fas fa-info-circle"></i> Click the button above to test the VAST ad
+            </div>
+
+            <div class="vast-ad-info">
+                <span><i class="fas fa-link"></i> VAST 4.0</span>
+                <span><i class="fas fa-server"></i> youradexchange.com</span>
+                <span><i class="fas fa-clock"></i> Pre-roll</span>
+            </div>
+
+            <!-- Debug Console -->
+            <div class="vast-debug" id="vastDebug">
+                <div class="vast-debug-title"><i class="fas fa-terminal"></i> VAST Debug Console</div>
+                <div class="vast-debug-log" id="vastDebugLog">
+                    Waiting for ad request...
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-logo">STREAMIFY</div>
@@ -786,6 +1075,205 @@
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/home.js"></script>
+
+    <!-- Video.js -->
+    <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
+    
+    <!-- Video.js IMA Plugin for VAST -->
+    <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/videojs-ima@2.3.0/dist/videojs.ima.min.js"></script>
+
+    <!-- VAST Ad Integration Script -->
+    <script>
+        (function() {
+            // ═══════════════════════════════════════════════════════════
+            // VAST AD TAG URL
+            // ═══════════════════════════════════════════════════════════
+            const VAST_AD_TAG_URL = 'https://youradexchange.com/video/select.php?r=11109474';
+
+            // Elements
+            const playAdBtn = document.getElementById('playAdBtn');
+            const vastStatus = document.getElementById('vastStatus');
+            const vastDebugLog = document.getElementById('vastDebugLog');
+            
+            let player = null;
+            let adStarted = false;
+
+            // ═══════════════════════════════════════════════════════════
+            // DEBUG LOGGER
+            // ═══════════════════════════════════════════════════════════
+            function logDebug(message, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const typeClass = type;
+                const icon = {
+                    'info': 'ℹ️',
+                    'success': '✅',
+                    'error': '❌',
+                    'warning': '⚠️'
+                }[type] || 'ℹ️';
+                
+                vastDebugLog.innerHTML += `<div class="${typeClass}">[${timestamp}] ${icon} ${message}</div>`;
+                vastDebugLog.scrollTop = vastDebugLog.scrollHeight;
+                
+                console.log(`[VAST ${type.toUpperCase()}]`, message);
+            }
+
+            function updateStatus(message, type = '') {
+                vastStatus.innerHTML = `<i class="fas fa-${type === 'loading' ? 'spinner fa-spin' : type === 'playing' ? 'play' : type === 'error' ? 'exclamation-triangle' : type === 'completed' ? 'check' : 'info-circle'}"></i> ${message}`;
+                vastStatus.className = 'vast-status ' + type;
+            }
+
+            // ═══════════════════════════════════════════════════════════
+            // INITIALIZE VIDEO.JS + IMA
+            // ═══════════════════════════════════════════════════════════
+            function initPlayer() {
+                logDebug('Initializing Video.js player...', 'info');
+                
+                player = videojs('vast-video-player', {
+                    controls: true,
+                    autoplay: false,
+                    preload: 'auto',
+                    fluid: true
+                });
+
+                logDebug('Video.js player initialized', 'success');
+                return player;
+            }
+
+            // ═══════════════════════════════════════════════════════════
+            // LOAD VAST AD
+            // ═══════════════════════════════════════════════════════════
+            function loadVastAd() {
+                if (!player) {
+                    player = initPlayer();
+                }
+
+                playAdBtn.disabled = true;
+                playAdBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                
+                updateStatus('Requesting VAST ad...', 'loading');
+                logDebug('Requesting VAST ad from: ' + VAST_AD_TAG_URL, 'info');
+
+                try {
+                    // Initialize IMA plugin
+                    const imaOptions = {
+                        adTagUrl: VAST_AD_TAG_URL,
+                        debug: true,
+                        timeout: 15000,
+                        prerollTimeout: 15000,
+                        showControlsForJSAds: true
+                    };
+
+                    logDebug('Initializing IMA plugin with options: ' + JSON.stringify(imaOptions), 'info');
+
+                    player.ima(imaOptions);
+
+                    // IMA Events
+                    player.on('ads-request', function() {
+                        logDebug('VAST ad request sent', 'info');
+                        updateStatus('Ad request sent...', 'loading');
+                    });
+
+                    player.on('ads-load', function() {
+                        logDebug('VAST ad loaded successfully!', 'success');
+                        updateStatus('Ad loaded - playing...', 'loading');
+                    });
+
+                    player.on('ads-pod-started', function() {
+                        logDebug('Ad pod started', 'info');
+                    });
+
+                    player.on('ads-ad-started', function() {
+                        adStarted = true;
+                        logDebug('🎬 Ad started playing!', 'success');
+                        updateStatus('Ad is playing...', 'playing');
+                        playAdBtn.innerHTML = '<i class="fas fa-pause"></i> Ad Playing...';
+                    });
+
+                    player.on('ads-first-quartile', function() {
+                        logDebug('Ad 25% complete', 'info');
+                    });
+
+                    player.on('ads-midpoint', function() {
+                        logDebug('Ad 50% complete', 'info');
+                    });
+
+                    player.on('ads-third-quartile', function() {
+                        logDebug('Ad 75% complete', 'info');
+                    });
+
+                    player.on('ads-ad-ended', function() {
+                        logDebug('Ad playback ended', 'success');
+                        updateStatus('Ad completed!', 'completed');
+                        playAdBtn.disabled = false;
+                        playAdBtn.innerHTML = '<i class="fas fa-redo"></i> Play Another Ad';
+                    });
+
+                    player.on('ads-pod-ended', function() {
+                        logDebug('Ad pod ended', 'success');
+                    });
+
+                    player.on('ads-allpods-completed', function() {
+                        logDebug('All ad pods completed', 'success');
+                        updateStatus('All ads completed!', 'completed');
+                    });
+
+                    player.on('ads-click', function() {
+                        logDebug('Ad clicked', 'info');
+                    });
+
+                    player.on('ads-skipped', function() {
+                        logDebug('Ad was skipped', 'warning');
+                        updateStatus('Ad skipped', 'completed');
+                        playAdBtn.disabled = false;
+                        playAdBtn.innerHTML = '<i class="fas fa-redo"></i> Play Another Ad';
+                    });
+
+                    player.on('adserror', function(e) {
+                        logDebug('Ad Error: ' + (e.message || 'Unknown error'), 'error');
+                        updateStatus('Ad error occurred', 'error');
+                        playAdBtn.disabled = false;
+                        playAdBtn.innerHTML = '<i class="fas fa-redo"></i> Retry';
+                    });
+
+                    player.on('adsmanagerloaded', function() {
+                        logDebug('Ads Manager loaded', 'success');
+                    });
+
+                    // Request ads
+                    logDebug('Calling player.ima.requestAds()...', 'info');
+                    player.ima.requestAds();
+
+                    // Start playback to trigger ad
+                    setTimeout(() => {
+                        logDebug('Triggering playback...', 'info');
+                        player.play();
+                    }, 1000);
+
+                } catch (error) {
+                    logDebug('Error initializing IMA: ' + error.message, 'error');
+                    updateStatus('Error: ' + error.message, 'error');
+                    playAdBtn.disabled = false;
+                    playAdBtn.innerHTML = '<i class="fas fa-redo"></i> Retry';
+                }
+            }
+
+            // ═══════════════════════════════════════════════════════════
+            // EVENT LISTENERS
+            // ═══════════════════════════════════════════════════════════
+            playAdBtn.addEventListener('click', function() {
+                vastDebugLog.innerHTML = ''; // Clear debug log
+                loadVastAd();
+            });
+
+            // Log when scripts are loaded
+            logDebug('VAST ad test page loaded', 'success');
+            logDebug('VAST Tag URL: ' + VAST_AD_TAG_URL, 'info');
+            logDebug('Video.js version: ' + (typeof videojs !== 'undefined' ? videojs.VERSION : 'Not loaded'), 'info');
+            logDebug('IMA SDK: ' + (typeof google !== 'undefined' && google.ima ? 'Loaded' : 'Not loaded'), 'info');
+
+        })();
+    </script>
 
     <!-- Page Loader Script -->
     <script>
@@ -833,7 +1321,7 @@
     <script>
         // ============ BUTTON RIPPLE EFFECT ============
         document.addEventListener('click', function(e) {
-            const target = e.target.closest('.btn-play, .btn-info, .popup-btn, .action-btn');
+            const target = e.target.closest('.btn-play, .btn-info, .popup-btn, .action-btn, .play-ad-btn');
             if (!target) return;
             
             const ripple = document.createElement('span');
@@ -870,7 +1358,7 @@
 
         // Observe all content sections after they load
         setTimeout(() => {
-            document.querySelectorAll('.content-section').forEach(section => {
+            document.querySelectorAll('.content-section, .vast-ad-section').forEach(section => {
                 observer.observe(section);
             });
         }, 100);
@@ -943,11 +1431,11 @@
         console.log('🎬 Streamify Premium UI Loaded!');
     </script>
 
-<script type="text/javascript">
-    aclib.runAutoTag({
-        zoneId: '4fgvxaz0iy',
-    });
-</script>
+    <script type="text/javascript">
+        aclib.runAutoTag({
+            zoneId: '4fgvxaz0iy',
+        });
+    </script>
 
     
 </body>
