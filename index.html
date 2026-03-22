@@ -37,8 +37,11 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/ads.css">
 
-    <!-- Video.js for VAST ads -->
+    <!-- Video.js CSS -->
     <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet" />
+    
+    <!-- Contrib-Ads CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/videojs-contrib-ads@7.5.2/dist/videojs-contrib-ads.css" rel="stylesheet" />
 
     <!-- Premium Animations -->
     <style>
@@ -425,45 +428,43 @@
         }
 
         /* Video.js custom styling */
-        .video-js {
+        #vast-video-player {
             width: 100%;
-            height: 0;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
             border-radius: 16px;
         }
 
         .video-js .vjs-big-play-button {
-            background: linear-gradient(135deg, #e50914 0%, #b20710 100%);
-            border: none;
-            border-radius: 50%;
-            width: 80px;
-            height: 80px;
-            line-height: 80px;
-            font-size: 40px;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 10px 40px rgba(229, 9, 20, 0.5);
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #e50914 0%, #b20710 100%) !important;
+            border: none !important;
+            border-radius: 50% !important;
+            width: 80px !important;
+            height: 80px !important;
+            line-height: 80px !important;
+            font-size: 40px !important;
+            left: 50% !important;
+            top: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            box-shadow: 0 10px 40px rgba(229, 9, 20, 0.5) !important;
+            transition: all 0.3s ease !important;
         }
 
         .video-js .vjs-big-play-button:hover {
-            transform: translate(-50%, -50%) scale(1.1);
-            box-shadow: 0 15px 50px rgba(229, 9, 20, 0.7);
+            transform: translate(-50%, -50%) scale(1.1) !important;
+            box-shadow: 0 15px 50px rgba(229, 9, 20, 0.7) !important;
         }
 
         .video-js .vjs-control-bar {
-            background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 100%);
-            height: 50px;
-            padding: 0 10px;
+            background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 100%) !important;
+            height: 50px !important;
+            padding: 0 10px !important;
         }
 
         .video-js .vjs-play-progress {
-            background: #e50914;
+            background: #e50914 !important;
         }
 
         .video-js .vjs-volume-level {
-            background: #e50914;
+            background: #e50914 !important;
         }
 
         .vast-ad-info {
@@ -551,9 +552,9 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             padding: 15px;
-            max-height: 200px;
+            max-height: 250px;
             overflow-y: auto;
-            font-family: monospace;
+            font-family: 'Courier New', monospace;
             font-size: 12px;
         }
 
@@ -561,11 +562,17 @@
             color: #FFD700;
             margin-bottom: 10px;
             font-weight: bold;
+            font-size: 14px;
         }
 
         .vast-debug-log {
             color: rgba(255, 255, 255, 0.7);
-            line-height: 1.6;
+            line-height: 1.8;
+        }
+
+        .vast-debug-log div {
+            padding: 2px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
         .vast-debug-log .info { color: #2196F3; }
@@ -995,13 +1002,9 @@
                     class="video-js vjs-big-play-centered vjs-fluid"
                     controls
                     preload="auto"
-                    width="100%"
-                    height="100%"
-                    poster="https://via.placeholder.com/1280x720/1a1a2e/e50914?text=Click+Play+to+Load+Ad"
-                    data-setup='{}'>
+                    poster="https://via.placeholder.com/1280x720/1a1a2e/e50914?text=Click+Button+to+Load+Ad">
                     <p class="vjs-no-js">
-                        To view this video please enable JavaScript, and consider upgrading to a
-                        web browser that supports HTML5 video
+                        To view this video please enable JavaScript
                     </p>
                 </video>
             </div>
@@ -1071,16 +1074,25 @@
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SCRIPTS - ORDER IS IMPORTANT!
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    
+    <!-- Your existing scripts -->
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/home.js"></script>
 
-    <!-- Video.js -->
+    <!-- 1. Video.js Core -->
     <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
-    
-    <!-- Video.js IMA Plugin for VAST -->
+
+    <!-- 2. Video.js Contrib-Ads (REQUIRED for IMA) -->
+    <script src="https://cdn.jsdelivr.net/npm/videojs-contrib-ads@7.5.2/dist/videojs-contrib-ads.min.js"></script>
+
+    <!-- 3. Google IMA SDK -->
     <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+
+    <!-- 4. Video.js IMA Plugin -->
     <script src="https://cdn.jsdelivr.net/npm/videojs-ima@2.3.0/dist/videojs.ima.min.js"></script>
 
     <!-- VAST Ad Integration Script -->
@@ -1097,14 +1109,13 @@
             const vastDebugLog = document.getElementById('vastDebugLog');
             
             let player = null;
-            let adStarted = false;
+            let imaInitialized = false;
 
             // ═══════════════════════════════════════════════════════════
             // DEBUG LOGGER
             // ═══════════════════════════════════════════════════════════
             function logDebug(message, type = 'info') {
                 const timestamp = new Date().toLocaleTimeString();
-                const typeClass = type;
                 const icon = {
                     'info': 'ℹ️',
                     'success': '✅',
@@ -1112,19 +1123,48 @@
                     'warning': '⚠️'
                 }[type] || 'ℹ️';
                 
-                vastDebugLog.innerHTML += `<div class="${typeClass}">[${timestamp}] ${icon} ${message}</div>`;
+                vastDebugLog.innerHTML += `<div class="${type}">[${timestamp}] ${icon} ${message}</div>`;
                 vastDebugLog.scrollTop = vastDebugLog.scrollHeight;
                 
                 console.log(`[VAST ${type.toUpperCase()}]`, message);
             }
 
             function updateStatus(message, type = '') {
-                vastStatus.innerHTML = `<i class="fas fa-${type === 'loading' ? 'spinner fa-spin' : type === 'playing' ? 'play' : type === 'error' ? 'exclamation-triangle' : type === 'completed' ? 'check' : 'info-circle'}"></i> ${message}`;
+                const iconMap = {
+                    'loading': 'spinner fa-spin',
+                    'playing': 'play',
+                    'error': 'exclamation-triangle',
+                    'completed': 'check'
+                };
+                const icon = iconMap[type] || 'info-circle';
+                vastStatus.innerHTML = `<i class="fas fa-${icon}"></i> ${message}`;
                 vastStatus.className = 'vast-status ' + type;
             }
 
             // ═══════════════════════════════════════════════════════════
-            // INITIALIZE VIDEO.JS + IMA
+            // CHECK DEPENDENCIES
+            // ═══════════════════════════════════════════════════════════
+            function checkDependencies() {
+                logDebug('Checking dependencies...', 'info');
+                
+                const vjsLoaded = typeof videojs !== 'undefined';
+                const vjsVersion = vjsLoaded ? videojs.VERSION : 'NOT LOADED';
+                logDebug(`Video.js: ${vjsVersion}`, vjsLoaded ? 'success' : 'error');
+                
+                const adsLoaded = vjsLoaded && typeof videojs.getPlugin === 'function' && videojs.getPlugin('ads');
+                logDebug(`Contrib-Ads: ${adsLoaded ? 'Loaded' : 'NOT LOADED'}`, adsLoaded ? 'success' : 'error');
+                
+                const imaSDKLoaded = typeof google !== 'undefined' && google.ima;
+                logDebug(`IMA SDK: ${imaSDKLoaded ? 'Loaded' : 'NOT LOADED'}`, imaSDKLoaded ? 'success' : 'error');
+                
+                const imaPluginLoaded = vjsLoaded && typeof videojs.getPlugin === 'function' && videojs.getPlugin('ima');
+                logDebug(`IMA Plugin: ${imaPluginLoaded ? 'Loaded' : 'NOT LOADED'}`, imaPluginLoaded ? 'success' : 'error');
+                
+                return vjsLoaded && adsLoaded && imaSDKLoaded && imaPluginLoaded;
+            }
+
+            // ═══════════════════════════════════════════════════════════
+            // INITIALIZE VIDEO.JS PLAYER
             // ═══════════════════════════════════════════════════════════
             function initPlayer() {
                 logDebug('Initializing Video.js player...', 'info');
@@ -1133,158 +1173,240 @@
                     controls: true,
                     autoplay: false,
                     preload: 'auto',
-                    fluid: true
+                    fluid: true,
+                    techOrder: ['html5'],
+                    html5: {
+                        vhs: {
+                            overrideNative: true
+                        },
+                        nativeAudioTracks: false,
+                        nativeVideoTracks: false
+                    }
                 });
 
-                logDebug('Video.js player initialized', 'success');
+                logDebug('Video.js player created', 'success');
+                
+                // Set a content source (required for IMA to work)
+                player.src({
+                    src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+                    type: 'video/mp4'
+                });
+                logDebug('Content source set (Big Buck Bunny sample)', 'info');
+
                 return player;
+            }
+
+            // ═══════════════════════════════════════════════════════════
+            // SETUP IMA PLUGIN
+            // ═══════════════════════════════════════════════════════════
+            function setupIMA() {
+                if (imaInitialized) {
+                    logDebug('IMA already initialized, requesting new ads...', 'info');
+                    try {
+                        player.ima.requestAds();
+                        player.play();
+                    } catch (e) {
+                        logDebug('Error requesting ads: ' + e.message, 'error');
+                    }
+                    return;
+                }
+
+                try {
+                    logDebug('Setting up IMA plugin...', 'info');
+                    logDebug('VAST URL: ' + VAST_AD_TAG_URL, 'info');
+
+                    // IMA options
+                    const imaOptions = {
+                        adTagUrl: VAST_AD_TAG_URL,
+                        debug: true,
+                        timeout: 20000,
+                        prerollTimeout: 20000,
+                        adLabel: 'Advertisement',
+                        showControlsForJSAds: true,
+                        adsRenderingSettings: {
+                            enablePreloading: true,
+                            useStyledLinearAds: false,
+                            useStyledNonLinearAds: false
+                        }
+                    };
+
+                    // Initialize IMA
+                    player.ima(imaOptions);
+                    imaInitialized = true;
+                    logDebug('IMA plugin initialized!', 'success');
+
+                    // ═══════════════════════════════════════════════════
+                    // IMA EVENT LISTENERS
+                    // ═══════════════════════════════════════════════════
+                    
+                    player.on('adsmanagerloaded', function() {
+                        logDebug('📦 Ads Manager loaded', 'success');
+                    });
+
+                    player.on('ads-request', function() {
+                        logDebug('📤 Ad request sent to server', 'info');
+                        updateStatus('Requesting ad from server...', 'loading');
+                    });
+
+                    player.on('ads-load', function() {
+                        logDebug('📥 Ad loaded successfully!', 'success');
+                        updateStatus('Ad loaded, starting playback...', 'loading');
+                    });
+
+                    player.on('ads-pod-started', function() {
+                        logDebug('🎬 Ad pod started', 'info');
+                    });
+
+                    player.on('ads-ad-started', function() {
+                        logDebug('▶️ AD STARTED PLAYING!', 'success');
+                        updateStatus('Ad is playing...', 'playing');
+                        playAdBtn.innerHTML = '<i class="fas fa-pause"></i> Ad Playing...';
+                        playAdBtn.disabled = true;
+                    });
+
+                    player.on('ads-first-quartile', function() {
+                        logDebug('📊 Ad 25% complete', 'info');
+                    });
+
+                    player.on('ads-midpoint', function() {
+                        logDebug('📊 Ad 50% complete', 'info');
+                    });
+
+                    player.on('ads-third-quartile', function() {
+                        logDebug('📊 Ad 75% complete', 'info');
+                    });
+
+                    player.on('ads-ad-ended', function() {
+                        logDebug('✅ Ad playback ended', 'success');
+                        updateStatus('Ad completed!', 'completed');
+                        resetButton();
+                    });
+
+                    player.on('ads-pod-ended', function() {
+                        logDebug('📦 Ad pod ended', 'success');
+                    });
+
+                    player.on('ads-allpods-completed', function() {
+                        logDebug('🎉 All ads completed!', 'success');
+                        updateStatus('All ads completed - content playing', 'completed');
+                        resetButton();
+                    });
+
+                    player.on('contentresumed', function() {
+                        logDebug('▶️ Content resumed after ad', 'info');
+                    });
+
+                    player.on('ads-click', function() {
+                        logDebug('👆 Ad clicked', 'info');
+                    });
+
+                    player.on('ads-skipped', function() {
+                        logDebug('⏭️ Ad was skipped', 'warning');
+                        updateStatus('Ad skipped', 'completed');
+                        resetButton();
+                    });
+
+                    player.on('adserror', function(e) {
+                        let errorMsg = 'Unknown error';
+                        if (e && e.data && e.data.AdError) {
+                            errorMsg = e.data.AdError.getMessage ? e.data.AdError.getMessage() : JSON.stringify(e.data);
+                        } else if (e && e.data) {
+                            errorMsg = JSON.stringify(e.data);
+                        }
+                        logDebug('❌ Ad Error: ' + errorMsg, 'error');
+                        updateStatus('Ad error: ' + errorMsg, 'error');
+                        resetButton();
+                    });
+
+                    player.on('readyforpreroll', function() {
+                        logDebug('🎯 Ready for preroll ad', 'info');
+                    });
+
+                    // Start ad request
+                    logDebug('Requesting ads from VAST tag...', 'info');
+                    player.ima.requestAds();
+
+                    // Trigger playback after short delay
+                    setTimeout(function() {
+                        logDebug('Triggering player.play()...', 'info');
+                        player.play().catch(function(e) {
+                            logDebug('Play error (may need user interaction): ' + e.message, 'warning');
+                        });
+                    }, 500);
+
+                } catch (error) {
+                    logDebug('❌ Error setting up IMA: ' + error.message, 'error');
+                    logDebug('Stack trace: ' + error.stack, 'error');
+                    updateStatus('Setup error: ' + error.message, 'error');
+                    resetButton();
+                }
+            }
+
+            function resetButton() {
+                playAdBtn.disabled = false;
+                playAdBtn.innerHTML = '<i class="fas fa-redo"></i> Play Ad Again';
             }
 
             // ═══════════════════════════════════════════════════════════
             // LOAD VAST AD
             // ═══════════════════════════════════════════════════════════
             function loadVastAd() {
-                if (!player) {
-                    player = initPlayer();
-                }
-
+                // Clear previous logs
+                vastDebugLog.innerHTML = '';
+                
                 playAdBtn.disabled = true;
                 playAdBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
-                
-                updateStatus('Requesting VAST ad...', 'loading');
-                logDebug('Requesting VAST ad from: ' + VAST_AD_TAG_URL, 'info');
+                updateStatus('Initializing player...', 'loading');
 
-                try {
-                    // Initialize IMA plugin
-                    const imaOptions = {
-                        adTagUrl: VAST_AD_TAG_URL,
-                        debug: true,
-                        timeout: 15000,
-                        prerollTimeout: 15000,
-                        showControlsForJSAds: true
-                    };
+                // Check if all dependencies are loaded
+                if (!checkDependencies()) {
+                    logDebug('Missing dependencies! Cannot proceed.', 'error');
+                    updateStatus('Error: Missing required libraries', 'error');
+                    resetButton();
+                    return;
+                }
 
-                    logDebug('Initializing IMA plugin with options: ' + JSON.stringify(imaOptions), 'info');
-
-                    player.ima(imaOptions);
-
-                    // IMA Events
-                    player.on('ads-request', function() {
-                        logDebug('VAST ad request sent', 'info');
-                        updateStatus('Ad request sent...', 'loading');
+                if (!player) {
+                    player = initPlayer();
+                    
+                    // Wait for player to be ready
+                    player.ready(function() {
+                        logDebug('Player is ready!', 'success');
+                        
+                        // Small delay to ensure everything is initialized
+                        setTimeout(function() {
+                            setupIMA();
+                        }, 300);
                     });
-
-                    player.on('ads-load', function() {
-                        logDebug('VAST ad loaded successfully!', 'success');
-                        updateStatus('Ad loaded - playing...', 'loading');
-                    });
-
-                    player.on('ads-pod-started', function() {
-                        logDebug('Ad pod started', 'info');
-                    });
-
-                    player.on('ads-ad-started', function() {
-                        adStarted = true;
-                        logDebug('🎬 Ad started playing!', 'success');
-                        updateStatus('Ad is playing...', 'playing');
-                        playAdBtn.innerHTML = '<i class="fas fa-pause"></i> Ad Playing...';
-                    });
-
-                    player.on('ads-first-quartile', function() {
-                        logDebug('Ad 25% complete', 'info');
-                    });
-
-                    player.on('ads-midpoint', function() {
-                        logDebug('Ad 50% complete', 'info');
-                    });
-
-                    player.on('ads-third-quartile', function() {
-                        logDebug('Ad 75% complete', 'info');
-                    });
-
-                    player.on('ads-ad-ended', function() {
-                        logDebug('Ad playback ended', 'success');
-                        updateStatus('Ad completed!', 'completed');
-                        playAdBtn.disabled = false;
-                        playAdBtn.innerHTML = '<i class="fas fa-redo"></i> Play Another Ad';
-                    });
-
-                    player.on('ads-pod-ended', function() {
-                        logDebug('Ad pod ended', 'success');
-                    });
-
-                    player.on('ads-allpods-completed', function() {
-                        logDebug('All ad pods completed', 'success');
-                        updateStatus('All ads completed!', 'completed');
-                    });
-
-                    player.on('ads-click', function() {
-                        logDebug('Ad clicked', 'info');
-                    });
-
-                    player.on('ads-skipped', function() {
-                        logDebug('Ad was skipped', 'warning');
-                        updateStatus('Ad skipped', 'completed');
-                        playAdBtn.disabled = false;
-                        playAdBtn.innerHTML = '<i class="fas fa-redo"></i> Play Another Ad';
-                    });
-
-                    player.on('adserror', function(e) {
-                        logDebug('Ad Error: ' + (e.message || 'Unknown error'), 'error');
-                        updateStatus('Ad error occurred', 'error');
-                        playAdBtn.disabled = false;
-                        playAdBtn.innerHTML = '<i class="fas fa-redo"></i> Retry';
-                    });
-
-                    player.on('adsmanagerloaded', function() {
-                        logDebug('Ads Manager loaded', 'success');
-                    });
-
-                    // Request ads
-                    logDebug('Calling player.ima.requestAds()...', 'info');
-                    player.ima.requestAds();
-
-                    // Start playback to trigger ad
-                    setTimeout(() => {
-                        logDebug('Triggering playback...', 'info');
-                        player.play();
-                    }, 1000);
-
-                } catch (error) {
-                    logDebug('Error initializing IMA: ' + error.message, 'error');
-                    updateStatus('Error: ' + error.message, 'error');
-                    playAdBtn.disabled = false;
-                    playAdBtn.innerHTML = '<i class="fas fa-redo"></i> Retry';
+                } else {
+                    // Player already exists, just request new ads
+                    setupIMA();
                 }
             }
 
             // ═══════════════════════════════════════════════════════════
             // EVENT LISTENERS
             // ═══════════════════════════════════════════════════════════
-            playAdBtn.addEventListener('click', function() {
-                vastDebugLog.innerHTML = ''; // Clear debug log
-                loadVastAd();
-            });
+            if (playAdBtn) {
+                playAdBtn.addEventListener('click', loadVastAd);
+            }
 
-            // Log when scripts are loaded
-            logDebug('VAST ad test page loaded', 'success');
-            logDebug('VAST Tag URL: ' + VAST_AD_TAG_URL, 'info');
-            logDebug('Video.js version: ' + (typeof videojs !== 'undefined' ? videojs.VERSION : 'Not loaded'), 'info');
-            logDebug('IMA SDK: ' + (typeof google !== 'undefined' && google.ima ? 'Loaded' : 'Not loaded'), 'info');
+            // Initial ready message
+            logDebug('🎬 VAST Ad Test Page Ready', 'success');
+            logDebug('VAST Tag: ' + VAST_AD_TAG_URL, 'info');
+            logDebug('Click "Load & Play VAST Ad" to test', 'info');
 
         })();
     </script>
 
     <!-- Page Loader Script -->
     <script>
-        // Hide loader when page is fully loaded
         window.addEventListener('load', function() {
             setTimeout(function() {
                 document.getElementById('pageLoader').classList.add('hidden');
             }, 800);
         });
 
-        // Fallback: hide loader after 3 seconds max
         setTimeout(function() {
             const loader = document.getElementById('pageLoader');
             if (loader && !loader.classList.contains('hidden')) {
@@ -1301,17 +1423,14 @@
             const closeBtn = document.getElementById('popupClose');
             const checkbox = document.getElementById('dontAskCheckbox');
 
-            // Only show popup if user hasn't dismissed it permanently
             if (localStorage.getItem(STORAGE_KEY) === 'true') {
                 popup.style.display = 'none';
             }
 
             closeBtn.addEventListener('click', function () {
-                // If checkbox is checked, save preference to localStorage
                 if (checkbox.checked) {
                     localStorage.setItem(STORAGE_KEY, 'true');
                 }
-                // Hide popup
                 popup.style.display = 'none';
             });
         })();
@@ -1319,7 +1438,7 @@
 
     <!-- Premium Effects Script -->
     <script>
-        // ============ BUTTON RIPPLE EFFECT ============
+        // Ripple Effect
         document.addEventListener('click', function(e) {
             const target = e.target.closest('.btn-play, .btn-info, .popup-btn, .action-btn, .play-ad-btn');
             if (!target) return;
@@ -1336,12 +1455,10 @@
             
             target.appendChild(ripple);
             
-            ripple.addEventListener('animationend', () => {
-                ripple.remove();
-            });
+            ripple.addEventListener('animationend', () => ripple.remove());
         });
 
-        // ============ SCROLL REVEAL ANIMATION ============
+        // Scroll Reveal
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
@@ -1356,14 +1473,13 @@
             });
         }, observerOptions);
 
-        // Observe all content sections after they load
         setTimeout(() => {
             document.querySelectorAll('.content-section, .vast-ad-section').forEach(section => {
                 observer.observe(section);
             });
         }, 100);
 
-        // ============ PARALLAX HERO EFFECT ============
+        // Parallax Hero
         let ticking = false;
         window.addEventListener('scroll', () => {
             if (!ticking) {
@@ -1381,9 +1497,8 @@
             }
         });
 
-        // ============ CARD SHINE EFFECT ============
+        // Card Shine Effect
         document.addEventListener('DOMContentLoaded', () => {
-            // Add shine element to cards dynamically
             const addShineEffect = () => {
                 document.querySelectorAll('.card:not(.shine-added)').forEach(card => {
                     const shine = document.createElement('div');
@@ -1393,10 +1508,8 @@
                 });
             };
 
-            // Initial run
             setTimeout(addShineEffect, 1000);
 
-            // Run again when new cards are added (for dynamic content)
             const contentObserver = new MutationObserver(addShineEffect);
             const mainContent = document.querySelector('.main-content');
             if (mainContent) {
@@ -1404,9 +1517,8 @@
             }
         });
 
-        // ============ KEYBOARD NAVIGATION ============
+        // Keyboard Navigation
         document.addEventListener('keydown', function(e) {
-            // ESC to close modals
             if (e.key === 'Escape') {
                 document.getElementById('searchModal')?.classList.remove('active');
                 document.getElementById('seeAllModal')?.classList.remove('active');
@@ -1416,7 +1528,6 @@
                 document.body.style.overflow = '';
             }
             
-            // Forward slash to open search
             if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
                 const activeElement = document.activeElement;
                 const isInputFocused = activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA';
@@ -1436,7 +1547,6 @@
             zoneId: '4fgvxaz0iy',
         });
     </script>
-
     
 </body>
 </html>
