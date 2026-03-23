@@ -31,9 +31,6 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/ads.css">
 
-    <!-- ═══ ADSTERRA LIBRARY - MUST BE IN HEAD BEFORE ANY runBanner CALLS ═══ -->
-    <script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
-
     <style>
         @keyframes float {
             0%, 100% { transform: translateY(0); }
@@ -69,83 +66,131 @@
             to { transform: scale(4); opacity: 0; }
         }
         
-        body { animation: pageLoad 0.8s ease-out; }
+        body {
+            animation: pageLoad 0.8s ease-out;
+        }
         
         @keyframes pageLoad {
             from { opacity: 0; }
             to { opacity: 1; }
         }
         
-        .card { position: relative; overflow: hidden; }
+        .card {
+            position: relative;
+            overflow: hidden;
+        }
         
         .card .shine {
-            position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: 0.5s; z-index: 4; pointer-events: none;
+            transition: 0.5s;
+            z-index: 4;
+            pointer-events: none;
         }
         
         .card:hover .shine { left: 100%; }
 
         .popup-dont-ask {
-            display: flex; align-items: center; justify-content: center;
-            gap: 12px; margin: 18px 0 8px 0; cursor: pointer; user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 18px 0 8px 0;
+            cursor: pointer;
+            user-select: none;
         }
 
         .popup-dont-ask input[type="checkbox"] { display: none; }
 
         .popup-dont-ask .custom-checkbox {
-            width: 22px; height: 22px;
-            border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 6px;
+            width: 22px;
+            height: 22px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
             background: rgba(255, 255, 255, 0.05);
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .popup-dont-ask input[type="checkbox"]:checked + .custom-checkbox {
             background: linear-gradient(135deg, #e50914 0%, #b20710 100%);
-            border-color: #e50914; box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
+            border-color: #e50914;
+            box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
         }
 
         .popup-dont-ask input[type="checkbox"]:checked + .custom-checkbox::after {
-            content: ''; display: block; width: 6px; height: 10px;
-            border: 2px solid #fff; border-top: none; border-left: none;
+            content: '';
+            display: block;
+            width: 6px;
+            height: 10px;
+            border: 2px solid #fff;
+            border-top: none;
+            border-left: none;
             transform: rotate(45deg) translate(-1px, -1px);
         }
 
         .popup-dont-ask .checkbox-label {
-            font-size: 14px; color: rgba(255, 255, 255, 0.6); transition: color 0.3s;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            transition: color 0.3s;
         }
 
         .popup-dont-ask:hover .checkbox-label { color: #fff; }
+
         .popup-dont-ask:hover .custom-checkbox {
-            border-color: rgba(255, 255, 255, 0.5); background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .page-loader {
-            position: fixed; inset: 0; background: #0a0a0f; z-index: 99999;
-            display: flex; align-items: center; justify-content: center;
-            flex-direction: column; gap: 20px; transition: opacity 0.5s, visibility 0.5s;
+            position: fixed;
+            inset: 0;
+            background: #0a0a0f;
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+            transition: opacity 0.5s, visibility 0.5s;
         }
 
         .page-loader.hidden { opacity: 0; visibility: hidden; }
 
         .loader-logo {
-            font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 4px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 48px;
+            letter-spacing: 4px;
             background: linear-gradient(135deg, #e50914 0%, #ff6b6b 50%, #e50914 100%);
             background-size: 200% 200%;
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             animation: gradientShift 2s ease infinite;
         }
 
         .loader-bar {
-            width: 200px; height: 3px; background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px; overflow: hidden;
+            width: 200px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
         }
 
         .loader-bar::after {
-            content: ''; display: block; width: 50%; height: 100%;
+            content: '';
+            display: block;
+            width: 50%;
+            height: 100%;
             background: linear-gradient(90deg, #e50914, #ff6b6b, #e50914);
-            border-radius: 10px; animation: loading 1s ease-in-out infinite;
+            border-radius: 10px;
+            animation: loading 1s ease-in-out infinite;
         }
 
         @keyframes loading {
@@ -159,13 +204,19 @@
         }
 
         .particles {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: -1; overflow: hidden;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
         }
 
         .particle {
-            position: absolute; width: 4px; height: 4px;
-            background: rgba(229, 9, 20, 0.3); border-radius: 50%;
+            position: absolute;
+            width: 4px; height: 4px;
+            background: rgba(229, 9, 20, 0.3);
+            border-radius: 50%;
             animation: floatParticle 15s infinite;
         }
 
@@ -188,112 +239,174 @@
         }
 
         [data-tooltip] { position: relative; }
+
         [data-tooltip]::after {
-            content: attr(data-tooltip); position: absolute; bottom: 100%; left: 50%;
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%; left: 50%;
             transform: translateX(-50%) translateY(-5px);
-            background: rgba(0, 0, 0, 0.9); color: #fff; padding: 8px 14px;
-            border-radius: 8px; font-size: 12px; font-weight: 500; white-space: nowrap;
-            opacity: 0; visibility: hidden; transition: all 0.3s; pointer-events: none;
-            z-index: 100; border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 12px; font-weight: 500;
+            white-space: nowrap;
+            opacity: 0; visibility: hidden;
+            transition: all 0.3s;
+            pointer-events: none;
+            z-index: 100;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
+
         [data-tooltip]:hover::after {
-            opacity: 1; visibility: visible; transform: translateX(-50%) translateY(-10px);
+            opacity: 1; visibility: visible;
+            transform: translateX(-50%) translateY(-10px);
         }
 
         button:focus-visible, a:focus-visible, input:focus-visible {
-            outline: 2px solid #e50914; outline-offset: 2px;
+            outline: 2px solid #e50914;
+            outline-offset: 2px;
         }
 
         html { scroll-behavior: smooth; }
+
         body {
-            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
         }
 
-        /* ═══ BANNER AD SPOT STYLES ═══ */
+        /* ═══════════════════════════════════════════
+           BANNER AD STYLES
+           ═══════════════════════════════════════════ */
         .ad-banner-spot {
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 15px 10px;
+            padding: 20px 10px;
             min-height: 50px;
             overflow: hidden;
         }
 
-        /* ═══ VAST AD SECTION STYLES ═══ */
+        .ad-banner-spot > div {
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        /* ═══════════════════════════════════════════
+           VAST AD SECTION STYLES
+           ═══════════════════════════════════════════ */
         .vast-ad-section {
             background: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 50%, #0a0a0f 100%);
-            padding: 60px 20px; margin: 40px 0;
+            padding: 60px 20px;
+            margin: 40px 0;
             border-top: 1px solid rgba(229, 9, 20, 0.2);
             border-bottom: 1px solid rgba(229, 9, 20, 0.2);
         }
+
         .vast-ad-container { max-width: 900px; margin: 0 auto; }
+
         .vast-ad-header { text-align: center; margin-bottom: 30px; }
+
         .vast-ad-header h2 {
-            font-family: 'Bebas Neue', sans-serif; font-size: 32px;
-            letter-spacing: 3px; color: #fff; margin-bottom: 10px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px; letter-spacing: 3px;
+            color: #fff; margin-bottom: 10px;
         }
+
         .vast-ad-header p { color: rgba(255, 255, 255, 0.6); font-size: 14px; }
+
         .vast-ad-badge {
             display: inline-flex; align-items: center; gap: 8px;
-            background: rgba(229, 9, 20, 0.2); border: 1px solid rgba(229, 9, 20, 0.4);
-            padding: 6px 16px; border-radius: 20px; font-size: 11px; font-weight: 700;
+            background: rgba(229, 9, 20, 0.2);
+            border: 1px solid rgba(229, 9, 20, 0.4);
+            padding: 6px 16px; border-radius: 20px;
+            font-size: 11px; font-weight: 700;
             color: #FFD700; letter-spacing: 2px; margin-bottom: 15px;
         }
+
         .vast-ad-badge::before {
-            content: ''; width: 8px; height: 8px; background: #FFD700;
-            border-radius: 50%; animation: adpulse 1.5s infinite;
+            content: ''; width: 8px; height: 8px;
+            background: #FFD700; border-radius: 50%;
+            animation: adpulse 1.5s infinite;
         }
+
         @keyframes adpulse {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.5; transform: scale(1.2); }
         }
+
         .vast-player-wrapper {
-            position: relative; background: #000; border-radius: 16px; overflow: hidden;
+            position: relative; background: #000;
+            border-radius: 16px; overflow: hidden;
             box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(229,9,20,0.1);
             border: 1px solid rgba(255,255,255,0.1);
         }
+
         .vast-player-wrapper::before {
-            content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
+            content: '';
+            position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
             background: linear-gradient(45deg, #e50914, transparent, #e50914);
             border-radius: 18px; z-index: -1; opacity: 0.3;
         }
+
         .vast-ad-info {
             display: flex; align-items: center; justify-content: center;
             gap: 20px; margin-top: 20px; flex-wrap: wrap;
         }
+
         .vast-ad-info span {
             display: flex; align-items: center; gap: 8px;
             color: rgba(255,255,255,0.5); font-size: 13px;
         }
+
         .vast-ad-info i { color: #e50914; }
+
         .vast-status {
             text-align: center; margin-top: 15px; padding: 12px 20px;
             background: rgba(255,255,255,0.05); border-radius: 8px;
             font-size: 13px; color: rgba(255,255,255,0.7);
         }
+
         .vast-status.loading { color: #FFD700; }
         .vast-status.playing { color: #4CAF50; }
         .vast-status.error { color: #f44336; }
         .vast-status.completed { color: #2196F3; }
         .vast-status.warning { color: #FF9800; }
+
         .play-ad-btn {
             display: inline-flex; align-items: center; justify-content: center;
             gap: 10px; padding: 14px 32px;
             background: linear-gradient(135deg, #e50914 0%, #b20710 100%);
             border: none; border-radius: 30px; color: #fff;
             font-size: 15px; font-weight: 600; cursor: pointer;
-            transition: all 0.3s ease; box-shadow: 0 5px 20px rgba(229,9,20,0.4);
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(229,9,20,0.4);
         }
-        .play-ad-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(229,9,20,0.6); }
+
+        .play-ad-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(229,9,20,0.6);
+        }
+
         .play-ad-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-        .vast-btn-row { display: flex; gap: 12px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
-        .vast-debug {
-            max-width: 900px; margin: 20px auto 0; background: rgba(0,0,0,0.6);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 15px;
-            max-height: 250px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 12px;
+
+        .vast-btn-row {
+            display: flex; gap: 12px; justify-content: center;
+            margin-top: 20px; flex-wrap: wrap;
         }
+
+        .vast-debug {
+            max-width: 900px; margin: 20px auto 0;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; padding: 15px;
+            max-height: 250px; overflow-y: auto;
+            font-family: 'Courier New', monospace; font-size: 12px;
+        }
+
         .vast-debug-title { color: #FFD700; margin-bottom: 10px; font-weight: bold; font-size: 14px; }
+
         .vast-debug-log { color: rgba(255,255,255,0.7); line-height: 1.8; }
         .vast-debug-log div { padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .vast-debug-log .info { color: #2196F3; }
@@ -407,15 +520,7 @@
     </section>
 
     <!-- ═══ BANNER AD 1 - After Hero ═══ -->
-    <div class="ad-banner-spot">
-        <div>
-            <script type="text/javascript">
-                aclib.runBanner({
-                    zoneId: '11109538',
-                });
-            </script>
-        </div>
-    </div>
+    <div class="ad-banner-spot" id="ad-banner-1"></div>
 
     <!-- Content -->
     <main class="main-content">
@@ -448,15 +553,7 @@
         </section>
 
         <!-- ═══ BANNER AD 2 - After Trending ═══ -->
-        <div class="ad-banner-spot">
-            <div>
-                <script type="text/javascript">
-                    aclib.runBanner({
-                        zoneId: '11109538',
-                    });
-                </script>
-            </div>
-        </div>
+        <div class="ad-banner-spot" id="ad-banner-2"></div>
 
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-film"></i> Bollywood</h2><button class="see-all-btn" data-cat="bollywood">See All <i class="fas fa-chevron-right"></i></button></div>
@@ -486,15 +583,7 @@
         </section>
 
         <!-- ═══ BANNER AD 3 - After Top Rated ═══ -->
-        <div class="ad-banner-spot">
-            <div>
-                <script type="text/javascript">
-                    aclib.runBanner({
-                        zoneId: '11109538',
-                    });
-                </script>
-            </div>
-        </div>
+        <div class="ad-banner-spot" id="ad-banner-3"></div>
 
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-masks-theater"></i> Korean Drama</h2><button class="see-all-btn" data-cat="korean">See All <i class="fas fa-chevron-right"></i></button></div>
@@ -524,15 +613,7 @@
         </section>
 
         <!-- ═══ BANNER AD 4 - After Adventure ═══ -->
-        <div class="ad-banner-spot">
-            <div>
-                <script type="text/javascript">
-                    aclib.runBanner({
-                        zoneId: '11109538',
-                    });
-                </script>
-            </div>
-        </div>
+        <div class="ad-banner-spot" id="ad-banner-4"></div>
 
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-face-laugh-squint"></i> Comedy</h2><button class="see-all-btn" data-cat="comedy">See All <i class="fas fa-chevron-right"></i></button></div>
@@ -562,15 +643,7 @@
         </section>
 
         <!-- ═══ BANNER AD 5 - After Horror ═══ -->
-        <div class="ad-banner-spot">
-            <div>
-                <script type="text/javascript">
-                    aclib.runBanner({
-                        zoneId: '11109538',
-                    });
-                </script>
-            </div>
-        </div>
+        <div class="ad-banner-spot" id="ad-banner-5"></div>
 
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-heart"></i> Romance</h2><button class="see-all-btn" data-cat="romance">See All <i class="fas fa-chevron-right"></i></button></div>
@@ -600,15 +673,7 @@
         </section>
 
         <!-- ═══ BANNER AD 6 - After Sci-Fi ═══ -->
-        <div class="ad-banner-spot">
-            <div>
-                <script type="text/javascript">
-                    aclib.runBanner({
-                        zoneId: '11109538',
-                    });
-                </script>
-            </div>
-        </div>
+        <div class="ad-banner-spot" id="ad-banner-6"></div>
 
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-dragon"></i> Fantasy</h2><button class="see-all-btn" data-cat="fantasy">See All <i class="fas fa-chevron-right"></i></button></div>
@@ -666,7 +731,9 @@
 
     </main>
 
-    <!-- ═══ VAST 4.0 VIDEO AD SECTION ═══ -->
+    <!-- ═══════════════════════════════════════════════════════════════
+         VAST 4.0 VIDEO AD SECTION
+         ═══════════════════════════════════════════════════════════════ -->
     <section class="vast-ad-section" id="vastAdSection">
         <div class="vast-ad-container">
             <div class="vast-ad-header">
@@ -674,24 +741,32 @@
                 <h2><i class="fas fa-play-circle"></i> Video Ad Test</h2>
                 <p>Testing VAST 4.0 video ad integration (Direct IMA SDK)</p>
             </div>
+
             <div class="vast-player-wrapper">
                 <div id="ad-container" style="position:relative; width:100%; padding-bottom:56.25%; background:#000; border-radius:16px; overflow:hidden;">
-                    <video id="content-video" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; background:#000;" playsinline webkit-playsinline controls poster="https://via.placeholder.com/1280x720/1a1a2e/e50914?text=Click+Button+to+Load+Ad">
+                    <video id="content-video"
+                           style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; background:#000;"
+                           playsinline webkit-playsinline controls
+                           poster="https://via.placeholder.com/1280x720/1a1a2e/e50914?text=Click+Button+to+Load+Ad">
                         <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
                     </video>
                     <div id="ad-display-container" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:10;"></div>
                 </div>
             </div>
+
             <div class="vast-btn-row">
                 <button class="play-ad-btn" id="playAdBtn"><i class="fas fa-play"></i> Load & Play VAST Ad</button>
                 <button class="play-ad-btn" id="testVastBtn" style="background:linear-gradient(135deg, #2196F3, #1565C0);"><i class="fas fa-vial"></i> Test with Google Sample Ad</button>
             </div>
+
             <div class="vast-status" id="vastStatus"><i class="fas fa-info-circle"></i> Click a button above to test</div>
+
             <div class="vast-ad-info">
                 <span><i class="fas fa-link"></i> VAST 4.0</span>
                 <span><i class="fas fa-server"></i> Direct IMA SDK</span>
                 <span><i class="fas fa-clock"></i> Pre-roll</span>
             </div>
+
             <div class="vast-debug" id="vastDebug">
                 <div class="vast-debug-title"><i class="fas fa-terminal"></i> VAST Debug Console</div>
                 <div class="vast-debug-log" id="vastDebugLog">Ready. Click a button to test.</div>
@@ -700,15 +775,7 @@
     </section>
 
     <!-- ═══ BANNER AD 7 - Before Footer ═══ -->
-    <div class="ad-banner-spot">
-        <div>
-            <script type="text/javascript">
-                aclib.runBanner({
-                    zoneId: '11109538',
-                });
-            </script>
-        </div>
-    </div>
+    <div class="ad-banner-spot" id="ad-banner-7"></div>
 
     <!-- Footer -->
     <footer class="footer">
@@ -751,7 +818,9 @@
         </div>
     </div>
 
-    <!-- ═══ SCRIPTS ═══ -->
+    <!-- ═══════════════════════════════════════════════════════════════
+         SCRIPTS - ORDER MATTERS!
+         ═══════════════════════════════════════════════════════════════ -->
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/home.js"></script>
@@ -759,11 +828,87 @@
     <!-- Google IMA SDK for VAST -->
     <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
 
+    <!-- 
+         ═══════════════════════════════════════════════════════════════
+         ADSTERRA LIBRARY - THIS MUST COME FIRST BEFORE runBanner!
+         If your aclib library loads from ads.css or another file, 
+         keep this. If not, uncomment and add your actual library URL:
+         ═══════════════════════════════════════════════════════════════
+    -->
+    <!-- 
+    <script type="text/javascript" src="//pl_YOUR_ID.highperformanceformat.com/YOUR_HASH/invoke.js" async data-cfasync="false"></script>
+    -->
+
+    <!-- 
+         ═══════════════════════════════════════════════════════════════
+         BANNER ADS - Injected after aclib library loads
+         ═══════════════════════════════════════════════════════════════
+    -->
+    <script>
+    (function() {
+        var BANNER_ZONE_ID = '11109538';
+        var bannerSpots = [
+            'ad-banner-1',
+            'ad-banner-2',
+            'ad-banner-3',
+            'ad-banner-4',
+            'ad-banner-5',
+            'ad-banner-6',
+            'ad-banner-7'
+        ];
+
+        function loadBanners() {
+            if (typeof aclib === 'undefined') {
+                console.log('[Ads] Waiting for aclib library...');
+                setTimeout(loadBanners, 500);
+                return;
+            }
+
+            console.log('[Ads] aclib loaded! Initializing banners...');
+
+            bannerSpots.forEach(function(spotId) {
+                var spot = document.getElementById(spotId);
+                if (spot) {
+                    // Create a child div (aclib renders inside parent of the script)
+                    var bannerDiv = document.createElement('div');
+                    spot.appendChild(bannerDiv);
+
+                    // Create script element inside the div
+                    var script = document.createElement('script');
+                    script.type = 'text/javascript';
+                    script.textContent = "aclib.runBanner({ zoneId: '" + BANNER_ZONE_ID + "' });";
+                    bannerDiv.appendChild(script);
+
+                    console.log('[Ads] Banner loaded in: ' + spotId);
+                }
+            });
+        }
+
+        // Start trying to load banners
+        if (document.readyState === 'complete') {
+            loadBanners();
+        } else {
+            window.addEventListener('load', function() {
+                // Give aclib a moment to initialize
+                setTimeout(loadBanners, 1000);
+            });
+        }
+    })();
+    </script>
+
+    <!-- Adsterra AutoTag (your existing code) -->
+    <script type="text/javascript">
+        aclib.runAutoTag({
+            zoneId: '4fgvxaz0iy',
+        });
+    </script>
+
     <!-- VAST Ad Integration -->
     <script>
     (function() {
         var YOUR_VAST_TAG = 'https://youradexchange.com/video/select.php?r=11109474';
         var GOOGLE_SAMPLE_TAG = 'https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_preroll_skippable&sz=640x480&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=';
+
         var playAdBtn = document.getElementById('playAdBtn');
         var testVastBtn = document.getElementById('testVastBtn');
         var vastStatus = document.getElementById('vastStatus');
@@ -771,106 +916,285 @@
         var contentVideo = document.getElementById('content-video');
         var adContainerDiv = document.getElementById('ad-container');
         var adDisplayContainerDiv = document.getElementById('ad-display-container');
-        var adsLoader = null, adsManager = null, adDisplayContainer = null, adsInitialized = false, adPlaying = false;
 
-        function logDebug(m, t) {
-            t = t || 'info';
-            var ts = new Date().toLocaleTimeString();
-            var ic = {'info':'ℹ️','success':'✅','error':'❌','warning':'⚠️'}[t] || 'ℹ️';
-            vastDebugLog.innerHTML += '<div class="'+t+'">['+ts+'] '+ic+' '+m+'</div>';
+        var adsLoader = null;
+        var adsManager = null;
+        var adDisplayContainer = null;
+        var adsInitialized = false;
+        var adPlaying = false;
+
+        function logDebug(message, type) {
+            type = type || 'info';
+            var timestamp = new Date().toLocaleTimeString();
+            var icons = {'info':'ℹ️','success':'✅','error':'❌','warning':'⚠️'};
+            vastDebugLog.innerHTML += '<div class="' + type + '">[' + timestamp + '] ' + (icons[type]||'ℹ️') + ' ' + message + '</div>';
             vastDebugLog.scrollTop = vastDebugLog.scrollHeight;
+            console.log('[VAST ' + type.toUpperCase() + ']', message);
         }
-        function updateStatus(m, t) {
-            t = t || '';
-            var im = {'loading':'spinner fa-spin','playing':'play','error':'exclamation-triangle','completed':'check','warning':'exclamation-circle'};
-            vastStatus.innerHTML = '<i class="fas fa-'+(im[t]||'info-circle')+'"></i> '+m;
-            vastStatus.className = 'vast-status '+t;
+
+        function updateStatus(message, type) {
+            type = type || '';
+            var iconMap = {'loading':'spinner fa-spin','playing':'play','error':'exclamation-triangle','completed':'check','warning':'exclamation-circle'};
+            vastStatus.innerHTML = '<i class="fas fa-' + (iconMap[type]||'info-circle') + '"></i> ' + message;
+            vastStatus.className = 'vast-status ' + type;
         }
+
         function initIMA() {
             if (adsInitialized) return;
-            if (typeof google === 'undefined' || !google.ima) { logDebug('IMA SDK not loaded!','error'); return; }
-            logDebug('IMA SDK v'+google.ima.VERSION,'success');
+            logDebug('Initializing Google IMA SDK...', 'info');
+            if (typeof google === 'undefined' || !google.ima) {
+                logDebug('IMA SDK not loaded!', 'error');
+                return;
+            }
+            logDebug('IMA SDK version: ' + google.ima.VERSION, 'success');
             adDisplayContainer = new google.ima.AdDisplayContainer(adDisplayContainerDiv, contentVideo);
+            logDebug('AdDisplayContainer created', 'success');
             adsLoader = new google.ima.AdsLoader(adDisplayContainer);
+            logDebug('AdsLoader created', 'success');
             adsLoader.addEventListener(google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED, onAdsManagerLoaded, false);
             adsLoader.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, onAdError, false);
-            contentVideo.addEventListener('ended', function() { if (adsLoader) adsLoader.contentComplete(); });
+            contentVideo.addEventListener('ended', function() {
+                logDebug('Content video ended', 'info');
+                if (adsLoader) adsLoader.contentComplete();
+            });
             adsInitialized = true;
-            logDebug('IMA initialized!','success');
+            logDebug('IMA SDK initialized!', 'success');
         }
-        function requestAds(url) {
+
+        function requestAds(vastTagUrl) {
             if (adsManager) { adsManager.destroy(); adsManager = null; }
             adDisplayContainer.initialize();
-            var req = new google.ima.AdsRequest();
-            req.adTagUrl = url;
-            var r = adContainerDiv.getBoundingClientRect();
-            req.linearAdSlotWidth = r.width||640; req.linearAdSlotHeight = r.height||360;
-            logDebug('📤 Requesting ad...','info');
-            updateStatus('Requesting...','loading');
-            try { adsLoader.requestAds(req); } catch(e) { logDebug('Error: '+e.message,'error'); resetButtons(); }
+            var adsRequest = new google.ima.AdsRequest();
+            adsRequest.adTagUrl = vastTagUrl;
+            var rect = adContainerDiv.getBoundingClientRect();
+            adsRequest.linearAdSlotWidth = rect.width || 640;
+            adsRequest.linearAdSlotHeight = rect.height || 360;
+            adsRequest.nonLinearAdSlotWidth = rect.width || 640;
+            adsRequest.nonLinearAdSlotHeight = (rect.height || 360) / 3;
+            logDebug('📤 Sending VAST request...', 'info');
+            updateStatus('Requesting ad...', 'loading');
+            try {
+                adsLoader.requestAds(adsRequest);
+                logDebug('Request sent!', 'success');
+            } catch (e) {
+                logDebug('Request error: ' + e.message, 'error');
+                resetButtons();
+            }
         }
-        function onAdsManagerLoaded(ev) {
-            logDebug('📦 AdsManager loaded!','success');
-            var s = new google.ima.AdsRenderingSettings();
-            s.restoreCustomPlaybackStateOnAdBreakComplete = true;
-            adsManager = ev.getAdsManager(contentVideo, s);
+
+        function onAdsManagerLoaded(event) {
+            logDebug('📦 AdsManager loaded!', 'success');
+            var settings = new google.ima.AdsRenderingSettings();
+            settings.restoreCustomPlaybackStateOnAdBreakComplete = true;
+            adsManager = event.getAdsManager(contentVideo, settings);
+
             adsManager.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, onAdError);
-            adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, function(){contentVideo.pause();});
-            adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, function(){contentVideo.play();adPlaying=false;resetButtons();});
-            adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, function(e){var a=e.getAd();logDebug('📥 Loaded! '+(a.isLinear()?'Linear '+a.getDuration()+'s':'Overlay'),'success');});
-            adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, function(){adPlaying=true;logDebug('🎬 AD PLAYING!','success');updateStatus('🎬 Playing...','playing');playAdBtn.innerHTML='<i class="fas fa-pause"></i> Playing...';playAdBtn.disabled=true;testVastBtn.disabled=true;});
-            adsManager.addEventListener(google.ima.AdEvent.Type.FIRST_QUARTILE, function(){logDebug('📊 25%','info');});
-            adsManager.addEventListener(google.ima.AdEvent.Type.MIDPOINT, function(){logDebug('📊 50%','info');});
-            adsManager.addEventListener(google.ima.AdEvent.Type.THIRD_QUARTILE, function(){logDebug('📊 75%','info');});
-            adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, function(){logDebug('✅ Complete!','success');updateStatus('Completed!','completed');adPlaying=false;});
-            adsManager.addEventListener(google.ima.AdEvent.Type.SKIPPED, function(){logDebug('⏭️ Skipped','warning');adPlaying=false;resetButtons();});
-            adsManager.addEventListener(google.ima.AdEvent.Type.ALL_ADS_COMPLETED, function(){logDebug('🎉 All done!','success');adPlaying=false;resetButtons();});
-            adsManager.addEventListener(google.ima.AdEvent.Type.LOG, function(e){var d=e.getAdData();if(d&&d.adError)logDebug('⚠️ '+d.adError.getMessage(),'warning');});
-            try{var r=adContainerDiv.getBoundingClientRect();adsManager.init(Math.round(r.width)||640,Math.round(r.height)||360,google.ima.ViewMode.NORMAL);adsManager.start();}catch(e){logDebug('Error: '+e.message,'error');contentVideo.play();resetButtons();}
+            adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, function() { contentVideo.pause(); });
+            adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, function() { contentVideo.play(); adPlaying = false; resetButtons(); });
+            adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, function(e) {
+                var ad = e.getAd();
+                logDebug('📥 Ad loaded! ' + (ad.isLinear() ? 'Linear ' + ad.getDuration() + 's' : 'Non-linear'), 'success');
+            });
+            adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, function() {
+                adPlaying = true;
+                logDebug('🎬 AD PLAYING!', 'success');
+                updateStatus('🎬 Ad playing...', 'playing');
+                playAdBtn.innerHTML = '<i class="fas fa-pause"></i> Ad Playing...';
+                playAdBtn.disabled = true;
+                testVastBtn.disabled = true;
+            });
+            adsManager.addEventListener(google.ima.AdEvent.Type.FIRST_QUARTILE, function() { logDebug('📊 25%', 'info'); });
+            adsManager.addEventListener(google.ima.AdEvent.Type.MIDPOINT, function() { logDebug('📊 50%', 'info'); });
+            adsManager.addEventListener(google.ima.AdEvent.Type.THIRD_QUARTILE, function() { logDebug('📊 75%', 'info'); });
+            adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, function() {
+                logDebug('✅ Ad completed!', 'success');
+                updateStatus('Ad completed!', 'completed');
+                adPlaying = false;
+            });
+            adsManager.addEventListener(google.ima.AdEvent.Type.SKIPPED, function() {
+                logDebug('⏭️ Ad skipped', 'warning');
+                adPlaying = false; resetButtons();
+            });
+            adsManager.addEventListener(google.ima.AdEvent.Type.ALL_ADS_COMPLETED, function() {
+                logDebug('🎉 All ads done!', 'success');
+                adPlaying = false; resetButtons();
+            });
+            adsManager.addEventListener(google.ima.AdEvent.Type.LOG, function(e) {
+                var d = e.getAdData();
+                if (d && d.adError) logDebug('⚠️ ' + d.adError.getMessage(), 'warning');
+            });
+
+            try {
+                var rect = adContainerDiv.getBoundingClientRect();
+                adsManager.init(Math.round(rect.width)||640, Math.round(rect.height)||360, google.ima.ViewMode.NORMAL);
+                adsManager.start();
+                logDebug('AdsManager started!', 'success');
+            } catch (e) {
+                logDebug('Start error: ' + e.message, 'error');
+                contentVideo.play(); resetButtons();
+            }
         }
-        function onAdError(ev) {
-            var err=ev.getError(), code=err.getErrorCode(), msg=err.getMessage(), vc=err.getVastErrorCode();
-            logDebug('❌ ['+code+'/'+vc+'] '+msg,'error');
-            if(code===1009||vc===303){logDebug('💡 No fill - tag works, no ad available now','warning');updateStatus('No ad available (normal)','warning');}
-            else{updateStatus('Error: '+msg,'error');}
-            if(adsManager){adsManager.destroy();adsManager=null;}
-            adPlaying=false;contentVideo.play();resetButtons();
+
+        function onAdError(event) {
+            var error = event.getError();
+            var code = error.getErrorCode();
+            var msg = error.getMessage();
+            var vastCode = error.getVastErrorCode();
+            logDebug('❌ Error: [' + code + '/' + vastCode + '] ' + msg, 'error');
+            if (code === 1009 || vastCode === 303) {
+                logDebug('💡 No ad inventory (no fill) - tag IS working, just no ad available now', 'warning');
+                updateStatus('No ad available (no fill - normal)', 'warning');
+            } else {
+                updateStatus('Error: ' + msg, 'error');
+            }
+            if (adsManager) { adsManager.destroy(); adsManager = null; }
+            adPlaying = false; contentVideo.play(); resetButtons();
         }
-        function resetButtons(){playAdBtn.disabled=false;playAdBtn.innerHTML='<i class="fas fa-redo"></i> Play Your Ad Again';testVastBtn.disabled=false;testVastBtn.innerHTML='<i class="fas fa-vial"></i> Test with Google Sample Ad';}
-        window.addEventListener('resize',function(){if(adsManager&&adPlaying){var r=adContainerDiv.getBoundingClientRect();adsManager.resize(r.width||640,r.height||360,google.ima.ViewMode.NORMAL);}});
-        playAdBtn.addEventListener('click',function(){vastDebugLog.innerHTML='';logDebug('🎯 Your tag: '+YOUR_VAST_TAG,'info');playAdBtn.disabled=true;playAdBtn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Loading...';testVastBtn.disabled=true;initIMA();requestAds(YOUR_VAST_TAG);});
-        testVastBtn.addEventListener('click',function(){vastDebugLog.innerHTML='';logDebug('🧪 Google sample tag...','info');playAdBtn.disabled=true;testVastBtn.disabled=true;testVastBtn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Loading...';initIMA();requestAds(GOOGLE_SAMPLE_TAG);});
-        logDebug('🎬 VAST Test Ready','success');
+
+        function resetButtons() {
+            playAdBtn.disabled = false;
+            playAdBtn.innerHTML = '<i class="fas fa-redo"></i> Play Your Ad Again';
+            testVastBtn.disabled = false;
+            testVastBtn.innerHTML = '<i class="fas fa-vial"></i> Test with Google Sample Ad';
+        }
+
+        window.addEventListener('resize', function() {
+            if (adsManager && adPlaying) {
+                var rect = adContainerDiv.getBoundingClientRect();
+                adsManager.resize(rect.width||640, rect.height||360, google.ima.ViewMode.NORMAL);
+            }
+        });
+
+        playAdBtn.addEventListener('click', function() {
+            vastDebugLog.innerHTML = '';
+            logDebug('🎯 Testing YOUR ad tag...', 'info');
+            logDebug('URL: ' + YOUR_VAST_TAG, 'info');
+            playAdBtn.disabled = true;
+            playAdBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+            testVastBtn.disabled = true;
+            initIMA();
+            requestAds(YOUR_VAST_TAG);
+        });
+
+        testVastBtn.addEventListener('click', function() {
+            vastDebugLog.innerHTML = '';
+            logDebug('🧪 Testing Google sample tag (always has ads)...', 'info');
+            playAdBtn.disabled = true;
+            testVastBtn.disabled = true;
+            testVastBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+            initIMA();
+            requestAds(GOOGLE_SAMPLE_TAG);
+        });
+
+        logDebug('🎬 VAST Test Ready', 'success');
+        logDebug('IMA SDK: ' + (typeof google !== 'undefined' && google.ima ? 'v' + google.ima.VERSION : 'Not loaded'), 'info');
     })();
     </script>
 
     <!-- Page Loader -->
     <script>
-    window.addEventListener('load',function(){setTimeout(function(){document.getElementById('pageLoader').classList.add('hidden');},800);});
-    setTimeout(function(){var l=document.getElementById('pageLoader');if(l&&!l.classList.contains('hidden'))l.classList.add('hidden');},3000);
+    window.addEventListener('load', function() {
+        setTimeout(function() { document.getElementById('pageLoader').classList.add('hidden'); }, 800);
+    });
+    setTimeout(function() {
+        var l = document.getElementById('pageLoader');
+        if (l && !l.classList.contains('hidden')) l.classList.add('hidden');
+    }, 3000);
     </script>
 
     <!-- Bookmark Popup -->
     <script>
-    (function(){var K='streamify_bookmark_popup_dismissed',p=document.getElementById('welcomePopup'),c=document.getElementById('popupClose'),x=document.getElementById('dontAskCheckbox');if(localStorage.getItem(K)==='true')p.style.display='none';c.addEventListener('click',function(){if(x.checked)localStorage.setItem(K,'true');p.style.display='none';});})();
+    (function() {
+        var KEY = 'streamify_bookmark_popup_dismissed';
+        var popup = document.getElementById('welcomePopup');
+        var closeBtn = document.getElementById('popupClose');
+        var checkbox = document.getElementById('dontAskCheckbox');
+        if (localStorage.getItem(KEY) === 'true') popup.style.display = 'none';
+        closeBtn.addEventListener('click', function() {
+            if (checkbox.checked) localStorage.setItem(KEY, 'true');
+            popup.style.display = 'none';
+        });
+    })();
     </script>
 
     <!-- Premium Effects -->
     <script>
-    document.addEventListener('click',function(e){var t=e.target.closest('.btn-play,.btn-info,.popup-btn,.action-btn,.play-ad-btn');if(!t)return;var r=document.createElement('span');r.classList.add('ripple');var b=t.getBoundingClientRect(),s=Math.max(b.width,b.height);r.style.width=r.style.height=s+'px';r.style.left=e.clientX-b.left-s/2+'px';r.style.top=e.clientY-b.top-s/2+'px';t.appendChild(r);r.addEventListener('animationend',function(){r.remove();});});
-    var obs=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}});},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
-    setTimeout(function(){document.querySelectorAll('.content-section,.vast-ad-section').forEach(function(s){obs.observe(s);});},100);
-    var ticking=false;window.addEventListener('scroll',function(){if(!ticking){window.requestAnimationFrame(function(){var h=document.querySelector('.hero-bg');if(h){var s=window.pageYOffset;if(s<window.innerHeight)h.style.transform='translateY('+s*0.3+'px) scale('+(1+s*0.0002)+')';}ticking=false;});ticking=true;}});
-    document.addEventListener('DOMContentLoaded',function(){var a=function(){document.querySelectorAll('.card:not(.shine-added)').forEach(function(c){var s=document.createElement('div');s.classList.add('shine');c.appendChild(s);c.classList.add('shine-added');});};setTimeout(a,1000);var m=new MutationObserver(a),mc=document.querySelector('.main-content');if(mc)m.observe(mc,{childList:true,subtree:true});});
-    document.addEventListener('keydown',function(e){if(e.key==='Escape'){['searchModal','seeAllModal','detailModal','mobileMenu','overlay'].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove('active');});document.body.style.overflow='';}if(e.key==='/'&&!e.ctrlKey&&!e.metaKey){var a=document.activeElement;if(a.tagName!=='INPUT'&&a.tagName!=='TEXTAREA'){e.preventDefault();var b=document.getElementById('searchBtn');if(b)b.click();}}});
-    console.log('🎬 Streamify Premium UI Loaded!');
-    </script>
+    document.addEventListener('click', function(e) {
+        var target = e.target.closest('.btn-play, .btn-info, .popup-btn, .action-btn, .play-ad-btn');
+        if (!target) return;
+        var ripple = document.createElement('span');
+        ripple.classList.add('ripple');
+        var rect = target.getBoundingClientRect();
+        var size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = e.clientX - rect.left - size / 2 + 'px';
+        ripple.style.top = e.clientY - rect.top - size / 2 + 'px';
+        target.appendChild(ripple);
+        ripple.addEventListener('animationend', function() { ripple.remove(); });
+    });
 
-    <!-- Adsterra AutoTag (separate from banners) -->
-    <script type="text/javascript">
-        aclib.runAutoTag({
-            zoneId: '4fgvxaz0iy',
+    var obsOpts = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
         });
+    }, obsOpts);
+    setTimeout(function() {
+        document.querySelectorAll('.content-section, .vast-ad-section').forEach(function(s) { obs.observe(s); });
+    }, 100);
+
+    var ticking = false;
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            window.requestAnimationFrame(function() {
+                var hero = document.querySelector('.hero-bg');
+                if (hero) {
+                    var scrolled = window.pageYOffset;
+                    if (scrolled < window.innerHeight)
+                        hero.style.transform = 'translateY(' + scrolled * 0.3 + 'px) scale(' + (1 + scrolled * 0.0002) + ')';
+                }
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var addShine = function() {
+            document.querySelectorAll('.card:not(.shine-added)').forEach(function(card) {
+                var shine = document.createElement('div');
+                shine.classList.add('shine');
+                card.appendChild(shine);
+                card.classList.add('shine-added');
+            });
+        };
+        setTimeout(addShine, 1000);
+        var mo = new MutationObserver(addShine);
+        var mc = document.querySelector('.main-content');
+        if (mc) mo.observe(mc, { childList: true, subtree: true });
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            ['searchModal','seeAllModal','detailModal','mobileMenu','overlay'].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) el.classList.remove('active');
+            });
+            document.body.style.overflow = '';
+        }
+        if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
+            var a = document.activeElement;
+            if (a.tagName !== 'INPUT' && a.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                var btn = document.getElementById('searchBtn');
+                if (btn) btn.click();
+            }
+        }
+    });
+    console.log('🎬 Streamify Premium UI Loaded!');
     </script>
 
 </body>
