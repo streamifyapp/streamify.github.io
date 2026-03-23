@@ -825,20 +825,17 @@
     <script src="js/api.js"></script>
     <script src="js/home.js"></script>
 
-    <!-- Google IMA SDK for VAST -->
+        <!-- Google IMA SDK for VAST -->
     <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
 
-    <!-- 
-         ═══════════════════════════════════════════════════════════════
-         ADSTERRA LIBRARY - THIS MUST COME FIRST BEFORE runBanner!
-         If your aclib library loads from ads.css or another file, 
-         keep this. If not, uncomment and add your actual library URL:
-         ═══════════════════════════════════════════════════════════════
-    -->
-    <!-- 
-    <script type="text/javascript" src="//pl_YOUR_ID.highperformanceformat.com/YOUR_HASH/invoke.js" async data-cfasync="false"></script>
-    -->
+    <!-- ADD THIS LINE RIGHT HERE ⬇️ -->
+    <script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
 
+    <!-- Banner Ads script comes after -->
+    <script>
+    (function() {
+        var BANNER_ZONE_ID = '11109538';
+        var bannerSpots = [
     <!-- 
          ═══════════════════════════════════════════════════════════════
          BANNER ADS - Injected after aclib library loads
