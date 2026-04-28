@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streamify — Profile</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --red:        #e50914;
+            --red-dim:    rgba(229, 9, 20, 0.15);
+            --red-glow:   rgba(229, 9, 20, 0.35);
+            --gold:       #f5a623;
+            --silver:     #c0c0c0;
+            --bronze:     #cd7f32;
+            --bg:         #070709;
+            --surface:    rgba(255,255,255,0.038);
+            --border:     rgba(255,255,255,0.07);
+            --text:       #ffffff;
+            --muted:      rgba(255,255,255,0.45);
+            --font-display: 'Bebas Neue', sans-serif;
+            --font-body:    'DM Sans', sans-serif;
+            --font-mono:    'DM Mono', monospace;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 100px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── LOADER ── */
+        #pageLoader {
+            position: fixed; inset: 0;
+            background: var(--bg);
+            z-index: 99999;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 20px;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        #pageLoader.gone { opacity: 0; visibility: hidden; }
+        .loader-brand {
+            font-family: var(--font-display);
+            font-size: 52px; letter-spacing: 5px;
+            background: linear-gradient(135deg, #e50914, #ff6b6b, #e50914);
+            background-size: 200%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: brandPulse 1.8s ease infinite;
+        }
+        @keyframes brandPulse {
+            0%,100% { background-position: 0%; }
+            50%      { background-position: 100%; }
+        }
+        .loader-track {
+            width: 180px; height: 2px;
+            background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden;
+        }
+        .loader-fill {
+            height: 100%; width: 40%;
+            background: linear-gradient(90deg, #e50914, #ff6b6b);
+            border-radius: 99px;
+            animation: trackSlide 1s ease-in-out infinite;
+        }
+        @keyframes trackSlide {
+            0%   { transform: translateX(-100%); }
+            100% { transform: translateX(350%); }
+        }
+
+        /* ── BG NOISE + GLOW ── */
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background:
+                radial-gradient(ellipse 60% 40% at 80% -10%, rgba(229,9,20,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 60% at -10% 80%, rgba(229,9,20,0.05) 0%, transparent 60%);
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            position: sticky; top: 0; z-index: 500;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px;
+            height: 64px;
+            background: rgba(7,7,9,0.88);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-logo {
+            font-family: var(--font-display);
+            font-size: 28px; letter-spacing: 3px;
+            color: var(--red);
+            text-decoration: none;
+            text-shadow: 0 0 30px var(--red-glow);
+        }
+        .nav-actions { display: flex; align-items: center; gap: 12px; }
+        .nav-icon-btn {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 14px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .nav-icon-btn:hover { color: #fff; background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.14); }
+
+        /* ── HERO HEADER ── */
+        .profile-hero {
+            position: relative; z-index: 1;
+            padding: 48px 40px 0;
+            display: flex; align-items: flex-end; gap: 36px;
+        }
+
+        /* Avatar with animated ring */
+        .avatar-ring {
+            position: relative; flex-shrink: 0;
+            width: 110px; height: 110px;
+        }
+        .avatar-ring::before {
+            content: '';
+            position: absolute; inset: -3px;
+            border-radius: 50%;
+            background: conic-gradient(#e50914 0deg, #ff6b6b 90deg, #e50914 180deg, transparent 250deg);
+            animation: ringRotate 3s linear infinite;
+            z-index: -1;
+        }
+        @keyframes ringRotate { to { transform: rotate(360deg); } }
+        .avatar-ring::after {
+            content: '';
+            position: absolute; inset: 2px;
+            border-radius: 50%;
+            background: var(--bg);
+            z-index: -1;
+        }
+        .avatar-img {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+        }
+        .avatar-placeholder {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-display);
+            font-size: 40px;
+            color: var(--red);
+        }
+
+        .hero-info { padding-bottom: 4px; }
+        .hero-greeting {
+            font-size: 12px; font-weight: 600; letter-spacing: 2px;
+            color: var(--muted); text-transform: uppercase; margin-bottom: 4px;
+        }
+        .hero-name {
+            font-family: var(--font-display);
+            font-size: 42px; letter-spacing: 2px; line-height: 1;
+            margin-bottom: 8px;
+        }
+        .hero-email {
+            font-size: 13px; color: var(--muted);
+            font-family: var(--font-mono);
+        }
+        .hero-badges { display: flex; align-items: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+
+        .medal-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .medal-bronze { background: rgba(205,127,50,0.12); border: 1px solid rgba(205,127,50,0.3); color: var(--bronze); }
+        .medal-silver { background: rgba(192,192,192,0.12); border: 1px solid rgba(192,192,192,0.3); color: var(--silver); }
+        .medal-gold   { background: rgba(245,166,35,0.12);  border: 1px solid rgba(245,166,35,0.3);  color: var(--gold); }
+
+        .joined-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 12px; font-weight: 600;
+            background: var(--surface); border: 1px solid var(--border);
+            color: var(--muted);
+        }
+
+        /* ── DIVIDER ── */
+        .section-divider {
+            position: relative; z-index: 1;
+            margin: 40px 40px 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), var(--border), transparent);
+        }
+
+        /* ── STATS GRID ── */
+        .stats-grid {
+            position: relative; z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            padding: 32px 40px 0;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 22px 20px;
+            position: relative; overflow: hidden;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+            animation: fadeUp 0.5s ease both;
+        }
+        .stat-card:hover {
+            border-color: rgba(229,9,20,0.3);
+            transform: translateY(-2px);
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(229,9,20,0.4), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .stat-card:hover::before { opacity: 1; }
+
+        .stat-icon {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            background: var(--red-dim);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--red); font-size: 14px;
+            margin-bottom: 14px;
+        }
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 32px; letter-spacing: 1px;
+            line-height: 1; margin-bottom: 4px;
+        }
+        .stat-label {
+            font-size: 11px; font-weight: 600; letter-spacing: 1px;
+            text-transform: uppercase; color: var(--muted);
+        }
+
+        /* ── SECTION HEADER ── */
+        .section-wrap {
+            position: relative; z-index: 1;
+            padding: 36px 40px 0;
+        }
+        .section-head {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 22px; letter-spacing: 2px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .section-title i { color: var(--red); font-size: 16px; }
+        .section-count {
+            font-size: 12px; font-weight: 600; letter-spacing: 1px;
+            color: var(--muted);
+            background: var(--surface); border: 1px solid var(--border);
+            padding: 3px 10px; border-radius: 20px;
+        }
+
+        /* ── EDIT PROFILE PANEL ── */
+        .edit-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+        .edit-panel .full { grid-column: 1 / -1; }
+
+        .field-group label {
+            display: block;
+            font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+            text-transform: uppercase; color: var(--muted);
+            margin-bottom: 8px;
+        }
+        .field-wrap {
+            position: relative; display: flex; align-items: center;
+        }
+        .field-wrap i {
+            position: absolute; left: 14px;
+            color: var(--muted); font-size: 13px; pointer-events: none;
+            transition: color 0.2s;
+        }
+        .field-group:focus-within .field-wrap i { color: var(--red); }
+        .field-wrap input {
+            width: 100%; padding: 13px 14px 13px 40px;
+            background: rgba(255,255,255,0.04);
+            border: 1.5px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            color: var(--text); font-family: var(--font-body); font-size: 14px;
+            outline: none; transition: all 0.25s ease;
+        }
+        .field-wrap input:focus {
+            border-color: var(--red);
+            background: rgba(229,9,20,0.05);
+            box-shadow: 0 0 0 3px rgba(229,9,20,0.1);
+        }
+        .field-wrap input:disabled {
+            opacity: 0.4; cursor: not-allowed;
+        }
+        .field-wrap input::placeholder { color: rgba(255,255,255,0.18); }
+
+        .save-btn {
+            padding: 13px 28px;
+            background: linear-gradient(135deg, #e50914, #c1000e);
+            border: none; border-radius: 12px;
+            color: #fff; font-family: var(--font-body);
+            font-size: 14px; font-weight: 700; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 8px;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 20px rgba(229,9,20,0.25);
+        }
+        .save-btn:hover {
+            box-shadow: 0 6px 30px rgba(229,9,20,0.45);
+            transform: translateY(-1px);
+        }
+        .save-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .ghost-btn {
+            padding: 13px 22px;
+            background: var(--surface); border: 1.5px solid var(--border);
+            border-radius: 12px; color: var(--muted);
+            font-family: var(--font-body); font-size: 14px; font-weight: 600;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+            transition: all 0.25s ease;
+        }
+        .ghost-btn:hover { color: #fff; border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); }
+
+        .danger-btn {
+            padding: 13px 22px;
+            background: rgba(229,9,20,0.08); border: 1.5px solid rgba(229,9,20,0.25);
+            border-radius: 12px; color: #ff6b6b;
+            font-family: var(--font-body); font-size: 14px; font-weight: 600;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+            transition: all 0.25s ease;
+        }
+        .danger-btn:hover { background: rgba(229,9,20,0.15); border-color: rgba(229,9,20,0.5); }
+
+        .panel-actions {
+            grid-column: 1 / -1;
+            display: flex; gap: 12px; flex-wrap: wrap; padding-top: 6px;
+        }
+
+        /* ── POINTS PROGRESS ── */
+        .points-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 20px; padding: 28px;
+        }
+        .points-top {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .points-current {
+            font-family: var(--font-display);
+            font-size: 48px; letter-spacing: 2px;
+            background: linear-gradient(135deg, #e50914, #ff6b6b);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .points-next { font-size: 12px; color: var(--muted); text-align: right; }
+        .points-next strong { color: var(--text); display: block; font-size: 20px; font-weight: 700; }
+
+        .progress-track {
+            height: 6px; background: rgba(255,255,255,0.06);
+            border-radius: 99px; overflow: hidden; margin-bottom: 10px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e50914, #ff6b6b);
+            border-radius: 99px;
+            transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 0 12px rgba(229,9,20,0.5);
+        }
+        .progress-labels {
+            display: flex; justify-content: space-between;
+            font-size: 11px; color: var(--muted); font-weight: 600;
+        }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: rgba(10,10,12,0.95); border: 1px solid var(--border);
+            border-radius: 12px; padding: 12px 20px;
+            display: flex; align-items: center; gap: 10px;
+            font-size: 14px; font-weight: 500; color: #fff;
+            z-index: 9999; opacity: 0; transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+            white-space: nowrap; box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+            backdrop-filter: blur(20px);
+            pointer-events: none;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.success i { color: #6bcb77; }
+        .toast.error   i { color: #ff7b7b; }
+        .toast.info    i { color: #74b9e7; }
+
+        /* ── BOTTOM NAV ── */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 900;
+            height: 68px;
+            display: flex; align-items: stretch;
+            background: rgba(7,7,9,0.85);
+            backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(255,255,255,0.07);
+            box-shadow: 0 -4px 30px rgba(0,0,0,0.6);
+            padding-bottom: env(safe-area-inset-bottom, 0);
+        }
+        .bottom-nav::before {
+            content: '';
+            position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(229,9,20,0.5) 40%, rgba(255,107,107,0.6) 50%, rgba(229,9,20,0.5) 60%, transparent);
+        }
+        .bnav-item {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 4px;
+            text-decoration: none; color: rgba(255,255,255,0.38);
+            font-size: 9.5px; font-weight: 700; letter-spacing: 0.6px;
+            text-transform: uppercase; cursor: pointer;
+            background: none; border: none; padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            transition: color 0.25s;
+            position: relative;
+        }
+        .bnav-item.active { color: #fff; }
+        .bnav-dot {
+            position: absolute; top: -1px; left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 22px; height: 3px; border-radius: 0 0 3px 3px;
+            background: linear-gradient(90deg, #e50914, #ff6b6b);
+            box-shadow: 0 2px 8px rgba(229,9,20,0.6);
+            transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .bnav-item.active .bnav-dot { transform: translateX(-50%) scaleX(1); }
+        .bnav-icon {
+            width: 40px; height: 28px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 12px; font-size: 17px;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .bnav-item.active .bnav-icon {
+            background: rgba(229,9,20,0.16);
+            color: var(--red);
+            filter: drop-shadow(0 0 6px rgba(229,9,20,0.6));
+            transform: translateY(-1px);
+        }
+        .bnav-avatar {
+            width: 24px; height: 24px; border-radius: 50%;
+            object-fit: cover; border: 2px solid rgba(255,255,255,0.15);
+            transition: border-color 0.25s, transform 0.25s;
+        }
+        .bnav-item.active .bnav-avatar {
+            border-color: var(--red);
+            box-shadow: 0 0 10px rgba(229,9,20,0.5);
+            transform: scale(1.08) translateY(-1px);
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.05s; }
+        .stat-card:nth-child(2) { animation-delay: 0.10s; }
+        .stat-card:nth-child(3) { animation-delay: 0.15s; }
+        .stat-card:nth-child(4) { animation-delay: 0.20s; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .navbar { padding: 0 20px; }
+            .profile-hero { padding: 32px 20px 0; flex-direction: column; align-items: flex-start; gap: 20px; }
+            .avatar-ring { width: 80px; height: 80px; }
+            .hero-name { font-size: 32px; }
+            .section-divider { margin: 30px 20px 0; }
+            .stats-grid { grid-template-columns: 1fr 1fr; padding: 24px 20px 0; gap: 10px; }
+            .section-wrap { padding: 28px 20px 0; }
+            .edit-panel { grid-template-columns: 1fr; padding: 20px; }
+            .edit-panel .full { grid-column: auto; }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .hero-name { font-size: 28px; }
+        }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            text-align: center; padding: 40px 20px;
+            color: var(--muted); font-size: 14px;
+        }
+        .empty-state i { font-size: 32px; margin-bottom: 12px; display: block; opacity: 0.4; }
+
+        /* ── SIGN OUT CONFIRM ── */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 8000;
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px; opacity: 0; pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+        .modal-box {
+            background: rgba(12,12,16,0.98);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px; padding: 36px;
+            width: 100%; max-width: 360px;
+            transform: scale(0.92) translateY(16px);
+            transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+            text-align: center;
+        }
+        .modal-overlay.open .modal-box { transform: scale(1) translateY(0); }
+        .modal-icon {
+            width: 60px; height: 60px; border-radius: 50%;
+            background: rgba(229,9,20,0.1); border: 1px solid rgba(229,9,20,0.25);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; color: var(--red); margin: 0 auto 16px;
+        }
+        .modal-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+        .modal-desc { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
+        .modal-btns { display: flex; gap: 10px; }
+        .modal-cancel {
+            flex: 1; padding: 13px;
+            background: var(--surface); border: 1.5px solid var(--border);
+            border-radius: 12px; color: var(--muted);
+            font-family: var(--font-body); font-size: 14px; font-weight: 600; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .modal-cancel:hover { color: #fff; background: rgba(255,255,255,0.07); }
+        .modal-confirm {
+            flex: 1; padding: 13px;
+            background: var(--red); border: none;
+            border-radius: 12px; color: #fff;
+            font-family: var(--font-body); font-size: 14px; font-weight: 700; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .modal-confirm:hover { background: #f40612; box-shadow: 0 4px 20px rgba(229,9,20,0.4); }
+
+        /* ── SPINNER (inline) ── */
+        .spin {
+            width: 16px; height: 16px;
+            border: 2px solid rgba(255,255,255,0.25);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spinAnim 0.7s linear infinite;
+            display: none;
+        }
+        .loading .spin { display: inline-block; }
+        .loading .btn-text { display: none; }
+        @keyframes spinAnim { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="pageLoader">
+    <div class="loader-brand">STREAMIFY</div>
+    <div class="loader-track"><div class="loader-fill"></div></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="fas fa-circle-check"></i> <span id="toastMsg">Saved!</span></div>
+
+<!-- SIGN OUT MODAL -->
+<div class="modal-overlay" id="signoutModal">
+    <div class="modal-box">
+        <div class="modal-icon"><i class="fas fa-right-from-bracket"></i></div>
+        <div class="modal-title">Sign Out?</div>
+        <div class="modal-desc">You'll need to sign in again to access your profile and watchlist.</div>
+        <div class="modal-btns">
+            <button class="modal-cancel" onclick="closeSignout()">Cancel</button>
+            <button class="modal-confirm" onclick="doSignout()">Sign Out</button>
+        </div>
+    </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <a href="index.html" class="nav-logo">STREAMIFY</a>
+    <div class="nav-actions">
+        <a href="index.html" class="nav-icon-btn" title="Home"><i class="fas fa-home"></i></a>
+        <button class="nav-icon-btn" onclick="confirmSignout()" title="Sign out"><i class="fas fa-right-from-bracket"></i></button>
+    </div>
+</nav>
+
+<!-- PROFILE HERO -->
+<div class="profile-hero">
+    <div class="avatar-ring">
+        <div class="avatar-placeholder" id="avatarPlaceholder">?</div>
+        <img class="avatar-img" id="avatarImg" src="" alt="Avatar" style="display:none;">
+    </div>
+    <div class="hero-info">
+        <div class="hero-greeting">Your Profile</div>
+        <div class="hero-name" id="profileName">Loading...</div>
+        <div class="hero-email" id="profileEmail">—</div>
+        <div class="hero-badges">
+            <span class="medal-badge medal-bronze" id="medalBadge"><i class="fas fa-medal"></i> Bronze</span>
+            <span class="joined-badge" id="joinedBadge"><i class="fas fa-calendar-alt"></i> Joined —</span>
+        </div>
+    </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- STATS -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-star"></i></div>
+        <div class="stat-value" id="statPoints">0</div>
+        <div class="stat-label">Total Points</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-bookmark"></i></div>
+        <div class="stat-value" id="statList">0</div>
+        <div class="stat-label">My List</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+        <div class="stat-value" id="statTime">0h</div>
+        <div class="stat-label">Watch Time</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-medal"></i></div>
+        <div class="stat-value" id="statMedal">—</div>
+        <div class="stat-label">Medal Rank</div>
+    </div>
+</div>
+
+<!-- POINTS PROGRESS -->
+<div class="section-wrap">
+    <div class="section-head">
+        <div class="section-title"><i class="fas fa-trophy"></i> Points Progress</div>
+    </div>
+    <div class="points-card">
+        <div class="points-top">
+            <div>
+                <div style="font-size:12px;color:var(--muted);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Current Points</div>
+                <div class="points-current" id="pointsDisplay">0</div>
+            </div>
+            <div class="points-next">
+                <span>Next rank at</span>
+                <strong id="nextRankPts">500</strong>
+            </div>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progressFill" style="width:0%"></div>
+        </div>
+        <div class="progress-labels">
+            <span id="curMedalLabel">Bronze (0)</span>
+            <span id="nxtMedalLabel">Silver (500)</span>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT PROFILE -->
+<div class="section-wrap">
+    <div class="section-head">
+        <div class="section-title"><i class="fas fa-pen"></i> Edit Profile</div>
+    </div>
+    <div class="edit-panel">
+        <div class="field-group">
+            <label>Username</label>
+            <div class="field-wrap">
+                <i class="fas fa-at"></i>
+                <input type="text" id="editUsername" placeholder="username" maxlength="20">
+            </div>
+        </div>
+        <div class="field-group">
+            <label>Email</label>
+            <div class="field-wrap">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="editEmail" disabled>
+            </div>
+        </div>
+        <div class="panel-actions">
+            <button class="save-btn" onclick="saveProfile()" id="saveBtn">
+                <div class="spin"></div>
+                <span class="btn-text"><i class="fas fa-check"></i> Save Changes</span>
+            </button>
+            <button class="ghost-btn" onclick="sendPasswordReset()">
+                <i class="fas fa-key"></i> Reset Password
+            </button>
+            <button class="danger-btn" onclick="confirmSignout()">
+                <i class="fas fa-right-from-bracket"></i> Sign Out
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav" id="bottomNav">
+    <a href="index.html" class="bnav-item" id="bnav-home">
+        <div class="bnav-dot"></div>
+        <div class="bnav-icon"><i class="fas fa-house"></i></div>
+        <span>Home</span>
+    </a>
+    <button class="bnav-item" id="bnav-search" onclick="window.location.href='index.html#search'">
+        <div class="bnav-dot"></div>
+        <div class="bnav-icon"><i class="fas fa-magnifying-glass"></i></div>
+        <span>Search</span>
+    </button>
+    <a href="mylist.html" class="bnav-item" id="bnav-mylist">
+        <div class="bnav-dot"></div>
+        <div class="bnav-icon"><i class="fas fa-bookmark"></i></div>
+        <span>My List</span>
+    </a>
+    <a href="profile.html" class="bnav-item active" id="bnav-profile">
+        <div class="bnav-dot"></div>
+        <div class="bnav-icon">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" alt="Profile" class="bnav-avatar" id="bnavAvatar">
+        </div>
+        <span>Profile</span>
+    </a>
+</nav>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+// ── Firebase Init ──
+const firebaseConfig = {
+    apiKey: "AIzaSyBGE29YUks6sp4jZS4MzE2JIMF-RMLwVLg",
+    authDomain: "moddy-store.firebaseapp.com",
+    databaseURL: "https://moddy-store-default-rtdb.firebaseio.com",
+    projectId: "moddy-store",
+    storageBucket: "moddy-store.appspot.com",
+    messagingSenderId: "37854973622",
+    appId: "1:37854873622:web:8f927e0a1d267d099ca017"
+};
+
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth     = firebase.auth();
+const database = firebase.database();
+
+// ── Toast ──
+function showToast(msg, type = 'success') {
+    const t  = document.getElementById('toast');
+    const m  = document.getElementById('toastMsg');
+    const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
+    t.querySelector('i').className = `fas ${icons[type]}`;
+    t.className = `toast ${type}`;
+    m.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ── Medal logic ──
+function getMedalFromPoints(pts) {
+    if (pts >= 2000) return { name: 'Gold',   cls: 'medal-gold',   next: null, nextPts: 2000, cur: 2000 };
+    if (pts >= 500)  return { name: 'Silver', cls: 'medal-silver', next: 'Gold', nextPts: 2000, cur: 500 };
+    return              { name: 'Bronze', cls: 'medal-bronze', next: 'Silver', nextPts: 500, cur: 0 };
+}
+
+// ── Initials avatar ──
+function getInitials(name) {
+    if (!name) return '?';
+    return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+}
+
+// ── Format active time ──
+function fmtTime(seconds) {
+    if (!seconds || seconds < 60) return '0h';
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    return h > 0 ? `${h}h` : `${m}m`;
+}
+
+// ── Format join date ──
+function fmtDate(ts) {
+    if (!ts) return 'Unknown';
+    return new Date(ts).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+}
+
+// ── Render user data ──
+function renderUser(userData, authUser) {
+    const name   = userData.displayName || userData.username || authUser.displayName || 'User';
+    const email  = authUser.email || '';
+    const pts    = userData.totalPoints || 0;
+    const time   = userData.totalActiveTime || 0;
+    const joined = userData.createdAt || Date.now();
+
+    // Hero
+    document.getElementById('profileName').textContent  = name;
+    document.getElementById('profileEmail').textContent = email;
+
+    // Avatar
+    const photoURL = authUser.photoURL;
+    if (photoURL) {
+        document.getElementById('avatarImg').src = photoURL;
+        document.getElementById('avatarImg').style.display = 'block';
+        document.getElementById('avatarPlaceholder').style.display = 'none';
+        document.getElementById('bnavAvatar').src = photoURL;
+    } else {
+        document.getElementById('avatarPlaceholder').textContent = getInitials(name);
+    }
+
+    // Medal badge
+    const medal = getMedalFromPoints(pts);
+    const mb = document.getElementById('medalBadge');
+    mb.className = `medal-badge ${medal.cls}`;
+    mb.innerHTML = `<i class="fas fa-medal"></i> ${medal.name}`;
+
+    // Joined
+    document.getElementById('joinedBadge').innerHTML = `<i class="fas fa-calendar-alt"></i> Joined ${fmtDate(joined)}`;
+
+    // Stats
+    document.getElementById('statPoints').textContent = pts.toLocaleString();
+    document.getElementById('statTime').textContent   = fmtTime(time);
+    document.getElementById('statMedal').textContent  = medal.name;
+
+    // My List count
+    const myList = JSON.parse(localStorage.getItem('streamify_mylist') || '[]');
+    document.getElementById('statList').textContent = myList.length;
+
+    // Points progress
+    document.getElementById('pointsDisplay').textContent = pts.toLocaleString();
+    const prevMilestone = medal.cur;
+    const nextMilestone = medal.nextPts;
+    const pct = medal.next
+        ? Math.min(100, ((pts - prevMilestone) / (nextMilestone - prevMilestone)) * 100)
+        : 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('nextRankPts').textContent  = medal.next ? nextMilestone.toLocaleString() : '✓ Max';
+    document.getElementById('curMedalLabel').textContent = `${medal.name} (${prevMilestone})`;
+    document.getElementById('nxtMedalLabel').textContent = medal.next ? `${medal.next} (${nextMilestone})` : 'Gold ✓';
+
+    // Edit fields
+    document.getElementById('editUsername').value = userData.username || '';
+    document.getElementById('editEmail').value    = email;
+}
+
+// ── Auth state ──
+auth.onAuthStateChanged(async user => {
+    if (!user) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    try {
+        const snap = await database.ref('Users/' + user.uid).once('value');
+        const data = snap.val() || {};
+        renderUser(data, user);
+    } catch (e) {
+        console.error(e);
+        renderUser({}, user);
+    }
+
+    // Hide loader
+    setTimeout(() => {
+        document.getElementById('pageLoader').classList.add('gone');
+    }, 600);
+});
+
+// ── Save profile ──
+async function saveProfile() {
+    const user     = auth.currentUser;
+    if (!user) return;
+    const btn      = document.getElementById('saveBtn');
+    const username = document.getElementById('editUsername').value.trim().toLowerCase();
+
+    if (!username) { showToast('Username cannot be empty.', 'error'); return; }
+    if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+        showToast('Username: 3-20 chars, letters/numbers/underscores only.', 'error'); return;
+    }
+
+    btn.classList.add('loading'); btn.disabled = true;
+
+    try {
+        const snap = await database.ref('Users/' + user.uid).once('value');
+        const old  = snap.val() || {};
+
+        if (old.username !== username) {
+            // Check new username not taken
+            const taken = await database.ref('Usernames/' + username).once('value');
+            if (taken.exists() && taken.val() !== user.uid) {
+                showToast('Username already taken.', 'error');
+                btn.classList.remove('loading'); btn.disabled = false; return;
+            }
+            // Free old username
+            if (old.username) await database.ref('Usernames/' + old.username).remove();
+            await database.ref('Usernames/' + username).set(user.uid);
+        }
+
+        await database.ref('Users/' + user.uid).update({ username, lastSeen: Date.now() });
+        await user.updateProfile({ displayName: username });
+        document.getElementById('profileName').textContent = username;
+        showToast('Profile updated!', 'success');
+    } catch (e) {
+        showToast('Failed to save. Try again.', 'error');
+    }
+
+    btn.classList.remove('loading'); btn.disabled = false;
+}
+
+// ── Reset password ──
+async function sendPasswordReset() {
+    const user = auth.currentUser;
+    if (!user || !user.email) { showToast('No email on account.', 'error'); return; }
+    try {
+        await auth.sendPasswordResetEmail(user.email);
+        showToast('Reset email sent to ' + user.email, 'info');
+    } catch (e) {
+        showToast('Failed to send reset email.', 'error');
+    }
+}
+
+// ── Sign out ──
+function confirmSignout() {
+    document.getElementById('signoutModal').classList.add('open');
+}
+function closeSignout() {
+    document.getElementById('signoutModal').classList.remove('open');
+}
+async function doSignout() {
+    const user = auth.currentUser;
+    if (user) {
+        await database.ref('Users/' + user.uid).update({ isActive: false, lastSeen: Date.now() });
+    }
+    await auth.signOut();
+    window.location.href = 'login.html';
+}
+
+// ── Scroll hide/show bottom nav ──
+(function(){
+    var last = 0, nav = document.getElementById('bottomNav');
+    nav.style.transition = 'transform 0.35s cubic-bezier(0.4,0,0.2,1)';
+    window.addEventListener('scroll', function(){
+        var cur = window.pageYOffset;
+        if (cur > last + 6 && cur > 80) nav.style.transform = 'translateY(110%)';
+        else if (cur < last - 6 || cur <= 60) nav.style.transform = 'translateY(0)';
+        last = cur;
+    }, { passive: true });
+})();
+</script>
+
+</body>
+</html>
