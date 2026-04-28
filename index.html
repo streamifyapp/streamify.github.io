@@ -805,103 +805,122 @@
     </script>
 
     <!-- ═══ BOTTOM NAV SCRIPT ═══ -->
-    <script>
-    (function () {
-        /* ── Active state: mark current page ── */
-        var path = window.location.pathname.split('/').pop() || 'index.html';
-        var map = {
-            'index.html'  : 'bnav-home',
-            ''            : 'bnav-home',
-            'mylist.html' : 'bnav-mylist',
-            'login.html'  : 'bnav-profile',
-            'movies.html' : null,
-            'series.html' : null
-        };
-        var activeId = map[path];
-        if (activeId) {
+<script>
+(function () {
+    /* ── Active state: mark current page ── */
+    var path = window.location.pathname.split('/').pop() || 'index.html';
+    var map = {
+        'index.html'  : 'bnav-home',
+        ''            : 'bnav-home',
+        'mylist.html' : 'bnav-mylist',
+        'login.html'  : 'bnav-profile',
+        'movies.html' : null,
+        'series.html' : null
+    };
+    var activeId = map[path];
+    if (activeId) {
+        document.querySelectorAll('.bottom-nav-item').forEach(function(el){
+            el.classList.remove('active');
+        });
+        var activeEl = document.getElementById(activeId);
+        if (activeEl) activeEl.classList.add('active');
+    }
+
+    /* ── Search button opens search modal ── */
+    var bnavSearch = document.getElementById('bnav-search');
+    if (bnavSearch) {
+        bnavSearch.addEventListener('click', function (e) {
+            var searchBtn = document.getElementById('searchBtn');
+            if (searchBtn) {
+                searchBtn.click();
+            } else {
+                var modal = document.getElementById('searchModal');
+                var input = document.getElementById('searchInput');
+                if (modal) {
+                    modal.classList.add('active');
+                    if (input) setTimeout(function(){ input.focus(); }, 150);
+                }
+            }
+
             document.querySelectorAll('.bottom-nav-item').forEach(function(el){
                 el.classList.remove('active');
             });
-            var activeEl = document.getElementById(activeId);
-            if (activeEl) activeEl.classList.add('active');
-        }
+            bnavSearch.classList.add('active');
 
-        /* ── Search button opens search modal ── */
-        var bnavSearch = document.getElementById('bnav-search');
-        if (bnavSearch) {
-            bnavSearch.addEventListener('click', function (e) {
-                /* Trigger the same search modal as the top search button */
-                var searchBtn = document.getElementById('searchBtn');
-                if (searchBtn) {
-                    searchBtn.click();
-                } else {
-                    /* Fallback: toggle modal directly */
-                    var modal = document.getElementById('searchModal');
-                    var input = document.getElementById('searchInput');
-                    if (modal) {
-                        modal.classList.add('active');
-                        if (input) setTimeout(function(){ input.focus(); }, 150);
-                    }
-                }
-
-                /* Active state flash */
-                document.querySelectorAll('.bottom-nav-item').forEach(function(el){
-                    el.classList.remove('active');
-                });
-                bnavSearch.classList.add('active');
-
-                /* Remove active when modal closes */
-                var closeBtn = document.getElementById('searchClose');
-                if (closeBtn) {
-                    closeBtn.addEventListener('click', function(){
-                        bnavSearch.classList.remove('active');
-                        /* Restore home as active */
-                        var home = document.getElementById('bnav-home');
-                        if (home && (path === 'index.html' || path === '')) home.classList.add('active');
-                    }, { once: true });
-                }
-            });
-        }
-
-        /* ── Ripple effect on bottom nav tap ── */
-        document.querySelectorAll('.bottom-nav-item').forEach(function (item) {
-            item.addEventListener('click', function (e) {
-                var wrap = item.querySelector('.bnav-icon-wrap');
-                if (!wrap) return;
-                var rip = document.createElement('span');
-                rip.className = 'bnav-ripple';
-                var rect = wrap.getBoundingClientRect();
-                var size = Math.max(rect.width, rect.height);
-                rip.style.cssText = [
-                    'width:' + size + 'px',
-                    'height:' + size + 'px',
-                    'top:' + (e.clientY - rect.top - size / 2) + 'px',
-                    'left:' + (e.clientX - rect.left - size / 2) + 'px'
-                ].join(';');
-                wrap.style.position = 'relative';
-                wrap.style.overflow = 'hidden';
-                wrap.appendChild(rip);
-                rip.addEventListener('animationend', function () { rip.remove(); });
-            });
-        });
-
-        /* ── Scroll-aware: hide/show bottom nav ── */
-        var lastScroll = 0;
-        var nav = document.getElementById('bottomNav');
-        window.addEventListener('scroll', function () {
-            var cur = window.pageYOffset;
-            if (cur > lastScroll + 6 && cur > 100) {
-                nav.style.transform = 'translateY(110%)';
-            } else if (cur < lastScroll - 6 || cur <= 60) {
-                nav.style.transform = 'translateY(0)';
+            var closeBtn = document.getElementById('searchClose');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function(){
+                    bnavSearch.classList.remove('active');
+                    var home = document.getElementById('bnav-home');
+                    if (home && (path === 'index.html' || path === '')) home.classList.add('active');
+                }, { once: true });
             }
-            lastScroll = cur;
-        }, { passive: true });
+        });
+    }
 
-        /* Add smooth transition to nav for scroll hide/show */
-        nav.style.transition = 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease';
-    })();
-    </script>
+    /* ── Ripple effect on bottom nav tap ── */
+    document.querySelectorAll('.bottom-nav-item').forEach(function (item) {
+        item.addEventListener('click', function (e) {
+            var wrap = item.querySelector('.bnav-icon-wrap');
+            if (!wrap) return;
+            var rip = document.createElement('span');
+            rip.className = 'bnav-ripple';
+            var rect = wrap.getBoundingClientRect();
+            var size = Math.max(rect.width, rect.height);
+            rip.style.cssText = [
+                'width:' + size + 'px',
+                'height:' + size + 'px',
+                'top:' + (e.clientY - rect.top - size / 2) + 'px',
+                'left:' + (e.clientX - rect.left - size / 2) + 'px'
+            ].join(';');
+            wrap.style.position = 'relative';
+            wrap.style.overflow = 'hidden';
+            wrap.appendChild(rip);
+            rip.addEventListener('animationend', function () { rip.remove(); });
+        });
+    });
+
+    /* ── Scroll-aware: hide/show bottom nav ── */
+    var nav = document.getElementById('bottomNav');
+    nav.style.transition = 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease';
+
+    /* Always show nav on page load, regardless of scroll position */
+    nav.style.transform = 'translateY(0)';
+
+    var lastScroll = window.pageYOffset;
+    var scrollEnabled = false;
+
+    /* Delay enabling scroll-hide by 600ms so page-load scroll events don't trigger it */
+    setTimeout(function () {
+        lastScroll = window.pageYOffset;
+        scrollEnabled = true;
+    }, 600);
+
+    window.addEventListener('scroll', function () {
+        if (!scrollEnabled) return;
+
+        var cur = window.pageYOffset;
+
+        /* Never hide if near the top of the page */
+        if (cur <= 80) {
+            nav.style.transform = 'translateY(0)';
+            lastScroll = cur;
+            return;
+        }
+
+        if (cur > lastScroll + 6) {
+            /* Scrolling down — hide nav */
+            nav.style.transform = 'translateY(110%)';
+        } else if (cur < lastScroll - 6) {
+            /* Scrolling up — show nav */
+            nav.style.transform = 'translateY(0)';
+        }
+
+        lastScroll = cur;
+    }, { passive: true });
+
+})();
+</script>
 
 </body>
 </html>
