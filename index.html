@@ -208,7 +208,185 @@
         body {
             -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
+            /* Add bottom padding so content isn't hidden behind bottom nav */
+            padding-bottom: 80px;
         }
+
+        /* ═══════════════════════════════════════
+           PREMIUM BOTTOM NAVIGATION BAR
+        ═══════════════════════════════════════ */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 9000;
+            height: 70px;
+            display: flex;
+            align-items: stretch;
+            /* Glassmorphism base */
+            background: rgba(10, 10, 15, 0.82);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow:
+                0 -4px 30px rgba(0, 0, 0, 0.6),
+                0 -1px 0 rgba(229, 9, 20, 0.15) inset;
+            /* Safe area for phones with home indicator */
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        /* Subtle top glow line */
+        .bottom-nav::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 10%; right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(229, 9, 20, 0.5) 30%,
+                rgba(255, 107, 107, 0.6) 50%,
+                rgba(229, 9, 20, 0.5) 70%,
+                transparent
+            );
+            filter: blur(0.5px);
+        }
+
+        .bottom-nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            transition: color 0.25s ease;
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .bottom-nav-item:hover {
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .bottom-nav-item.active {
+            color: #fff;
+        }
+
+        /* Icon container with pill indicator */
+        .bnav-icon-wrap {
+            position: relative;
+            width: 44px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .bottom-nav-item.active .bnav-icon-wrap {
+            background: rgba(229, 9, 20, 0.18);
+            transform: translateY(-1px);
+        }
+
+        .bottom-nav-item:active .bnav-icon-wrap {
+            transform: scale(0.88) translateY(-1px);
+        }
+
+        .bnav-icon-wrap i {
+            font-size: 18px;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease;
+        }
+
+        .bottom-nav-item.active .bnav-icon-wrap i {
+            color: #e50914;
+            filter: drop-shadow(0 0 8px rgba(229, 9, 20, 0.7));
+            transform: scale(1.15);
+        }
+
+        .bnav-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 9.5px;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            transition: color 0.25s ease, opacity 0.25s ease;
+            opacity: 0.7;
+        }
+
+        .bottom-nav-item.active .bnav-label {
+            opacity: 1;
+            color: #fff;
+        }
+
+        /* Active dot indicator above icon */
+        .bnav-dot {
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 20px;
+            height: 3px;
+            border-radius: 0 0 3px 3px;
+            background: linear-gradient(90deg, #e50914, #ff6b6b);
+            box-shadow: 0 2px 8px rgba(229, 9, 20, 0.6);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .bottom-nav-item.active .bnav-dot {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        /* Profile avatar in nav */
+        .bnav-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: border-color 0.25s ease, transform 0.25s ease;
+        }
+
+        .bottom-nav-item.active .bnav-avatar {
+            border-color: #e50914;
+            box-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
+            transform: scale(1.08) translateY(-1px);
+        }
+
+        /* Ripple on tap for bottom nav */
+        .bnav-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(229, 9, 20, 0.25);
+            transform: scale(0);
+            animation: bnavRipple 0.5s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes bnavRipple {
+            to { transform: scale(3.5); opacity: 0; }
+        }
+
+        /* Hide bottom nav on desktop if desired — keep on all sizes per your request */
+        @media (min-width: 1024px) {
+            /* Uncomment below to show bottom nav only on mobile: */
+            /* .bottom-nav { display: none; } */
+            body { padding-bottom: 80px; }
+        }
+
+        /* Search modal trigger via bottom nav */
+        .bottom-nav-item[data-action="search"] { cursor: pointer; }
+
     </style>
 </head>
 <body>
@@ -552,6 +730,53 @@
         </div>
     </div>
 
+    <!-- ═══════════════════════════════════════
+         PREMIUM BOTTOM NAVIGATION BAR
+    ═══════════════════════════════════════ -->
+    <nav class="bottom-nav" id="bottomNav" role="navigation" aria-label="Main navigation">
+
+        <!-- Home -->
+        <a href="index.html" class="bottom-nav-item active" id="bnav-home" aria-label="Home">
+            <div class="bnav-dot"></div>
+            <div class="bnav-icon-wrap">
+                <i class="fas fa-house"></i>
+            </div>
+            <span class="bnav-label">Home</span>
+        </a>
+
+        <!-- Search -->
+        <button class="bottom-nav-item" id="bnav-search" data-action="search" aria-label="Search">
+            <div class="bnav-dot"></div>
+            <div class="bnav-icon-wrap">
+                <i class="fas fa-magnifying-glass"></i>
+            </div>
+            <span class="bnav-label">Search</span>
+        </button>
+
+        <!-- My List -->
+        <a href="mylist.html" class="bottom-nav-item" id="bnav-mylist" aria-label="My List">
+            <div class="bnav-dot"></div>
+            <div class="bnav-icon-wrap">
+                <i class="fas fa-bookmark"></i>
+            </div>
+            <span class="bnav-label">My List</span>
+        </a>
+
+        <!-- Profile -->
+        <a href="login.html" class="bottom-nav-item" id="bnav-profile" aria-label="Profile">
+            <div class="bnav-dot"></div>
+            <div class="bnav-icon-wrap" style="width:auto; background:transparent !important;">
+                <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png"
+                    alt="Profile"
+                    class="bnav-avatar"
+                >
+            </div>
+            <span class="bnav-label">Profile</span>
+        </a>
+
+    </nav>
+
     <!-- ═══ SCRIPTS ═══ -->
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
@@ -577,6 +802,105 @@
     document.addEventListener('DOMContentLoaded',function(){var a=function(){document.querySelectorAll('.card:not(.shine-added)').forEach(function(c){var s=document.createElement('div');s.classList.add('shine');c.appendChild(s);c.classList.add('shine-added');});};setTimeout(a,1000);var m=new MutationObserver(a),mc=document.querySelector('.main-content');if(mc)m.observe(mc,{childList:true,subtree:true});});
     document.addEventListener('keydown',function(e){if(e.key==='Escape'){['searchModal','seeAllModal','detailModal','mobileMenu','overlay'].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove('active');});document.body.style.overflow='';}if(e.key==='/'&&!e.ctrlKey&&!e.metaKey){var a=document.activeElement;if(a.tagName!=='INPUT'&&a.tagName!=='TEXTAREA'){e.preventDefault();var b=document.getElementById('searchBtn');if(b)b.click();}}});
     console.log('🎬 Streamify Premium UI Loaded!');
+    </script>
+
+    <!-- ═══ BOTTOM NAV SCRIPT ═══ -->
+    <script>
+    (function () {
+        /* ── Active state: mark current page ── */
+        var path = window.location.pathname.split('/').pop() || 'index.html';
+        var map = {
+            'index.html'  : 'bnav-home',
+            ''            : 'bnav-home',
+            'mylist.html' : 'bnav-mylist',
+            'login.html'  : 'bnav-profile',
+            'movies.html' : null,
+            'series.html' : null
+        };
+        var activeId = map[path];
+        if (activeId) {
+            document.querySelectorAll('.bottom-nav-item').forEach(function(el){
+                el.classList.remove('active');
+            });
+            var activeEl = document.getElementById(activeId);
+            if (activeEl) activeEl.classList.add('active');
+        }
+
+        /* ── Search button opens search modal ── */
+        var bnavSearch = document.getElementById('bnav-search');
+        if (bnavSearch) {
+            bnavSearch.addEventListener('click', function (e) {
+                /* Trigger the same search modal as the top search button */
+                var searchBtn = document.getElementById('searchBtn');
+                if (searchBtn) {
+                    searchBtn.click();
+                } else {
+                    /* Fallback: toggle modal directly */
+                    var modal = document.getElementById('searchModal');
+                    var input = document.getElementById('searchInput');
+                    if (modal) {
+                        modal.classList.add('active');
+                        if (input) setTimeout(function(){ input.focus(); }, 150);
+                    }
+                }
+
+                /* Active state flash */
+                document.querySelectorAll('.bottom-nav-item').forEach(function(el){
+                    el.classList.remove('active');
+                });
+                bnavSearch.classList.add('active');
+
+                /* Remove active when modal closes */
+                var closeBtn = document.getElementById('searchClose');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', function(){
+                        bnavSearch.classList.remove('active');
+                        /* Restore home as active */
+                        var home = document.getElementById('bnav-home');
+                        if (home && (path === 'index.html' || path === '')) home.classList.add('active');
+                    }, { once: true });
+                }
+            });
+        }
+
+        /* ── Ripple effect on bottom nav tap ── */
+        document.querySelectorAll('.bottom-nav-item').forEach(function (item) {
+            item.addEventListener('click', function (e) {
+                var wrap = item.querySelector('.bnav-icon-wrap');
+                if (!wrap) return;
+                var rip = document.createElement('span');
+                rip.className = 'bnav-ripple';
+                var rect = wrap.getBoundingClientRect();
+                var size = Math.max(rect.width, rect.height);
+                rip.style.cssText = [
+                    'width:' + size + 'px',
+                    'height:' + size + 'px',
+                    'top:' + (e.clientY - rect.top - size / 2) + 'px',
+                    'left:' + (e.clientX - rect.left - size / 2) + 'px'
+                ].join(';');
+                wrap.style.position = 'relative';
+                wrap.style.overflow = 'hidden';
+                wrap.appendChild(rip);
+                rip.addEventListener('animationend', function () { rip.remove(); });
+            });
+        });
+
+        /* ── Scroll-aware: hide/show bottom nav ── */
+        var lastScroll = 0;
+        var nav = document.getElementById('bottomNav');
+        window.addEventListener('scroll', function () {
+            var cur = window.pageYOffset;
+            if (cur > lastScroll + 6 && cur > 100) {
+                nav.style.transform = 'translateY(110%)';
+            } else if (cur < lastScroll - 6 || cur <= 60) {
+                nav.style.transform = 'translateY(0)';
+            }
+            lastScroll = cur;
+        }, { passive: true });
+
+        /* Add smooth transition to nav for scroll hide/show */
+        nav.style.transition = 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease';
+    })();
     </script>
 
 </body>
