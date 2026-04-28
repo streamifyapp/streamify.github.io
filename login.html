@@ -34,7 +34,6 @@
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
-
         body {
             display: flex;
             flex-direction: column;
@@ -42,6 +41,7 @@
             padding-bottom: 80px;
         }
 
+        /* BG */
         .bg-wrap { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
         .bg-base {
             width: 100%; height: 100%;
@@ -51,10 +51,7 @@
                 radial-gradient(ellipse 100% 100% at 50% 50%, #0d0005 0%, #070709 60%);
             animation: bgDrift 18s ease-in-out infinite alternate;
         }
-        @keyframes bgDrift {
-            0%   { background-position: 0% 0%; }
-            100% { background-position: 100% 100%; }
-        }
+        @keyframes bgDrift { 0% { background-position:0% 0%; } 100% { background-position:100% 100%; } }
         .bg-grid {
             position: absolute; inset: 0;
             background-image:
@@ -67,11 +64,7 @@
             background: radial-gradient(ellipse at center, transparent 30%, rgba(7,7,9,0.85) 100%);
         }
         .particles { position: absolute; inset: 0; overflow: hidden; }
-        .p {
-            position: absolute; border-radius: 50%;
-            background: rgba(229, 9, 20, 0.55);
-            animation: pFloat linear infinite;
-        }
+        .p { position: absolute; border-radius: 50%; background: rgba(229,9,20,0.55); animation: pFloat linear infinite; }
         .p:nth-child(1)  { left:5%;  width:2px; height:2px; animation-duration:16s; animation-delay:0s; }
         .p:nth-child(2)  { left:18%; width:1px; height:1px; animation-duration:20s; animation-delay:3s; }
         .p:nth-child(3)  { left:30%; width:3px; height:3px; animation-duration:13s; animation-delay:5s; }
@@ -99,361 +92,306 @@
             font-family: var(--font-display);
             font-size: 30px; letter-spacing: 3px;
             color: var(--red); text-decoration: none;
-            text-shadow: 0 0 35px var(--red-glow);
-            transition: text-shadow 0.3s;
+            text-shadow: 0 0 35px var(--red-glow); transition: text-shadow 0.3s;
         }
         .logo:hover { text-shadow: 0 0 55px rgba(229,9,20,0.8); }
-        .nav-help {
-            font-size: 13px; font-weight: 500;
-            color: var(--muted); text-decoration: none;
-            transition: color 0.3s;
-        }
+        .nav-help { font-size: 13px; font-weight: 500; color: var(--muted); text-decoration: none; transition: color 0.3s; }
         .nav-help:hover { color: var(--text); }
 
+        /* MAIN / CARD */
         .main {
-            position: relative; z-index: 10;
-            flex: 1;
+            position: relative; z-index: 10; flex: 1;
             display: flex; align-items: center; justify-content: center;
             padding: 20px 20px 60px;
         }
-
         .card {
             width: 100%; max-width: 440px;
             background: rgba(5,5,8,0.88);
             backdrop-filter: blur(32px) saturate(160%);
             -webkit-backdrop-filter: blur(32px) saturate(160%);
             border: 1px solid rgba(255,255,255,0.075);
-            border-radius: 20px;
-            padding: 44px 44px 38px;
-            box-shadow:
-                0 0 0 1px rgba(229,9,20,0.03),
-                0 32px 80px rgba(0,0,0,0.9),
-                0 0 80px rgba(229,9,20,0.03),
-                inset 0 1px 0 rgba(255,255,255,0.04);
-            animation: cardIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+            border-radius: 20px; padding: 44px 44px 38px;
+            box-shadow: 0 0 0 1px rgba(229,9,20,0.03), 0 32px 80px rgba(0,0,0,0.9),
+                        0 0 80px rgba(229,9,20,0.03), inset 0 1px 0 rgba(255,255,255,0.04);
+            animation: cardIn 0.8s cubic-bezier(0.16,1,0.3,1) both;
             position: relative;
         }
         @keyframes cardIn {
-            from { opacity: 0; transform: translateY(36px) scale(0.97); }
-            to   { opacity: 1; transform: translateY(0) scale(1); }
+            from { opacity:0; transform:translateY(36px) scale(0.97); }
+            to   { opacity:1; transform:translateY(0) scale(1); }
         }
         .card::before {
-            content: '';
-            position: absolute; inset: -1px; border-radius: 21px; z-index: -1;
+            content:''; position:absolute; inset:-1px; border-radius:21px; z-index:-1;
             background: linear-gradient(135deg, rgba(229,9,20,0.18), transparent 45%, rgba(229,9,20,0.09));
-            opacity: 0; transition: opacity 0.5s;
+            opacity:0; transition:opacity 0.5s;
         }
-        .card:hover::before { opacity: 1; }
+        .card:hover::before { opacity:1; }
 
+        /* TABS */
         .tabs {
-            display: flex;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid var(--border);
-            border-radius: 12px; padding: 4px;
-            margin-bottom: 34px;
+            display:flex; background:rgba(255,255,255,0.04);
+            border:1px solid var(--border); border-radius:12px;
+            padding:4px; margin-bottom:34px;
         }
         .tab {
-            flex: 1; padding: 11px 0;
-            border: none; background: transparent;
-            color: var(--muted); font-family: var(--font-body);
-            font-size: 14px; font-weight: 600; cursor: pointer;
-            border-radius: 9px;
-            transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+            flex:1; padding:11px 0; border:none; background:transparent;
+            color:var(--muted); font-family:var(--font-body);
+            font-size:14px; font-weight:600; cursor:pointer; border-radius:9px;
+            transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
         }
-        .tab.on {
-            background: var(--red); color: #fff;
-            box-shadow: 0 4px 22px rgba(229,9,20,0.4);
-        }
-        .tab:not(.on):hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .tab.on { background:var(--red); color:#fff; box-shadow:0 4px 22px rgba(229,9,20,0.4); }
+        .tab:not(.on):hover { color:#fff; background:rgba(255,255,255,0.05); }
 
-        .fh { margin-bottom: 28px; }
-        .fh h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.4px; margin-bottom: 5px; }
-        .fh p  { font-size: 14px; color: var(--muted); line-height: 1.5; }
+        /* FORM HEADER */
+        .fh { margin-bottom:28px; }
+        .fh h1 { font-size:24px; font-weight:800; letter-spacing:-0.4px; margin-bottom:5px; }
+        .fh p  { font-size:14px; color:var(--muted); line-height:1.5; }
 
-        .panel { display: none; flex-direction: column; gap: 15px; }
-        .panel.on { display: flex; animation: panelIn 0.35s ease; }
+        /* PANELS */
+        .panel { display:none; flex-direction:column; gap:15px; }
+        .panel.on { display:flex; animation:panelIn 0.35s ease; }
         @keyframes panelIn {
-            from { opacity: 0; transform: translateX(10px); }
-            to   { opacity: 1; transform: translateX(0); }
+            from { opacity:0; transform:translateX(10px); }
+            to   { opacity:1; transform:translateX(0); }
         }
 
-        .ig { position: relative; }
+        /* INPUTS */
+        .ig { position:relative; }
         .ig label {
-            display: block; font-size: 10.5px; font-weight: 700;
-            color: rgba(255,255,255,0.38); text-transform: uppercase;
-            letter-spacing: 1.2px; margin-bottom: 7px;
+            display:block; font-size:10.5px; font-weight:700;
+            color:rgba(255,255,255,0.38); text-transform:uppercase;
+            letter-spacing:1.2px; margin-bottom:7px;
         }
-        .iw { position: relative; display: flex; align-items: center; }
+        .iw { position:relative; display:flex; align-items:center; }
         .iw .ico {
-            position: absolute; left: 14px; z-index: 2;
-            color: rgba(255,255,255,0.22); font-size: 13px;
-            pointer-events: none; transition: color 0.25s;
+            position:absolute; left:14px; z-index:2;
+            color:rgba(255,255,255,0.22); font-size:13px;
+            pointer-events:none; transition:color 0.25s;
         }
-        .ig:focus-within .ico { color: var(--red); }
+        .ig:focus-within .ico { color:var(--red); }
         .iw input {
-            width: 100%;
-            padding: 13px 14px 13px 42px;
-            background: rgba(255,255,255,0.045);
-            border: 1.5px solid rgba(255,255,255,0.08);
-            border-radius: 11px;
-            color: var(--text); font-family: var(--font-body);
-            font-size: 14px; font-weight: 500; outline: none;
-            transition: all 0.25s ease;
+            width:100%; padding:13px 14px 13px 42px;
+            background:rgba(255,255,255,0.045);
+            border:1.5px solid rgba(255,255,255,0.08);
+            border-radius:11px; color:var(--text);
+            font-family:var(--font-body); font-size:14px; font-weight:500;
+            outline:none; transition:all 0.25s ease;
         }
-        .iw input::placeholder { color: rgba(255,255,255,0.18); font-weight: 400; }
+        .iw input::placeholder { color:rgba(255,255,255,0.18); font-weight:400; }
         .iw input:focus {
-            background: rgba(229,9,20,0.05);
-            border-color: var(--red);
-            box-shadow: 0 0 0 3px rgba(229,9,20,0.1);
+            background:rgba(229,9,20,0.05); border-color:var(--red);
+            box-shadow:0 0 0 3px rgba(229,9,20,0.1);
         }
-        .iw input.err { border-color: rgba(229,9,20,0.55); background: rgba(229,9,20,0.04); }
-        .iw input.ok  { border-color: rgba(39,174,96,0.45); }
-
+        .iw input.err { border-color:rgba(229,9,20,0.55); background:rgba(229,9,20,0.04); }
+        .iw input.ok  { border-color:rgba(39,174,96,0.45); }
         .eye {
-            position: absolute; right: 13px; z-index: 2;
-            background: none; border: none; cursor: pointer;
-            color: rgba(255,255,255,0.22); font-size: 13px;
-            padding: 4px; transition: color 0.25s;
+            position:absolute; right:13px; z-index:2;
+            background:none; border:none; cursor:pointer;
+            color:rgba(255,255,255,0.22); font-size:13px;
+            padding:4px; transition:color 0.25s;
         }
-        .eye:hover { color: rgba(255,255,255,0.6); }
+        .eye:hover { color:rgba(255,255,255,0.6); }
 
-        .strength { margin-top: 8px; display: none; }
-        .s-bars { display: flex; gap: 4px; margin-bottom: 5px; }
-        .s-bar { flex: 1; height: 3px; background: rgba(255,255,255,0.07); border-radius: 99px; transition: background 0.4s; }
-        .s-label { font-size: 11px; font-weight: 600; }
+        /* PASSWORD STRENGTH */
+        .strength { margin-top:8px; display:none; }
+        .s-bars { display:flex; gap:4px; margin-bottom:5px; }
+        .s-bar { flex:1; height:3px; background:rgba(255,255,255,0.07); border-radius:99px; transition:background 0.4s; }
+        .s-label { font-size:11px; font-weight:600; }
 
-        .opts { display: flex; align-items: center; justify-content: space-between; }
-        .remember { display: flex; align-items: center; gap: 7px; cursor: pointer; }
-        .remember input { accent-color: var(--red); width: 14px; height: 14px; cursor: pointer; }
-        .remember span  { font-size: 13px; color: var(--muted); }
-        .forgot { font-size: 13px; color: var(--muted); cursor: pointer; transition: color 0.25s; background: none; border: none; }
-        .forgot:hover { color: #fff; text-decoration: underline; }
+        /* OPTS ROW */
+        .opts { display:flex; align-items:center; justify-content:space-between; }
+        .remember { display:flex; align-items:center; gap:7px; cursor:pointer; }
+        .remember input { accent-color:var(--red); width:14px; height:14px; cursor:pointer; }
+        .remember span  { font-size:13px; color:var(--muted); }
+        .forgot { font-size:13px; color:var(--muted); cursor:pointer; transition:color 0.25s; background:none; border:none; }
+        .forgot:hover { color:#fff; text-decoration:underline; }
 
+        /* SUBMIT */
         .submit {
-            width: 100%; padding: 14px;
-            background: linear-gradient(135deg, #e50914, #c1000e);
-            border: none; border-radius: 11px;
-            color: #fff; font-family: var(--font-body);
-            font-size: 15px; font-weight: 700; cursor: pointer;
-            position: relative; overflow: hidden; margin-top: 2px;
-            box-shadow: 0 4px 20px rgba(229,9,20,0.28);
-            transition: all 0.28s ease;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
+            width:100%; padding:14px;
+            background:linear-gradient(135deg,#e50914,#c1000e);
+            border:none; border-radius:11px; color:#fff;
+            font-family:var(--font-body); font-size:15px; font-weight:700;
+            cursor:pointer; position:relative; overflow:hidden; margin-top:2px;
+            box-shadow:0 4px 20px rgba(229,9,20,0.28); transition:all 0.28s ease;
+            display:flex; align-items:center; justify-content:center; gap:8px;
         }
         .submit::before {
-            content: ''; position: absolute; top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.11), transparent);
-            transition: left 0.55s;
+            content:''; position:absolute; top:0; left:-100%;
+            width:100%; height:100%;
+            background:linear-gradient(90deg,transparent,rgba(255,255,255,0.11),transparent);
+            transition:left 0.55s;
         }
-        .submit:hover::before { left: 100%; }
-        .submit:hover {
-            background: linear-gradient(135deg, #f50a15, #d1000f);
-            box-shadow: 0 8px 32px rgba(229,9,20,0.5);
-            transform: translateY(-1px);
-        }
-        .submit:active { transform: translateY(0); box-shadow: 0 4px 20px rgba(229,9,20,0.28); }
-        .submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; pointer-events: none; }
+        .submit:hover::before { left:100%; }
+        .submit:hover { background:linear-gradient(135deg,#f50a15,#d1000f); box-shadow:0 8px 32px rgba(229,9,20,0.5); transform:translateY(-1px); }
+        .submit:active { transform:translateY(0); box-shadow:0 4px 20px rgba(229,9,20,0.28); }
+        .submit:disabled { opacity:0.6; cursor:not-allowed; transform:none; pointer-events:none; }
         .spin-sm {
-            width: 17px; height: 17px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: #fff; border-radius: 50%;
-            animation: spinSm 0.75s linear infinite;
-            display: none; flex-shrink: 0;
+            width:17px; height:17px;
+            border:2px solid rgba(255,255,255,0.3); border-top-color:#fff;
+            border-radius:50%; animation:spinSm 0.75s linear infinite;
+            display:none; flex-shrink:0;
         }
-        @keyframes spinSm { to { transform: rotate(360deg); } }
-        .submit.loading .spin-sm { display: block; }
-        .submit.loading .lbl { opacity: 0.7; }
+        @keyframes spinSm { to { transform:rotate(360deg); } }
+        .submit.loading .spin-sm { display:block; }
+        .submit.loading .lbl { opacity:0.7; }
 
+        /* ALERTS */
         .alert {
-            padding: 11px 14px; border-radius: 9px;
-            font-size: 13px; font-weight: 500; line-height: 1.5;
-            display: flex; align-items: flex-start; gap: 9px;
-            animation: alertIn 0.3s ease;
+            padding:11px 14px; border-radius:9px;
+            font-size:13px; font-weight:500; line-height:1.5;
+            display:flex; align-items:flex-start; gap:9px;
+            animation:alertIn 0.3s ease;
         }
-        @keyframes alertIn {
-            from { opacity: 0; transform: translateY(-6px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        .alert i { flex-shrink: 0; margin-top: 1px; }
-        .alert-err  { background: rgba(229,9,20,0.09);  border: 1px solid rgba(229,9,20,0.22);  color: #ff8080; }
-        .alert-ok   { background: rgba(39,174,96,0.09); border: 1px solid rgba(39,174,96,0.22); color: #6bcb77; }
-        .alert-info { background: rgba(52,152,219,0.09);border: 1px solid rgba(52,152,219,0.22);color: #74b9e7; }
+        @keyframes alertIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+        .alert i { flex-shrink:0; margin-top:1px; }
+        .alert-err  { background:rgba(229,9,20,0.09);  border:1px solid rgba(229,9,20,0.22);  color:#ff8080; }
+        .alert-ok   { background:rgba(39,174,96,0.09); border:1px solid rgba(39,174,96,0.22); color:#6bcb77; }
+        .alert-info { background:rgba(52,152,219,0.09);border:1px solid rgba(52,152,219,0.22);color:#74b9e7; }
 
-        .switch { text-align: center; font-size: 13px; color: var(--muted); }
-        .switch a { color: #fff; font-weight: 700; text-decoration: none; cursor: pointer; transition: color 0.25s; }
-        .switch a:hover { color: var(--red); }
+        .switch { text-align:center; font-size:13px; color:var(--muted); }
+        .switch a { color:#fff; font-weight:700; text-decoration:none; cursor:pointer; transition:color 0.25s; }
+        .switch a:hover { color:var(--red); }
+        .terms { font-size:12px; color:rgba(255,255,255,0.22); text-align:center; line-height:1.7; }
+        .terms a { color:rgba(255,255,255,0.4); text-decoration:underline; transition:color 0.25s; }
+        .terms a:hover { color:#fff; }
 
-        .terms { font-size: 12px; color: rgba(255,255,255,0.22); text-align: center; line-height: 1.7; }
-        .terms a { color: rgba(255,255,255,0.4); text-decoration: underline; transition: color 0.25s; }
-        .terms a:hover { color: #fff; }
-
-        .footer {
-            position: relative; z-index: 10;
-            text-align: center; padding: 16px;
-            color: rgba(255,255,255,0.18); font-size: 12px;
-        }
+        /* FOOTER */
+        .footer { position:relative; z-index:10; text-align:center; padding:16px; color:rgba(255,255,255,0.18); font-size:12px; }
 
         /* FORGOT MODAL */
         .modal-wrap {
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.82);
-            backdrop-filter: blur(10px);
-            z-index: 9000;
-            display: flex; align-items: center; justify-content: center; padding: 20px;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+            position:fixed; inset:0; background:rgba(0,0,0,0.82);
+            backdrop-filter:blur(10px); z-index:9000;
+            display:flex; align-items:center; justify-content:center; padding:20px;
+            opacity:0; pointer-events:none; transition:opacity 0.3s;
         }
-        .modal-wrap.open { opacity: 1; pointer-events: all; }
+        .modal-wrap.open { opacity:1; pointer-events:all; }
         .modal-box {
-            background: rgba(8,8,12,0.98);
-            border: 1px solid rgba(255,255,255,0.09);
-            border-radius: 18px; padding: 38px 34px;
-            width: 100%; max-width: 390px;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.85);
-            transform: scale(0.91) translateY(18px);
-            transition: all 0.38s cubic-bezier(0.16,1,0.3,1);
+            background:rgba(8,8,12,0.98); border:1px solid rgba(255,255,255,0.09);
+            border-radius:18px; padding:38px 34px; width:100%; max-width:390px;
+            box-shadow:0 30px 80px rgba(0,0,0,0.85);
+            transform:scale(0.91) translateY(18px);
+            transition:all 0.38s cubic-bezier(0.16,1,0.3,1);
         }
-        .modal-wrap.open .modal-box { transform: scale(1) translateY(0); }
-        .modal-title { font-size: 21px; font-weight: 800; margin-bottom: 6px; }
-        .modal-sub   { font-size: 13px; color: var(--muted); margin-bottom: 22px; line-height: 1.6; }
-        .modal-btns  { display: flex; gap: 10px; margin-top: 16px; }
+        .modal-wrap.open .modal-box { transform:scale(1) translateY(0); }
+        .modal-title { font-size:21px; font-weight:800; margin-bottom:6px; }
+        .modal-sub   { font-size:13px; color:var(--muted); margin-bottom:22px; line-height:1.6; }
+        .modal-btns  { display:flex; gap:10px; margin-top:16px; }
         .mbtn-cancel {
-            flex: 1; padding: 13px;
-            background: rgba(255,255,255,0.05); border: 1.5px solid var(--border);
-            border-radius: 11px; color: var(--muted);
-            font-family: var(--font-body); font-size: 14px; font-weight: 600; cursor: pointer;
-            transition: all 0.25s;
+            flex:1; padding:13px; background:rgba(255,255,255,0.05);
+            border:1.5px solid var(--border); border-radius:11px; color:var(--muted);
+            font-family:var(--font-body); font-size:14px; font-weight:600; cursor:pointer; transition:all 0.25s;
         }
-        .mbtn-cancel:hover { color: #fff; background: rgba(255,255,255,0.08); }
+        .mbtn-cancel:hover { color:#fff; background:rgba(255,255,255,0.08); }
         .mbtn-send {
-            flex: 1; padding: 13px;
-            background: var(--red); border: none;
-            border-radius: 11px; color: #fff;
-            font-family: var(--font-body); font-size: 14px; font-weight: 700; cursor: pointer;
-            transition: all 0.25s;
+            flex:1; padding:13px; background:var(--red); border:none;
+            border-radius:11px; color:#fff; font-family:var(--font-body);
+            font-size:14px; font-weight:700; cursor:pointer; transition:all 0.25s;
         }
-        .mbtn-send:hover { background: #f40612; box-shadow: 0 5px 22px rgba(229,9,20,0.4); }
-        .mbtn-send:disabled { opacity: 0.55; cursor: not-allowed; }
+        .mbtn-send:hover { background:#f40612; box-shadow:0 5px 22px rgba(229,9,20,0.4); }
+        .mbtn-send:disabled { opacity:0.55; cursor:not-allowed; }
 
         /* REDIRECT SCREEN */
         .redirect-screen {
-            display: none;
-            flex-direction: column; align-items: center;
-            text-align: center; gap: 14px; padding: 10px 0;
-            animation: panelIn 0.5s ease;
+            display:none; flex-direction:column; align-items:center;
+            text-align:center; gap:14px; padding:10px 0; animation:panelIn 0.5s ease;
         }
         .redirect-icon {
-            width: 70px; height: 70px; border-radius: 50%;
-            background: rgba(39,174,96,0.1); border: 2px solid rgba(39,174,96,0.3);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 26px; color: #6bcb77;
-            animation: popIn 0.5s cubic-bezier(0.16,1,0.3,1);
-            box-shadow: 0 0 35px rgba(39,174,96,0.12);
+            width:70px; height:70px; border-radius:50%;
+            background:rgba(39,174,96,0.1); border:2px solid rgba(39,174,96,0.3);
+            display:flex; align-items:center; justify-content:center;
+            font-size:26px; color:#6bcb77;
+            animation:popIn 0.5s cubic-bezier(0.16,1,0.3,1);
+            box-shadow:0 0 35px rgba(39,174,96,0.12);
         }
         @keyframes popIn {
-            from { transform: scale(0) rotate(-12deg); opacity: 0; }
-            to   { transform: scale(1) rotate(0); opacity: 1; }
+            from { transform:scale(0) rotate(-12deg); opacity:0; }
+            to   { transform:scale(1) rotate(0); opacity:1; }
         }
-        .redirect-title { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }
-        .redirect-sub   { font-size: 14px; color: var(--muted); line-height: 1.6; }
-        .redirect-dots  { display: flex; gap: 6px; }
+        .redirect-title { font-size:22px; font-weight:800; letter-spacing:-0.3px; }
+        .redirect-sub   { font-size:14px; color:var(--muted); line-height:1.6; }
+        .redirect-dots  { display:flex; gap:6px; }
         .redirect-dots span {
-            width: 7px; height: 7px; border-radius: 50%; background: var(--red);
-            animation: dotBounce 1.2s ease infinite;
+            width:7px; height:7px; border-radius:50%; background:var(--red);
+            animation:dotBounce 1.2s ease infinite;
         }
-        .redirect-dots span:nth-child(2) { animation-delay: 0.15s; }
-        .redirect-dots span:nth-child(3) { animation-delay: 0.3s; }
+        .redirect-dots span:nth-child(2) { animation-delay:0.15s; }
+        .redirect-dots span:nth-child(3) { animation-delay:0.3s; }
         @keyframes dotBounce {
-            0%,80%,100% { transform: scale(0.6); opacity: 0.4; }
-            40%          { transform: scale(1);   opacity: 1; }
+            0%,80%,100% { transform:scale(0.6); opacity:0.4; }
+            40%          { transform:scale(1);   opacity:1; }
         }
 
-        @media (max-width: 500px) {
-            .navbar { padding: 16px 22px; }
-            .card   { padding: 30px 22px 26px; }
-            .logo   { font-size: 26px; }
+        @media (max-width:500px) {
+            .navbar { padding:16px 22px; }
+            .card   { padding:30px 22px 26px; }
+            .logo   { font-size:26px; }
         }
 
         /* BOTTOM NAV */
         .bottom-nav {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            z-index: 9000;
-            height: 70px;
-            display: flex; align-items: stretch;
-            background: rgba(10, 10, 15, 0.82);
-            backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border-top: 1px solid rgba(255, 255, 255, 0.07);
-            box-shadow: 0 -4px 30px rgba(0,0,0,0.6), 0 -1px 0 rgba(229,9,20,0.15) inset;
-            padding-bottom: env(safe-area-inset-bottom, 0px);
-            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+            position:fixed; bottom:0; left:0; right:0; z-index:9000; height:70px;
+            display:flex; align-items:stretch;
+            background:rgba(10,10,15,0.82);
+            backdrop-filter:blur(24px) saturate(180%);
+            -webkit-backdrop-filter:blur(24px) saturate(180%);
+            border-top:1px solid rgba(255,255,255,0.07);
+            box-shadow:0 -4px 30px rgba(0,0,0,0.6), 0 -1px 0 rgba(229,9,20,0.15) inset;
+            padding-bottom:env(safe-area-inset-bottom,0px);
+            transition:transform 0.35s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s ease;
         }
         .bottom-nav::before {
-            content: '';
-            position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(229,9,20,0.5) 30%, rgba(255,107,107,0.6) 50%, rgba(229,9,20,0.5) 70%, transparent);
-            filter: blur(0.5px);
+            content:''; position:absolute; top:0; left:10%; right:10%; height:1px;
+            background:linear-gradient(90deg,transparent,rgba(229,9,20,0.5) 30%,rgba(255,107,107,0.6) 50%,rgba(229,9,20,0.5) 70%,transparent);
+            filter:blur(0.5px);
         }
         .bottom-nav-item {
-            flex: 1; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; gap: 5px;
-            text-decoration: none; color: rgba(255,255,255,0.45);
-            font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
-            cursor: pointer; background: none; border: none; padding: 0;
-            transition: color 0.25s ease; position: relative;
-            -webkit-tap-highlight-color: transparent;
+            flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;
+            text-decoration:none; color:rgba(255,255,255,0.45);
+            font-size:10px; font-weight:600; letter-spacing:0.5px; text-transform:uppercase;
+            cursor:pointer; background:none; border:none; padding:0;
+            transition:color 0.25s ease; position:relative;
+            -webkit-tap-highlight-color:transparent;
         }
-        .bottom-nav-item:hover { color: rgba(255,255,255,0.75); }
-        .bottom-nav-item.active { color: #fff; }
+        .bottom-nav-item:hover { color:rgba(255,255,255,0.75); }
+        .bottom-nav-item.active { color:#fff; }
         .bnav-icon-wrap {
-            position: relative; width: 44px; height: 30px;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 14px; transition: background 0.3s ease, transform 0.2s ease;
+            position:relative; width:44px; height:30px;
+            display:flex; align-items:center; justify-content:center;
+            border-radius:14px; transition:background 0.3s ease, transform 0.2s ease;
         }
-        .bottom-nav-item.active .bnav-icon-wrap {
-            background: rgba(229,9,20,0.18); transform: translateY(-1px);
-        }
-        .bottom-nav-item:active .bnav-icon-wrap { transform: scale(0.88) translateY(-1px); }
-        .bnav-icon-wrap i {
-            font-size: 18px;
-            transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), color 0.25s ease;
-        }
-        .bottom-nav-item.active .bnav-icon-wrap i {
-            color: #e50914;
-            filter: drop-shadow(0 0 8px rgba(229,9,20,0.7));
-            transform: scale(1.15);
-        }
+        .bottom-nav-item.active .bnav-icon-wrap { background:rgba(229,9,20,0.18); transform:translateY(-1px); }
+        .bottom-nav-item:active .bnav-icon-wrap { transform:scale(0.88) translateY(-1px); }
+        .bnav-icon-wrap i { font-size:18px; transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1), color 0.25s ease; }
+        .bottom-nav-item.active .bnav-icon-wrap i { color:#e50914; filter:drop-shadow(0 0 8px rgba(229,9,20,0.7)); transform:scale(1.15); }
         .bnav-label {
-            font-family: 'DM Sans', sans-serif; font-size: 9.5px; font-weight: 700;
-            letter-spacing: 0.6px; text-transform: uppercase;
-            transition: color 0.25s ease, opacity 0.25s ease; opacity: 0.7;
+            font-family:'DM Sans',sans-serif; font-size:9.5px; font-weight:700;
+            letter-spacing:0.6px; text-transform:uppercase;
+            transition:color 0.25s ease, opacity 0.25s ease; opacity:0.7;
         }
-        .bottom-nav-item.active .bnav-label { opacity: 1; color: #fff; }
+        .bottom-nav-item.active .bnav-label { opacity:1; color:#fff; }
         .bnav-dot {
-            position: absolute; top: -8px; left: 50%;
-            transform: translateX(-50%) scaleX(0);
-            width: 20px; height: 3px; border-radius: 0 0 3px 3px;
-            background: linear-gradient(90deg, #e50914, #ff6b6b);
-            box-shadow: 0 2px 8px rgba(229,9,20,0.6);
-            transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+            position:absolute; top:-8px; left:50%;
+            transform:translateX(-50%) scaleX(0);
+            width:20px; height:3px; border-radius:0 0 3px 3px;
+            background:linear-gradient(90deg,#e50914,#ff6b6b);
+            box-shadow:0 2px 8px rgba(229,9,20,0.6);
+            transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
         }
-        .bottom-nav-item.active .bnav-dot { transform: translateX(-50%) scaleX(1); }
+        .bottom-nav-item.active .bnav-dot { transform:translateX(-50%) scaleX(1); }
         .bnav-avatar {
-            width: 26px; height: 26px; border-radius: 50%; object-fit: cover;
-            border: 2px solid rgba(255,255,255,0.2);
-            transition: border-color 0.25s ease, transform 0.25s ease;
+            width:26px; height:26px; border-radius:50%; object-fit:cover;
+            border:2px solid rgba(255,255,255,0.2);
+            transition:border-color 0.25s ease, transform 0.25s ease;
         }
-        .bottom-nav-item.active .bnav-avatar {
-            border-color: #e50914; box-shadow: 0 0 10px rgba(229,9,20,0.5);
-            transform: scale(1.08) translateY(-1px);
-        }
+        .bottom-nav-item.active .bnav-avatar { border-color:#e50914; box-shadow:0 0 10px rgba(229,9,20,0.5); transform:scale(1.08) translateY(-1px); }
         .bnav-ripple {
-            position: absolute; border-radius: 50%;
-            background: rgba(229,9,20,0.25); transform: scale(0);
-            animation: bnavRipple 0.5s ease-out forwards; pointer-events: none;
+            position:absolute; border-radius:50%;
+            background:rgba(229,9,20,0.25); transform:scale(0);
+            animation:bnavRipple 0.5s ease-out forwards; pointer-events:none;
         }
-        @keyframes bnavRipple { to { transform: scale(3.5); opacity: 0; } }
+        @keyframes bnavRipple { to { transform:scale(3.5); opacity:0; } }
     </style>
 </head>
 <body>
@@ -486,7 +424,7 @@
             <button class="tab"    id="tabSignup" onclick="goTab('signup')">Create Account</button>
         </div>
 
-        <!-- ═══ LOGIN PANEL ═══ -->
+        <!-- LOGIN PANEL -->
         <div class="panel on" id="panelLogin">
             <div class="fh">
                 <h1>Welcome back 👋</h1>
@@ -519,22 +457,18 @@
                 <div class="spin-sm"></div>
                 <span class="lbl">Sign In</span>
             </button>
-            <div class="switch">
-                New here? <a onclick="goTab('signup')">Create an account</a>
-            </div>
+            <div class="switch">New here? <a onclick="goTab('signup')">Create an account</a></div>
         </div>
 
-        <!-- ═══ SIGNUP PANEL ═══ -->
+        <!-- SIGNUP PANEL -->
         <div class="panel" id="panelSignup">
 
-            <!-- Success redirect screen -->
+            <!-- Success screen shown after account created -->
             <div class="redirect-screen" id="redirectScreen">
                 <div class="redirect-icon"><i class="fas fa-check"></i></div>
                 <div class="redirect-title">Account Created!</div>
                 <div class="redirect-sub">Signing you in automatically…</div>
-                <div class="redirect-dots">
-                    <span></span><span></span><span></span>
-                </div>
+                <div class="redirect-dots"><span></span><span></span><span></span></div>
             </div>
 
             <!-- Signup form -->
@@ -545,15 +479,6 @@
                 </div>
                 <div id="signupAlert" style="margin-bottom:4px;"></div>
                 <div style="display:flex;flex-direction:column;gap:15px;">
-
-                    <div class="ig">
-                        <label>Display Name</label>
-                        <div class="iw">
-                            <i class="fas fa-user ico"></i>
-                            <input type="text" id="signupDisplayName" placeholder="Your full name" maxlength="30">
-                        </div>
-                    </div>
-
                     <div class="ig">
                         <label>Username</label>
                         <div class="iw">
@@ -561,7 +486,6 @@
                             <input type="text" id="signupUsername" placeholder="cooluser123" maxlength="20">
                         </div>
                     </div>
-
                     <div class="ig">
                         <label>Email Address</label>
                         <div class="iw">
@@ -569,7 +493,6 @@
                             <input type="email" id="signupEmail" placeholder="your@email.com" autocomplete="email">
                         </div>
                     </div>
-
                     <div class="ig">
                         <label>Password</label>
                         <div class="iw">
@@ -579,15 +502,12 @@
                         </div>
                         <div class="strength" id="strMeter">
                             <div class="s-bars">
-                                <div class="s-bar" id="sb1"></div>
-                                <div class="s-bar" id="sb2"></div>
-                                <div class="s-bar" id="sb3"></div>
-                                <div class="s-bar" id="sb4"></div>
+                                <div class="s-bar" id="sb1"></div><div class="s-bar" id="sb2"></div>
+                                <div class="s-bar" id="sb3"></div><div class="s-bar" id="sb4"></div>
                             </div>
                             <span class="s-label" id="strLabel"></span>
                         </div>
                     </div>
-
                     <div class="ig">
                         <label>Confirm Password</label>
                         <div class="iw">
@@ -596,17 +516,12 @@
                             <button class="eye" onclick="toggleEye('confirmPwd',this)" type="button"><i class="fas fa-eye"></i></button>
                         </div>
                     </div>
-
                     <button class="submit" id="signupBtn" onclick="doSignup()">
                         <div class="spin-sm"></div>
                         <span class="lbl">Create Account</span>
                     </button>
-                    <p class="terms">
-                        By signing up you agree to our <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a>
-                    </p>
-                    <div class="switch">
-                        Already have an account? <a onclick="goTab('login')">Sign in</a>
-                    </div>
+                    <p class="terms">By signing up you agree to our <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a></p>
+                    <div class="switch">Already have an account? <a onclick="goTab('login')">Sign in</a></div>
                 </div>
             </div>
         </div>
@@ -668,9 +583,9 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-/* ─────────────────────────────────────────
+/* ═══════════════════════════════════════════════
    FIREBASE INIT
-───────────────────────────────────────── */
+═══════════════════════════════════════════════ */
 const firebaseConfig = {
     apiKey:            "AIzaSyBGE29YUks6sp4jZS4MzE2JIMF-RMLwVLg",
     authDomain:        "moddy-store.firebaseapp.com",
@@ -680,33 +595,31 @@ const firebaseConfig = {
     messagingSenderId: "37854973622",
     appId:             "1:37854973622:web:8f927e0a1d267d099ca017"
 };
-
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth     = firebase.auth();
 const database = firebase.database();
 
-/* ─────────────────────────────────────────
+/* ═══════════════════════════════════════════════
    AUTO-REDIRECT IF ALREADY SIGNED IN
-───────────────────────────────────────── */
+═══════════════════════════════════════════════ */
 auth.onAuthStateChanged(user => {
     if (user) window.location.href = 'profile.html';
 });
 
-/* ─────────────────────────────────────────
-   SAVE NEW USER TO  Users/{uid}
-   Fields saved (matching your DB exactly):
-     uid · email · username · displayName
-     currentMedal · totalPoints · totalActiveTime
-     isActive · createdAt · lastSeen · fcmToken
-   NO other database path is written to.
-───────────────────────────────────────── */
-async function saveUserToDB(uid, email, username, displayName) {
+/* ═══════════════════════════════════════════════
+   SAVE USER — writes ONLY to Users/{uid}
+   Exact fields saved (matching your DB structure):
+     uid, email, username, currentMedal,
+     totalPoints, totalActiveTime, isActive,
+     createdAt, lastSeen, fcmToken
+   No other database path is touched.
+═══════════════════════════════════════════════ */
+async function saveUserToDB(uid, email, username) {
     const now = Date.now();
     await database.ref('Users/' + uid).set({
         uid             : uid,
         email           : email,
         username        : username,
-        displayName     : displayName,
         currentMedal    : "bronze",
         totalPoints     : 0,
         totalActiveTime : 0,
@@ -717,10 +630,10 @@ async function saveUserToDB(uid, email, username, displayName) {
     });
 }
 
-/* ─────────────────────────────────────────
-   UPDATE isActive + lastSeen ON LOGIN
-   Only touches Users/{uid} — nothing else.
-───────────────────────────────────────── */
+/* ═══════════════════════════════════════════════
+   ON LOGIN — update only isActive + lastSeen
+   inside the existing Users/{uid} node.
+═══════════════════════════════════════════════ */
 async function updateLoginStatus(uid) {
     await database.ref('Users/' + uid).update({
         isActive : true,
@@ -728,9 +641,9 @@ async function updateLoginStatus(uid) {
     });
 }
 
-/* ─────────────────────────────────────────
+/* ═══════════════════════════════════════════════
    UI HELPERS
-───────────────────────────────────────── */
+═══════════════════════════════════════════════ */
 function goTab(tab) {
     clearAlerts();
     const isLogin = tab === 'login';
@@ -744,11 +657,9 @@ function toggleEye(id, btn) {
     const inp = document.getElementById(id);
     const ico = btn.querySelector('i');
     if (inp.type === 'password') {
-        inp.type = 'text';
-        ico.classList.replace('fa-eye', 'fa-eye-slash');
+        inp.type = 'text'; ico.classList.replace('fa-eye','fa-eye-slash');
     } else {
-        inp.type = 'password';
-        ico.classList.replace('fa-eye-slash', 'fa-eye');
+        inp.type = 'password'; ico.classList.replace('fa-eye-slash','fa-eye');
     }
 }
 
@@ -759,10 +670,10 @@ function checkStr(pwd) {
     if (!pwd) { meter.style.display = 'none'; return; }
     meter.style.display = 'block';
     let s = 0;
-    if (pwd.length >= 8)            s++;
-    if (/[A-Z]/.test(pwd))          s++;
-    if (/[0-9]/.test(pwd))          s++;
-    if (/[^A-Za-z0-9]/.test(pwd))   s++;
+    if (pwd.length >= 8)           s++;
+    if (/[A-Z]/.test(pwd))         s++;
+    if (/[0-9]/.test(pwd))         s++;
+    if (/[^A-Za-z0-9]/.test(pwd)) s++;
     const cfg = [
         { c:'#e50914', t:'Weak',   tc:'#ff8080' },
         { c:'#ff6b35', t:'Fair',   tc:'#ff9f70' },
@@ -808,9 +719,9 @@ function setBtnLoad(id, on, label) {
     if (label) b.querySelector('.lbl').textContent = label;
 }
 
-/* ─────────────────────────────────────────
+/* ═══════════════════════════════════════════════
    LOGIN
-───────────────────────────────────────── */
+═══════════════════════════════════════════════ */
 async function doLogin() {
     const email = document.getElementById('loginEmail').value.trim();
     const pwd   = document.getElementById('loginPwd').value;
@@ -819,8 +730,7 @@ async function doLogin() {
     setBtnLoad('loginBtn', true, 'Signing in…');
     try {
         const cred = await auth.signInWithEmailAndPassword(email, pwd);
-        // Only update isActive and lastSeen inside Users/{uid}
-        await updateLoginStatus(cred.user.uid);
+        await updateLoginStatus(cred.user.uid);   // only touches Users/{uid}
         showAlert('loginAlert', 'Signed in! Redirecting…', 'ok');
         setTimeout(() => { window.location.href = 'profile.html'; }, 900);
     } catch (e) {
@@ -829,26 +739,21 @@ async function doLogin() {
     }
 }
 
-/* ─────────────────────────────────────────
+/* ═══════════════════════════════════════════════
    SIGNUP
-───────────────────────────────────────── */
+═══════════════════════════════════════════════ */
 async function doSignup() {
-    const displayName = document.getElementById('signupDisplayName').value.trim();
-    const username    = document.getElementById('signupUsername').value.trim().toLowerCase();
-    const email       = document.getElementById('signupEmail').value.trim();
-    const pwd         = document.getElementById('signupPwd').value;
-    const cpwd        = document.getElementById('confirmPwd').value;
-
+    const username = document.getElementById('signupUsername').value.trim();
+    const email    = document.getElementById('signupEmail').value.trim();
+    const pwd      = document.getElementById('signupPwd').value;
+    const cpwd     = document.getElementById('confirmPwd').value;
     clearAlerts();
 
-    if (!displayName || !username || !email || !pwd || !cpwd) {
+    if (!username || !email || !pwd || !cpwd) {
         showAlert('signupAlert', 'Please fill in all fields.'); return;
     }
-    if (displayName.length < 2) {
-        showAlert('signupAlert', 'Display name must be at least 2 characters.'); return;
-    }
-    if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
-        showAlert('signupAlert', 'Username: 3–20 characters, letters/numbers/underscores only.'); return;
+    if (username.length < 2) {
+        showAlert('signupAlert', 'Username must be at least 2 characters.'); return;
     }
     if (pwd.length < 6) {
         showAlert('signupAlert', 'Password must be at least 6 characters.'); return;
@@ -858,20 +763,19 @@ async function doSignup() {
     }
 
     setBtnLoad('signupBtn', true, 'Creating…');
-
     try {
-        // 1. Create Firebase Auth account
+        // 1. Create the Firebase Auth account
         const cred = await auth.createUserWithEmailAndPassword(email, pwd);
         const uid  = cred.user.uid;
 
-        // 2. Set displayName in Firebase Auth profile
-        await cred.user.updateProfile({ displayName: displayName });
+        // 2. Set displayName in Firebase Auth profile (local Auth only, not DB)
+        await cred.user.updateProfile({ displayName: username });
 
-        // 3. Write ALL user data to Users/{uid} — the only DB path used
-        await saveUserToDB(uid, email, username, displayName);
+        // 3. Write the user record — ONLY to Users/{uid}, nowhere else
+        await saveUserToDB(uid, email, username);
 
-        // 4. Show success and redirect
-        document.getElementById('signupFields').style.display  = 'none';
+        // 4. Show success animation then redirect
+        document.getElementById('signupFields').style.display   = 'none';
         document.getElementById('redirectScreen').style.display = 'flex';
         setTimeout(() => { window.location.href = 'profile.html'; }, 1800);
 
@@ -881,21 +785,18 @@ async function doSignup() {
     }
 }
 
-/* ─────────────────────────────────────────
+/* ═══════════════════════════════════════════════
    FORGOT PASSWORD
-───────────────────────────────────────── */
+═══════════════════════════════════════════════ */
 function openForgot() {
     const pre = document.getElementById('loginEmail').value.trim();
     if (pre) document.getElementById('forgotEmail').value = pre;
     document.getElementById('forgotAlert').innerHTML = '';
     document.getElementById('forgotModal').classList.add('open');
 }
-function closeForgot() {
-    document.getElementById('forgotModal').classList.remove('open');
-}
-function backdropClose(e) {
-    if (e.target === document.getElementById('forgotModal')) closeForgot();
-}
+function closeForgot() { document.getElementById('forgotModal').classList.remove('open'); }
+function backdropClose(e) { if (e.target === document.getElementById('forgotModal')) closeForgot(); }
+
 async function doForgot() {
     const email = document.getElementById('forgotEmail').value.trim();
     const btn   = document.getElementById('forgotSendBtn');
@@ -912,9 +813,9 @@ async function doForgot() {
     }
 }
 
-/* ─────────────────────────────────────────
+/* ═══════════════════════════════════════════════
    KEYBOARD SHORTCUTS
-───────────────────────────────────────── */
+═══════════════════════════════════════════════ */
 document.addEventListener('keydown', e => {
     if (e.key !== 'Enter') return;
     if (document.getElementById('forgotModal').classList.contains('open')) { doForgot(); return; }
@@ -949,7 +850,7 @@ document.addEventListener('keydown', e => {
         });
     });
 
-    var lastScroll   = window.pageYOffset;
+    var lastScroll = window.pageYOffset;
     var scrollEnabled = false;
     setTimeout(function () { lastScroll = window.pageYOffset; scrollEnabled = true; }, 600);
 
