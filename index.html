@@ -3,390 +3,169 @@
 <head>
 
     <!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
 
-<!-- Your Firebase config -->
-<script src="firebase-config.js"></script>
+    <!-- Firebase Config — inline so presence fires immediately -->
+    <script>
+        const firebaseConfig = {
+            apiKey:            "AIzaSyBGE29YUks6sp4jZS4MzE2JIMF-RMLwVLg",
+            authDomain:        "moddy-store.firebaseapp.com",
+            databaseURL:       "https://moddy-store-default-rtdb.firebaseio.com",
+            projectId:         "moddy-store",
+            storageBucket:     "moddy-store.appspot.com",
+            messagingSenderId: "37854973622",
+            appId:             "1:37854973622:web:8f927e0a1d267d099ca017"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db   = firebase.database();
+    </script>
 
     <script>(function(s){s.dataset.zone='10899394',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="ca0c749dbe92ba6b379f7bc797edfdc575386360" content="ca0c749dbe92ba6b379f7bc797edfdc575386360" />
     <title>Streamify - Watch Movies & TV Shows Free</title>
-
     <meta name="monetag" content="f8bda81148e97275706150c01854e491">
-    
     <meta name="description" content="Watch unlimited movies and TV shows for free. Stream the latest releases in HD quality. No signup required.">
     <meta name="keywords" content="free movies, watch movies online, free TV shows, streaming, netflix alternative">
     <meta name="robots" content="index, follow">
-    
     <meta property="og:title" content="Streamify - Free Movies & TV Shows">
     <meta property="og:description" content="Watch unlimited movies and TV shows for free">
     <meta property="og:type" content="website">
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
     <link rel="stylesheet" href="css/style.css">
 
     <style>
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        @keyframes glowPulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(229, 9, 20, 0.3); }
-            50% { box-shadow: 0 0 40px rgba(229, 9, 20, 0.6); }
-        }
-        
-        @keyframes textGradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        .btn-play, .btn-info, .popup-btn {
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+        @keyframes glowPulse { 0%,100%{box-shadow:0 0 20px rgba(229,9,20,0.3)} 50%{box-shadow:0 0 40px rgba(229,9,20,0.6)} }
+        @keyframes textGradient { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        .btn-play,.btn-info,.popup-btn{position:relative;overflow:hidden}
+        .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,0.4);transform:scale(0);animation:ripple 0.6s linear;pointer-events:none}
+        @keyframes ripple{to{transform:scale(4);opacity:0}}
+        body{animation:pageLoad 0.8s ease-out}
+        @keyframes pageLoad{from{opacity:0}to{opacity:1}}
+        .card{position:relative;overflow:hidden}
+        .card .shine{position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);transition:0.5s;z-index:4;pointer-events:none}
+        .card:hover .shine{left:100%}
+        .popup-dont-ask{display:flex;align-items:center;justify-content:center;gap:12px;margin:18px 0 8px 0;cursor:pointer;user-select:none}
+        .popup-dont-ask input[type="checkbox"]{display:none}
+        .popup-dont-ask .custom-checkbox{width:22px;height:22px;border:2px solid rgba(255,255,255,0.3);border-radius:6px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.3s cubic-bezier(0.4,0,0.2,1)}
+        .popup-dont-ask input[type="checkbox"]:checked+.custom-checkbox{background:linear-gradient(135deg,#e50914 0%,#b20710 100%);border-color:#e50914;box-shadow:0 0 15px rgba(229,9,20,0.4)}
+        .popup-dont-ask input[type="checkbox"]:checked+.custom-checkbox::after{content:'';display:block;width:6px;height:10px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translate(-1px,-1px)}
+        .popup-dont-ask .checkbox-label{font-size:14px;color:rgba(255,255,255,0.6);transition:color 0.3s}
+        .popup-dont-ask:hover .checkbox-label{color:#fff}
+        .popup-dont-ask:hover .custom-checkbox{border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.1)}
+        .page-loader{position:fixed;inset:0;background:#0a0a0f;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;transition:opacity 0.5s,visibility 0.5s}
+        .page-loader.hidden{opacity:0;visibility:hidden}
+        .loader-logo{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:4px;background:linear-gradient(135deg,#e50914 0%,#ff6b6b 50%,#e50914 100%);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:gradientShift 2s ease infinite}
+        .loader-bar{width:200px;height:3px;background:rgba(255,255,255,0.1);border-radius:10px;overflow:hidden}
+        .loader-bar::after{content:'';display:block;width:50%;height:100%;background:linear-gradient(90deg,#e50914,#ff6b6b,#e50914);border-radius:10px;animation:loading 1s ease-in-out infinite}
+        @keyframes loading{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}
+        @keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+        .particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1;overflow:hidden}
+        .particle{position:absolute;width:4px;height:4px;background:rgba(229,9,20,0.3);border-radius:50%;animation:floatParticle 15s infinite}
+        .particle:nth-child(1){left:10%;animation-delay:0s;animation-duration:20s}
+        .particle:nth-child(2){left:20%;animation-delay:2s;animation-duration:18s}
+        .particle:nth-child(3){left:30%;animation-delay:4s;animation-duration:22s}
+        .particle:nth-child(4){left:40%;animation-delay:1s;animation-duration:19s}
+        .particle:nth-child(5){left:50%;animation-delay:3s;animation-duration:21s}
+        .particle:nth-child(6){left:60%;animation-delay:5s;animation-duration:17s}
+        .particle:nth-child(7){left:70%;animation-delay:2s;animation-duration:23s}
+        .particle:nth-child(8){left:80%;animation-delay:4s;animation-duration:20s}
+        .particle:nth-child(9){left:90%;animation-delay:1s;animation-duration:18s}
+        .particle:nth-child(10){left:95%;animation-delay:3s;animation-duration:22s}
+        @keyframes floatParticle{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-100vh) scale(1);opacity:0}}
+        [data-tooltip]{position:relative}
+        [data-tooltip]::after{content:attr(data-tooltip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%) translateY(-5px);background:rgba(0,0,0,0.9);color:#fff;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:500;white-space:nowrap;opacity:0;visibility:hidden;transition:all 0.3s;pointer-events:none;z-index:100;border:1px solid rgba(255,255,255,0.1)}
+        [data-tooltip]:hover::after{opacity:1;visibility:visible;transform:translateX(-50%) translateY(-10px)}
+        button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #e50914;outline-offset:2px}
+        html{scroll-behavior:smooth}
+        body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;padding-bottom:80px}
+
+        /* ══════════════════════════════════════
+           BOTTOM NAV
+        ══════════════════════════════════════ */
+        .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:9000;height:70px;display:flex;align-items:stretch;background:rgba(10,10,15,0.82);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-top:1px solid rgba(255,255,255,0.07);box-shadow:0 -4px 30px rgba(0,0,0,0.6),0 -1px 0 rgba(229,9,20,0.15) inset;padding-bottom:env(safe-area-inset-bottom,0px)}
+        .bottom-nav::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(229,9,20,0.5) 30%,rgba(255,107,107,0.6) 50%,rgba(229,9,20,0.5) 70%,transparent);filter:blur(0.5px)}
+        .bottom-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-decoration:none;color:rgba(255,255,255,0.45);font-size:10px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;cursor:pointer;background:none;border:none;padding:0;transition:color 0.25s ease;position:relative;-webkit-tap-highlight-color:transparent}
+        .bottom-nav-item:hover{color:rgba(255,255,255,0.75)}
+        .bottom-nav-item.active{color:#fff}
+        .bnav-icon-wrap{position:relative;width:44px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:14px;transition:background 0.3s ease,transform 0.2s ease}
+        .bottom-nav-item.active .bnav-icon-wrap{background:rgba(229,9,20,0.18);transform:translateY(-1px)}
+        .bottom-nav-item:active .bnav-icon-wrap{transform:scale(0.88) translateY(-1px)}
+        .bnav-icon-wrap i{font-size:18px;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),color 0.25s ease}
+        .bottom-nav-item.active .bnav-icon-wrap i{color:#e50914;filter:drop-shadow(0 0 8px rgba(229,9,20,0.7));transform:scale(1.15)}
+        .bnav-label{font-family:'Inter',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;transition:color 0.25s ease,opacity 0.25s ease;opacity:0.7}
+        .bottom-nav-item.active .bnav-label{opacity:1;color:#fff}
+        .bnav-dot{position:absolute;top:-8px;left:50%;transform:translateX(-50%) scaleX(0);width:20px;height:3px;border-radius:0 0 3px 3px;background:linear-gradient(90deg,#e50914,#ff6b6b);box-shadow:0 2px 8px rgba(229,9,20,0.6);transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1)}
+        .bottom-nav-item.active .bnav-dot{transform:translateX(-50%) scaleX(1)}
+        .bnav-avatar{width:26px;height:26px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.2);transition:border-color 0.25s ease,transform 0.25s ease}
+        .bottom-nav-item.active .bnav-avatar{border-color:#e50914;box-shadow:0 0 10px rgba(229,9,20,0.5);transform:scale(1.08) translateY(-1px)}
+        .bnav-ripple{position:absolute;border-radius:50%;background:rgba(229,9,20,0.25);transform:scale(0);animation:bnavRipple 0.5s ease-out forwards;pointer-events:none}
+        @keyframes bnavRipple{to{transform:scale(3.5);opacity:0}}
+        @media(min-width:1024px){body{padding-bottom:80px}}
+        .bottom-nav-item[data-action="search"]{cursor:pointer}
+
+        /* ══════════════════════════════════════
+           PRESENCE BADGE on profile avatar
+           Green dot  = isActive: true
+           Grey dot   = isActive: false
+        ══════════════════════════════════════ */
+        .bnav-avatar-wrap {
             position: relative;
-            overflow: hidden;
+            width: auto;
+            display: inline-flex;
         }
-        
-        .ripple {
+        .presence-dot {
             position: absolute;
+            bottom: 0px;
+            right: -1px;
+            width: 9px;
+            height: 9px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.4);
-            transform: scale(0);
-            animation: ripple 0.6s linear;
-            pointer-events: none;
+            border: 2px solid #0a0a0f;
+            background: #555;                     /* default: offline/grey */
+            transition: background 0.4s ease;
+            z-index: 2;
         }
-        
-        @keyframes ripple {
-            to { transform: scale(4); opacity: 0; }
-        }
-        
-        body { animation: pageLoad 0.8s ease-out; }
-        
-        @keyframes pageLoad {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .card { position: relative; overflow: hidden; }
-        
-        .card .shine {
-            position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: 0.5s; z-index: 4; pointer-events: none;
-        }
-        
-        .card:hover .shine { left: 100%; }
+        .presence-dot.online  { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.8); }
+        .presence-dot.offline { background: #555; box-shadow: none; }
 
-        .popup-dont-ask {
-            display: flex; align-items: center; justify-content: center;
-            gap: 12px; margin: 18px 0 8px 0; cursor: pointer; user-select: none;
-        }
-
-        .popup-dont-ask input[type="checkbox"] { display: none; }
-
-        .popup-dont-ask .custom-checkbox {
-            width: 22px; height: 22px;
-            border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 6px;
-            background: rgba(255, 255, 255, 0.05);
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .popup-dont-ask input[type="checkbox"]:checked + .custom-checkbox {
-            background: linear-gradient(135deg, #e50914 0%, #b20710 100%);
-            border-color: #e50914; box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
-        }
-
-        .popup-dont-ask input[type="checkbox"]:checked + .custom-checkbox::after {
-            content: ''; display: block; width: 6px; height: 10px;
-            border: 2px solid #fff; border-top: none; border-left: none;
-            transform: rotate(45deg) translate(-1px, -1px);
-        }
-
-        .popup-dont-ask .checkbox-label {
-            font-size: 14px; color: rgba(255, 255, 255, 0.6); transition: color 0.3s;
-        }
-
-        .popup-dont-ask:hover .checkbox-label { color: #fff; }
-        .popup-dont-ask:hover .custom-checkbox {
-            border-color: rgba(255, 255, 255, 0.5); background: rgba(255, 255, 255, 0.1);
-        }
-
-        .page-loader {
-            position: fixed; inset: 0; background: #0a0a0f; z-index: 99999;
-            display: flex; align-items: center; justify-content: center;
-            flex-direction: column; gap: 20px; transition: opacity 0.5s, visibility 0.5s;
-        }
-
-        .page-loader.hidden { opacity: 0; visibility: hidden; }
-
-        .loader-logo {
-            font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 4px;
-            background: linear-gradient(135deg, #e50914 0%, #ff6b6b 50%, #e50914 100%);
-            background-size: 200% 200%;
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: gradientShift 2s ease infinite;
-        }
-
-        .loader-bar {
-            width: 200px; height: 3px; background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px; overflow: hidden;
-        }
-
-        .loader-bar::after {
-            content: ''; display: block; width: 50%; height: 100%;
-            background: linear-gradient(90deg, #e50914, #ff6b6b, #e50914);
-            border-radius: 10px; animation: loading 1s ease-in-out infinite;
-        }
-
-        @keyframes loading {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(300%); }
-        }
-
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        .particles {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: -1; overflow: hidden;
-        }
-
-        .particle {
-            position: absolute; width: 4px; height: 4px;
-            background: rgba(229, 9, 20, 0.3); border-radius: 50%;
-            animation: floatParticle 15s infinite;
-        }
-
-        .particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 20s; }
-        .particle:nth-child(2) { left: 20%; animation-delay: 2s; animation-duration: 18s; }
-        .particle:nth-child(3) { left: 30%; animation-delay: 4s; animation-duration: 22s; }
-        .particle:nth-child(4) { left: 40%; animation-delay: 1s; animation-duration: 19s; }
-        .particle:nth-child(5) { left: 50%; animation-delay: 3s; animation-duration: 21s; }
-        .particle:nth-child(6) { left: 60%; animation-delay: 5s; animation-duration: 17s; }
-        .particle:nth-child(7) { left: 70%; animation-delay: 2s; animation-duration: 23s; }
-        .particle:nth-child(8) { left: 80%; animation-delay: 4s; animation-duration: 20s; }
-        .particle:nth-child(9) { left: 90%; animation-delay: 1s; animation-duration: 18s; }
-        .particle:nth-child(10) { left: 95%; animation-delay: 3s; animation-duration: 22s; }
-
-        @keyframes floatParticle {
-            0% { transform: translateY(100vh) scale(0); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100vh) scale(1); opacity: 0; }
-        }
-
-        [data-tooltip] { position: relative; }
-        [data-tooltip]::after {
-            content: attr(data-tooltip); position: absolute; bottom: 100%; left: 50%;
-            transform: translateX(-50%) translateY(-5px);
-            background: rgba(0, 0, 0, 0.9); color: #fff; padding: 8px 14px;
-            border-radius: 8px; font-size: 12px; font-weight: 500; white-space: nowrap;
-            opacity: 0; visibility: hidden; transition: all 0.3s; pointer-events: none;
-            z-index: 100; border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        [data-tooltip]:hover::after {
-            opacity: 1; visibility: visible; transform: translateX(-50%) translateY(-10px);
-        }
-
-        button:focus-visible, a:focus-visible, input:focus-visible {
-            outline: 2px solid #e50914; outline-offset: 2px;
-        }
-
-        html { scroll-behavior: smooth; }
-        body {
-            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
-            /* Add bottom padding so content isn't hidden behind bottom nav */
-            padding-bottom: 80px;
-        }
-
-        /* ═══════════════════════════════════════
-           PREMIUM BOTTOM NAVIGATION BAR
-        ═══════════════════════════════════════ */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 9000;
-            height: 70px;
-            display: flex;
-            align-items: stretch;
-            /* Glassmorphism base */
-            background: rgba(10, 10, 15, 0.82);
-            backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border-top: 1px solid rgba(255, 255, 255, 0.07);
-            box-shadow:
-                0 -4px 30px rgba(0, 0, 0, 0.6),
-                0 -1px 0 rgba(229, 9, 20, 0.15) inset;
-            /* Safe area for phones with home indicator */
-            padding-bottom: env(safe-area-inset-bottom, 0px);
-        }
-
-        /* Subtle top glow line */
-        .bottom-nav::before {
+        /* Pulse ring only when online */
+        .presence-dot.online::after {
             content: '';
             position: absolute;
-            top: 0; left: 10%; right: 10%;
-            height: 1px;
-            background: linear-gradient(90deg,
-                transparent,
-                rgba(229, 9, 20, 0.5) 30%,
-                rgba(255, 107, 107, 0.6) 50%,
-                rgba(229, 9, 20, 0.5) 70%,
-                transparent
-            );
-            filter: blur(0.5px);
+            inset: -3px;
+            border-radius: 50%;
+            border: 2px solid rgba(34,197,94,0.5);
+            animation: presencePulse 2s ease-out infinite;
+        }
+        @keyframes presencePulse {
+            0%   { transform: scale(1);   opacity: 0.8; }
+            100% { transform: scale(2.2); opacity: 0; }
         }
 
-        .bottom-nav-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            text-decoration: none;
-            color: rgba(255, 255, 255, 0.45);
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            cursor: pointer;
-            background: none;
-            border: none;
-            padding: 0;
-            transition: color 0.25s ease;
-            position: relative;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .bottom-nav-item:hover {
-            color: rgba(255, 255, 255, 0.75);
-        }
-
-        .bottom-nav-item.active {
-            color: #fff;
-        }
-
-        /* Icon container with pill indicator */
-        .bnav-icon-wrap {
-            position: relative;
-            width: 44px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 14px;
-            transition: background 0.3s ease, transform 0.2s ease;
-        }
-
-        .bottom-nav-item.active .bnav-icon-wrap {
-            background: rgba(229, 9, 20, 0.18);
-            transform: translateY(-1px);
-        }
-
-        .bottom-nav-item:active .bnav-icon-wrap {
-            transform: scale(0.88) translateY(-1px);
-        }
-
-        .bnav-icon-wrap i {
-            font-size: 18px;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease;
-        }
-
-        .bottom-nav-item.active .bnav-icon-wrap i {
-            color: #e50914;
-            filter: drop-shadow(0 0 8px rgba(229, 9, 20, 0.7));
-            transform: scale(1.15);
-        }
-
-        .bnav-label {
-            font-family: 'Inter', sans-serif;
-            font-size: 9.5px;
+        /* Small "Active / Last seen" tooltip on the profile nav item */
+        #bnav-profile .presence-label {
+            font-size: 8px;
             font-weight: 700;
-            letter-spacing: 0.6px;
+            letter-spacing: 0.4px;
             text-transform: uppercase;
-            transition: color 0.25s ease, opacity 0.25s ease;
-            opacity: 0.7;
+            color: rgba(255,255,255,0.4);
+            margin-top: -2px;
+            transition: color 0.3s;
         }
-
-        .bottom-nav-item.active .bnav-label {
-            opacity: 1;
-            color: #fff;
-        }
-
-        /* Active dot indicator above icon */
-        .bnav-dot {
-            position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%) scaleX(0);
-            width: 20px;
-            height: 3px;
-            border-radius: 0 0 3px 3px;
-            background: linear-gradient(90deg, #e50914, #ff6b6b);
-            box-shadow: 0 2px 8px rgba(229, 9, 20, 0.6);
-            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .bottom-nav-item.active .bnav-dot {
-            transform: translateX(-50%) scaleX(1);
-        }
-
-        /* Profile avatar in nav */
-        .bnav-avatar {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            transition: border-color 0.25s ease, transform 0.25s ease;
-        }
-
-        .bottom-nav-item.active .bnav-avatar {
-            border-color: #e50914;
-            box-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
-            transform: scale(1.08) translateY(-1px);
-        }
-
-        /* Ripple on tap for bottom nav */
-        .bnav-ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(229, 9, 20, 0.25);
-            transform: scale(0);
-            animation: bnavRipple 0.5s ease-out forwards;
-            pointer-events: none;
-        }
-
-        @keyframes bnavRipple {
-            to { transform: scale(3.5); opacity: 0; }
-        }
-
-        /* Hide bottom nav on desktop if desired — keep on all sizes per your request */
-        @media (min-width: 1024px) {
-            /* Uncomment below to show bottom nav only on mobile: */
-            /* .bottom-nav { display: none; } */
-            body { padding-bottom: 80px; }
-        }
-
-        /* Search modal trigger via bottom nav */
-        .bottom-nav-item[data-action="search"] { cursor: pointer; }
-
+        #bnav-profile.has-user .presence-label { display: block; }
+        #bnav-profile .presence-label { display: none; }
+        #bnav-profile.online-now .presence-label { color: #22c55e; }
     </style>
 </head>
 <body>
@@ -493,217 +272,105 @@
         </div>
     </section>
 
-<div data-banner-id="1485855"></div>
-    
+    <div data-banner-id="1485855"></div>
+
     <!-- Content -->
     <main class="main-content">
-
         <section class="content-section" id="continueSection">
             <div class="section-header"><h2><i class="fas fa-history"></i> Continue Watching</h2></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row" id="continueWatching"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="continueWatching"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-ranking-star"></i> Top 5 Today</h2><button class="see-all-btn" data-cat="trending">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row top-5-row" id="top5Today"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row top-5-row" id="top5Today"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-fire"></i> Trending Now</h2><button class="see-all-btn" data-cat="trending">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row" id="trendingNow"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="trendingNow"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-film"></i> Bollywood</h2><button class="see-all-btn" data-cat="bollywood">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row" id="bollywoodContent"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="bollywoodContent"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-sparkles"></i> New Releases</h2><button class="see-all-btn" data-cat="new">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row" id="newReleases"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="newReleases"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-trophy"></i> Top Rated</h2><button class="see-all-btn" data-cat="toprated">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row" id="topRated"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="topRated"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-masks-theater"></i> Korean Drama</h2><button class="see-all-btn" data-cat="korean">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row" id="koreanContent"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="koreanContent"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-burst"></i> Action</h2><button class="see-all-btn" data-cat="action">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row" id="actionMovies"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="actionMovies"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-compass"></i> Adventure</h2><button class="see-all-btn" data-cat="adventure">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row" id="adventureContent"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="adventureContent"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-face-laugh-squint"></i> Comedy</h2><button class="see-all-btn" data-cat="comedy">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row" id="comedyMovies"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="comedyMovies"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-user-secret"></i> Crime</h2><button class="see-all-btn" data-cat="crime">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row" id="crimeContent"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="crimeContent"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-ghost"></i> Horror</h2><button class="see-all-btn" data-cat="horror">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row" id="horrorMovies"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="horrorMovies"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-heart"></i> Romance</h2><button class="see-all-btn" data-cat="romance">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row" id="romanceMovies"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="romanceMovies"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-mask"></i> Thriller</h2><button class="see-all-btn" data-cat="thriller">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row" id="thrillerMovies"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="thrillerMovies"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-rocket"></i> Science Fiction</h2><button class="see-all-btn" data-cat="scifi">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row" id="scifiMovies"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="scifiMovies"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-dragon"></i> Fantasy</h2><button class="see-all-btn" data-cat="fantasy">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row" id="fantasyContent"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="fantasyContent"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-magnifying-glass"></i> Mystery</h2><button class="see-all-btn" data-cat="mystery">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row" id="mysteryContent"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="mysteryContent"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-masks-theater"></i> Drama</h2><button class="see-all-btn" data-cat="drama">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row" id="dramaMovies"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="dramaMovies"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-wand-magic-sparkles"></i> Animation</h2><button class="see-all-btn" data-cat="animation">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row" id="animationMovies"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="animationMovies"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-video"></i> Documentary</h2><button class="see-all-btn" data-cat="documentary">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row" id="documentaryContent"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="documentaryContent"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
         <section class="content-section">
             <div class="section-header"><h2><i class="fas fa-users"></i> Family</h2><button class="see-all-btn" data-cat="family">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper">
-                <button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button>
-                <div class="content-row" id="familyContent"></div>
-                <button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button>
-            </div>
+            <div class="row-wrapper"><button class="scroll-arrow left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="familyContent"></div><button class="scroll-arrow right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
-
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="footer-logo">STREAMIFY</div>
-        <a href="https://streamifyapp.github.io/" target="_blank" class="footer-download">
-            <i class="fab fa-android"></i> Download Streamify for Android
-        </a>
+        <a href="https://streamifyapp.github.io/" target="_blank" class="footer-download"><i class="fab fa-android"></i> Download Streamify for Android</a>
         <p>© 2025 Streamify. All rights reserved.</p>
     </footer>
 
     <!-- See All Modal -->
     <div class="see-all-modal" id="seeAllModal">
-        <div class="see-all-header">
-            <h2 id="seeAllTitle">Category</h2>
-            <button id="seeAllClose"><i class="fas fa-times"></i></button>
-        </div>
+        <div class="see-all-header"><h2 id="seeAllTitle">Category</h2><button id="seeAllClose"><i class="fas fa-times"></i></button></div>
         <div class="see-all-grid" id="seeAllGrid"></div>
     </div>
 
@@ -730,49 +397,49 @@
         </div>
     </div>
 
-    <!-- ═══════════════════════════════════════
-         PREMIUM BOTTOM NAVIGATION BAR
-    ═══════════════════════════════════════ -->
+    <!-- ══════════════════════════════════════
+         BOTTOM NAVIGATION BAR
+    ══════════════════════════════════════ -->
     <nav class="bottom-nav" id="bottomNav" role="navigation" aria-label="Main navigation">
 
         <!-- Home -->
         <a href="index.html" class="bottom-nav-item active" id="bnav-home" aria-label="Home">
             <div class="bnav-dot"></div>
-            <div class="bnav-icon-wrap">
-                <i class="fas fa-house"></i>
-            </div>
+            <div class="bnav-icon-wrap"><i class="fas fa-house"></i></div>
             <span class="bnav-label">Home</span>
         </a>
 
         <!-- Search -->
         <button class="bottom-nav-item" id="bnav-search" data-action="search" aria-label="Search">
             <div class="bnav-dot"></div>
-            <div class="bnav-icon-wrap">
-                <i class="fas fa-magnifying-glass"></i>
-            </div>
+            <div class="bnav-icon-wrap"><i class="fas fa-magnifying-glass"></i></div>
             <span class="bnav-label">Search</span>
         </button>
 
         <!-- My List -->
         <a href="mylist.html" class="bottom-nav-item" id="bnav-mylist" aria-label="My List">
             <div class="bnav-dot"></div>
-            <div class="bnav-icon-wrap">
-                <i class="fas fa-bookmark"></i>
-            </div>
+            <div class="bnav-icon-wrap"><i class="fas fa-bookmark"></i></div>
             <span class="bnav-label">My List</span>
         </a>
 
-        <!-- Profile -->
+        <!-- Profile — avatar + live presence dot -->
         <a href="login.html" class="bottom-nav-item" id="bnav-profile" aria-label="Profile">
             <div class="bnav-dot"></div>
-            <div class="bnav-icon-wrap" style="width:auto; background:transparent !important;">
-                <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png"
-                    alt="Profile"
-                    class="bnav-avatar"
-                >
+            <div class="bnav-icon-wrap" style="width:auto;background:transparent !important;">
+                <div class="bnav-avatar-wrap">
+                    <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png"
+                        alt="Profile"
+                        class="bnav-avatar"
+                        id="bnavAvatar"
+                    >
+                    <!-- Green = online · Grey = offline · Hidden if not logged in -->
+                    <span class="presence-dot offline" id="presenceDot"></span>
+                </div>
             </div>
-            <span class="bnav-label">Profile</span>
+            <!-- Shows "Active" or "Offline" under the avatar -->
+            <span class="bnav-label presence-label" id="presenceLabel">Profile</span>
         </a>
 
     </nav>
@@ -801,126 +468,187 @@
     var ticking=false;window.addEventListener('scroll',function(){if(!ticking){window.requestAnimationFrame(function(){var h=document.querySelector('.hero-bg');if(h){var s=window.pageYOffset;if(s<window.innerHeight)h.style.transform='translateY('+s*0.3+'px) scale('+(1+s*0.0002)+')';}ticking=false;});ticking=true;}});
     document.addEventListener('DOMContentLoaded',function(){var a=function(){document.querySelectorAll('.card:not(.shine-added)').forEach(function(c){var s=document.createElement('div');s.classList.add('shine');c.appendChild(s);c.classList.add('shine-added');});};setTimeout(a,1000);var m=new MutationObserver(a),mc=document.querySelector('.main-content');if(mc)m.observe(mc,{childList:true,subtree:true});});
     document.addEventListener('keydown',function(e){if(e.key==='Escape'){['searchModal','seeAllModal','detailModal','mobileMenu','overlay'].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove('active');});document.body.style.overflow='';}if(e.key==='/'&&!e.ctrlKey&&!e.metaKey){var a=document.activeElement;if(a.tagName!=='INPUT'&&a.tagName!=='TEXTAREA'){e.preventDefault();var b=document.getElementById('searchBtn');if(b)b.click();}}});
-    console.log('🎬 Streamify Premium UI Loaded!');
     </script>
 
-    <!-- ═══ BOTTOM NAV SCRIPT ═══ -->
-<script>
-(function () {
-    /* ── Active state: mark current page ── */
-    var path = window.location.pathname.split('/').pop() || 'index.html';
-    var map = {
-        'index.html'  : 'bnav-home',
-        ''            : 'bnav-home',
-        'mylist.html' : 'bnav-mylist',
-        'login.html'  : 'bnav-profile',
-        'movies.html' : null,
-        'series.html' : null
-    };
-    var activeId = map[path];
-    if (activeId) {
-        document.querySelectorAll('.bottom-nav-item').forEach(function(el){
-            el.classList.remove('active');
-        });
-        var activeEl = document.getElementById(activeId);
-        if (activeEl) activeEl.classList.add('active');
-    }
+    <!-- ══════════════════════════════════════════════════════════
+         REALTIME PRESENCE SYSTEM
+         Mirrors PresenceManager from the Android app:
+         • On page open   → isActive: true,  lastSeen: now
+         • On page close  → isActive: false, lastSeen: now
+           (using Firebase onDisconnect — fires even on hard close)
+         • Live listener  → updates the badge in the bottom nav
+           in real time as the DB value changes
+    ══════════════════════════════════════════════════════════ -->
+    <script>
+    (function () {
 
-    /* ── Search button opens search modal ── */
-    var bnavSearch = document.getElementById('bnav-search');
-    if (bnavSearch) {
-        bnavSearch.addEventListener('click', function (e) {
-            var searchBtn = document.getElementById('searchBtn');
-            if (searchBtn) {
-                searchBtn.click();
+        var presenceDot   = document.getElementById('presenceDot');
+        var presenceLabel = document.getElementById('presenceLabel');
+        var bnavProfile   = document.getElementById('bnav-profile');
+        var lastSeenRef   = null;   // holds the DB ref so we can detach listener
+
+        /* ── Helpers ── */
+        function setOnline() {
+            presenceDot.className   = 'presence-dot online';
+            presenceLabel.textContent = 'Active';
+            bnavProfile.classList.add('online-now', 'has-user');
+        }
+
+        function setOffline(lastSeen) {
+            presenceDot.className   = 'presence-dot offline';
+            bnavProfile.classList.remove('online-now');
+            bnavProfile.classList.add('has-user');
+            if (lastSeen) {
+                presenceLabel.textContent = formatLastSeen(lastSeen);
             } else {
-                var modal = document.getElementById('searchModal');
-                var input = document.getElementById('searchInput');
-                if (modal) {
-                    modal.classList.add('active');
-                    if (input) setTimeout(function(){ input.focus(); }, 150);
-                }
+                presenceLabel.textContent = 'Offline';
+            }
+        }
+
+        function setNoUser() {
+            presenceDot.className     = 'presence-dot offline';
+            presenceLabel.textContent = 'Profile';
+            bnavProfile.classList.remove('online-now', 'has-user');
+        }
+
+        function formatLastSeen(ts) {
+            var diff = Date.now() - ts;
+            var m    = Math.floor(diff / 60000);
+            var h    = Math.floor(diff / 3600000);
+            var d    = Math.floor(diff / 86400000);
+            if (diff < 60000)  return 'Just now';
+            if (diff < 3600000) return m + 'm ago';
+            if (diff < 86400000) return h + 'h ago';
+            return d + 'd ago';
+        }
+
+        /* ── Firebase Auth state ── */
+        auth.onAuthStateChanged(function (user) {
+
+            /* Detach any previous DB listener */
+            if (lastSeenRef) {
+                lastSeenRef.off();
+                lastSeenRef = null;
             }
 
-            document.querySelectorAll('.bottom-nav-item').forEach(function(el){
-                el.classList.remove('active');
+            if (!user) {
+                setNoUser();
+                return;
+            }
+
+            var userRef = db.ref('Users/' + user.uid);
+
+            /* ── 1. Set ONLINE immediately on page load ── */
+            userRef.update({
+                isActive : true,
+                lastSeen : Date.now()
             });
-            bnavSearch.classList.add('active');
 
-            var closeBtn = document.getElementById('searchClose');
-            if (closeBtn) {
-                closeBtn.addEventListener('click', function(){
-                    bnavSearch.classList.remove('active');
-                    var home = document.getElementById('bnav-home');
-                    if (home && (path === 'index.html' || path === '')) home.classList.add('active');
-                }, { once: true });
-            }
+            /* ── 2. Set OFFLINE automatically when tab closes / network drops
+                    onDisconnect runs on Firebase servers — works even on hard close ── */
+            userRef.onDisconnect().update({
+                isActive : false,
+                lastSeen : Date.now()   // approximate; server will record close time
+            });
+
+            /* ── 3. Real-time listener — reads isActive + lastSeen from DB
+                    and updates the badge live whenever the value changes ── */
+            lastSeenRef = userRef;
+            userRef.on('value', function (snap) {
+                if (!snap.exists()) { setNoUser(); return; }
+
+                var isActive = snap.child('isActive').val();
+                var lastSeen = snap.child('lastSeen').val();
+
+                if (isActive === true) {
+                    setOnline();
+                } else {
+                    setOffline(lastSeen);
+                }
+            });
+
+            /* ── 4. Update lastSeen every 60 seconds while page is open ── */
+            var heartbeat = setInterval(function () {
+                if (auth.currentUser) {
+                    userRef.update({ lastSeen: Date.now() });
+                } else {
+                    clearInterval(heartbeat);
+                }
+            }, 60000);
+
+            /* ── 5. Set OFFLINE on browser unload (backup for onDisconnect) ── */
+            window.addEventListener('beforeunload', function () {
+                userRef.update({
+                    isActive : false,
+                    lastSeen : Date.now()
+                });
+            });
+
         });
-    }
 
-    /* ── Ripple effect on bottom nav tap ── */
-    document.querySelectorAll('.bottom-nav-item').forEach(function (item) {
-        item.addEventListener('click', function (e) {
-            var wrap = item.querySelector('.bnav-icon-wrap');
-            if (!wrap) return;
-            var rip = document.createElement('span');
-            rip.className = 'bnav-ripple';
-            var rect = wrap.getBoundingClientRect();
-            var size = Math.max(rect.width, rect.height);
-            rip.style.cssText = [
-                'width:' + size + 'px',
-                'height:' + size + 'px',
-                'top:' + (e.clientY - rect.top - size / 2) + 'px',
-                'left:' + (e.clientX - rect.left - size / 2) + 'px'
-            ].join(';');
-            wrap.style.position = 'relative';
-            wrap.style.overflow = 'hidden';
-            wrap.appendChild(rip);
-            rip.addEventListener('animationend', function () { rip.remove(); });
+    })();
+    </script>
+
+    <!-- Bottom Nav Script -->
+    <script>
+    (function () {
+        var path     = window.location.pathname.split('/').pop() || 'index.html';
+        var map      = {'index.html':'bnav-home','':'bnav-home','mylist.html':'bnav-mylist','login.html':'bnav-profile'};
+        var activeId = map[path];
+        if (activeId) {
+            document.querySelectorAll('.bottom-nav-item').forEach(function(el){ el.classList.remove('active'); });
+            var activeEl = document.getElementById(activeId);
+            if (activeEl) activeEl.classList.add('active');
+        }
+
+        var bnavSearch = document.getElementById('bnav-search');
+        if (bnavSearch) {
+            bnavSearch.addEventListener('click', function (e) {
+                var searchBtn = document.getElementById('searchBtn');
+                if (searchBtn) { searchBtn.click(); }
+                else {
+                    var modal = document.getElementById('searchModal');
+                    var input = document.getElementById('searchInput');
+                    if (modal) { modal.classList.add('active'); if (input) setTimeout(function(){ input.focus(); }, 150); }
+                }
+                document.querySelectorAll('.bottom-nav-item').forEach(function(el){ el.classList.remove('active'); });
+                bnavSearch.classList.add('active');
+                var closeBtn = document.getElementById('searchClose');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', function(){
+                        bnavSearch.classList.remove('active');
+                        var home = document.getElementById('bnav-home');
+                        if (home && (path==='index.html'||path==='')) home.classList.add('active');
+                    }, { once: true });
+                }
+            });
+        }
+
+        document.querySelectorAll('.bottom-nav-item').forEach(function (item) {
+            item.addEventListener('click', function (e) {
+                var wrap = item.querySelector('.bnav-icon-wrap'); if (!wrap) return;
+                var rip = document.createElement('span'); rip.className = 'bnav-ripple';
+                var rect = wrap.getBoundingClientRect(), size = Math.max(rect.width, rect.height);
+                rip.style.cssText = 'width:'+size+'px;height:'+size+'px;top:'+(e.clientY-rect.top-size/2)+'px;left:'+(e.clientX-rect.left-size/2)+'px';
+                wrap.style.position = 'relative'; wrap.style.overflow = 'hidden';
+                wrap.appendChild(rip); rip.addEventListener('animationend', function(){ rip.remove(); });
+            });
         });
-    });
 
-    /* ── Scroll-aware: hide/show bottom nav ── */
-    var nav = document.getElementById('bottomNav');
-    nav.style.transition = 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease';
-
-    /* Always show nav on page load, regardless of scroll position */
-    nav.style.transform = 'translateY(0)';
-
-    var lastScroll = window.pageYOffset;
-    var scrollEnabled = false;
-
-    /* Delay enabling scroll-hide by 600ms so page-load scroll events don't trigger it */
-    setTimeout(function () {
-        lastScroll = window.pageYOffset;
-        scrollEnabled = true;
-    }, 600);
-
-    window.addEventListener('scroll', function () {
-        if (!scrollEnabled) return;
-
-        var cur = window.pageYOffset;
-
-        /* Never hide if near the top of the page */
-        if (cur <= 80) {
-            nav.style.transform = 'translateY(0)';
+        var nav = document.getElementById('bottomNav');
+        nav.style.transform = 'translateY(0)';
+        var lastScroll = window.pageYOffset, scrollEnabled = false;
+        setTimeout(function(){ lastScroll = window.pageYOffset; scrollEnabled = true; }, 600);
+        window.addEventListener('scroll', function(){
+            if (!scrollEnabled) return;
+            var cur = window.pageYOffset;
+            if (cur <= 80) { nav.style.transform = 'translateY(0)'; lastScroll = cur; return; }
+            if (cur > lastScroll + 6)      nav.style.transform = 'translateY(110%)';
+            else if (cur < lastScroll - 6) nav.style.transform = 'translateY(0)';
             lastScroll = cur;
-            return;
-        }
-
-        if (cur > lastScroll + 6) {
-            /* Scrolling down — hide nav */
-            nav.style.transform = 'translateY(110%)';
-        } else if (cur < lastScroll - 6) {
-            /* Scrolling up — show nav */
-            nav.style.transform = 'translateY(0)';
-        }
-
-        lastScroll = cur;
-    }, { passive: true });
-
-})();
-</script>
+        }, { passive: true });
+    })();
+    </script>
 
 </body>
 </html>
