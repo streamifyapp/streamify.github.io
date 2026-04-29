@@ -128,17 +128,14 @@
         .cw-title { font-size: 12px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
         .cw-meta { font-size: 10px; color: var(--muted); font-weight: 500; }
 
-        /* Arrows */
         .cw-arrow { position: absolute; top: 50%; transform: translateY(-55%); width: 32px; height: 32px; border-radius: 50%; background: rgba(10,10,15,0.92); border: 1px solid var(--border); color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 5; font-size: 12px; transition: background 0.2s, border-color 0.2s; box-shadow: 0 4px 16px rgba(0,0,0,0.5); }
         .cw-arrow:hover { background: var(--red); border-color: var(--red); }
         .cw-arrow.left { left: -13px; }
         .cw-arrow.right { right: -13px; }
 
-        /* Empty */
         .cw-empty { text-align: center; padding: 30px 20px; color: var(--muted); font-size: 13px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; }
         .cw-empty i { font-size: 26px; margin-bottom: 8px; display: block; opacity: 0.3; }
 
-        /* CW skeleton loader */
         .cw-skeleton { flex-shrink: 0; width: 150px; border-radius: 12px; overflow: hidden; background: var(--surface); border: 1px solid var(--border); }
         .cw-skeleton .sk-poster { width: 100%; aspect-ratio: 2/3; background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
         .cw-skeleton .sk-line { height: 10px; margin: 9px 10px 5px; border-radius: 4px; background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
@@ -174,6 +171,23 @@
         .danger-btn { padding: 13px 22px; background: rgba(229,9,20,0.08); border: 1.5px solid rgba(229,9,20,0.25); border-radius: 12px; color: #ff6b6b; font-family: var(--font-body); font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s ease; }
         .danger-btn:hover { background: rgba(229,9,20,0.15); border-color: rgba(229,9,20,0.5); }
         .panel-actions { grid-column: 1 / -1; display: flex; gap: 12px; flex-wrap: wrap; padding-top: 6px; }
+
+        /* ── GUEST STATE ── */
+        #guestState { display: none; position: relative; z-index: 1; padding: 60px 40px; }
+        .guest-card { max-width: 480px; margin: 0 auto; background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 52px 40px; text-align: center; position: relative; overflow: hidden; }
+        .guest-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(229,9,20,0.5), transparent); }
+        .guest-icon-wrap { width: 80px; height: 80px; border-radius: 50%; background: rgba(229,9,20,0.1); border: 1px solid rgba(229,9,20,0.2); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; }
+        .guest-icon-wrap i { font-size: 30px; color: var(--red); }
+        .guest-title { font-family: var(--font-display); font-size: 32px; letter-spacing: 2px; margin-bottom: 12px; }
+        .guest-desc { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 32px; }
+        .guest-perks { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; text-align: left; }
+        .guest-perk { display: flex; align-items: center; gap: 12px; font-size: 13px; color: rgba(255,255,255,0.7); }
+        .guest-perk i { width: 18px; color: var(--red); font-size: 12px; flex-shrink: 0; }
+        .guest-signin-btn { display: block; width: 100%; padding: 15px; background: linear-gradient(135deg, #e50914, #c1000e); border: none; border-radius: 12px; color: #fff; font-family: var(--font-body); font-size: 15px; font-weight: 700; cursor: pointer; text-decoration: none; transition: all 0.25s ease; box-shadow: 0 4px 24px rgba(229,9,20,0.3); margin-bottom: 14px; letter-spacing: 0.3px; }
+        .guest-signin-btn:hover { box-shadow: 0 8px 32px rgba(229,9,20,0.5); transform: translateY(-2px); }
+        .guest-register-link { font-size: 13px; color: var(--muted); }
+        .guest-register-link a { color: var(--red); text-decoration: none; font-weight: 600; }
+        .guest-register-link a:hover { text-decoration: underline; }
 
         /* ── TOAST ── */
         .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px); background: rgba(10,10,12,0.95); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; color: #fff; z-index: 9999; opacity: 0; transition: all 0.35s cubic-bezier(0.16,1,0.3,1); white-space: nowrap; box-shadow: 0 8px 32px rgba(0,0,0,0.6); backdrop-filter: blur(20px); pointer-events: none; }
@@ -226,6 +240,8 @@
             .section-wrap { padding: 28px 20px 0; }
             .edit-panel { grid-template-columns: 1fr; padding: 20px; }
             .edit-panel .full { grid-column: auto; }
+            #guestState { padding: 40px 20px; }
+            .guest-card { padding: 36px 24px; }
         }
         @media (max-width: 480px) {
             .stats-grid { grid-template-columns: 1fr 1fr; }
@@ -262,120 +278,145 @@
     <a href="index.html" class="nav-logo">STREAMIFY</a>
     <div class="nav-actions">
         <a href="index.html" class="nav-icon-btn" title="Home"><i class="fas fa-home"></i></a>
-        <button class="nav-icon-btn" onclick="confirmSignout()" title="Sign out"><i class="fas fa-right-from-bracket"></i></button>
+        <button class="nav-icon-btn" id="navSignoutBtn" onclick="confirmSignout()" title="Sign out" style="display:none;"><i class="fas fa-right-from-bracket"></i></button>
     </div>
 </nav>
 
-<!-- PROFILE HERO -->
-<div class="profile-hero">
-    <div class="avatar-ring">
-        <div class="avatar-placeholder" id="avatarPlaceholder">?</div>
-        <img class="avatar-img" id="avatarImg" src="" alt="Avatar" style="display:none;">
-    </div>
-    <div class="hero-info">
-        <div class="hero-greeting">Your Profile</div>
-        <div class="hero-name" id="profileName">Loading...</div>
-        <div class="hero-email" id="profileEmail">—</div>
-        <div class="hero-badges">
-            <span class="medal-badge medal-bronze" id="medalBadge"><i class="fas fa-medal"></i> Bronze</span>
-            <span class="joined-badge" id="joinedBadge"><i class="fas fa-calendar-alt"></i> Joined —</span>
+<!-- ══════════════════════════════════════
+     GUEST STATE (shown when not logged in)
+══════════════════════════════════════ -->
+<div id="guestState">
+    <div class="guest-card">
+        <div class="guest-icon-wrap">
+            <i class="fas fa-user-circle"></i>
         </div>
+        <div class="guest-title">Your Profile Awaits</div>
+        <div class="guest-desc">Sign in to unlock your personal Streamify experience — track progress, earn rewards, and pick up right where you left off.</div>
+        <div class="guest-perks">
+            <div class="guest-perk"><i class="fas fa-play-circle"></i> Continue watching from any device</div>
+            <div class="guest-perk"><i class="fas fa-trophy"></i> Earn points and climb medal ranks</div>
+            <div class="guest-perk"><i class="fas fa-bookmark"></i> Save titles to your personal watchlist</div>
+            <div class="guest-perk"><i class="fas fa-clock"></i> Track your total watch time</div>
+        </div>
+        <a href="login.html" class="guest-signin-btn"><i class="fas fa-right-to-bracket"></i> &nbsp;Sign In to Your Account</a>
+        <div class="guest-register-link">New here? <a href="register.html">Create a free account</a></div>
     </div>
 </div>
-
-<div class="section-divider"></div>
 
 <!-- ══════════════════════════════════════
-     CONTINUE WATCHING SECTION
+     AUTHENTICATED CONTENT
 ══════════════════════════════════════ -->
-<div class="section-wrap" id="cwSection">
-    <div class="section-head">
-        <div class="section-title"><i class="fas fa-play-circle"></i> Continue Watching</div>
-        <span class="section-count" id="cwCount">0 titles</span>
-    </div>
-    <div class="cw-wrap" id="cwWrap">
-        <!-- Skeleton loaders while fetching -->
-        <div class="cw-row" id="cwRow">
-            <div class="cw-skeleton"><div class="sk-poster"></div><div class="sk-line"></div><div class="sk-line short"></div></div>
-            <div class="cw-skeleton"><div class="sk-poster"></div><div class="sk-line"></div><div class="sk-line short"></div></div>
-            <div class="cw-skeleton"><div class="sk-poster"></div><div class="sk-line"></div><div class="sk-line short"></div></div>
-            <div class="cw-skeleton"><div class="sk-poster"></div><div class="sk-line"></div><div class="sk-line short"></div></div>
+<div id="authContent" style="display:none;">
+
+    <!-- PROFILE HERO -->
+    <div class="profile-hero">
+        <div class="avatar-ring">
+            <div class="avatar-placeholder" id="avatarPlaceholder">?</div>
+            <img class="avatar-img" id="avatarImg" src="" alt="Avatar" style="display:none;">
         </div>
-    </div>
-</div>
-
-<!-- STATS -->
-<div class="stats-grid">
-    <div class="stat-card">
-        <div class="stat-icon"><i class="fas fa-star"></i></div>
-        <div class="stat-value" id="statPoints">0</div>
-        <div class="stat-label">Total Points</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon"><i class="fas fa-bookmark"></i></div>
-        <div class="stat-value" id="statList">0</div>
-        <div class="stat-label">My List</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon"><i class="fas fa-clock"></i></div>
-        <div class="stat-value" id="statTime">0h</div>
-        <div class="stat-label">Watch Time</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon"><i class="fas fa-medal"></i></div>
-        <div class="stat-value" id="statMedal">—</div>
-        <div class="stat-label">Medal Rank</div>
-    </div>
-</div>
-
-<!-- POINTS PROGRESS -->
-<div class="section-wrap">
-    <div class="section-head">
-        <div class="section-title"><i class="fas fa-trophy"></i> Points Progress</div>
-    </div>
-    <div class="points-card">
-        <div class="points-top">
-            <div>
-                <div style="font-size:12px;color:var(--muted);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Current Points</div>
-                <div class="points-current" id="pointsDisplay">0</div>
-            </div>
-            <div class="points-next">
-                <span>Next rank at</span>
-                <strong id="nextRankPts">500</strong>
+        <div class="hero-info">
+            <div class="hero-greeting">Your Profile</div>
+            <div class="hero-name" id="profileName">Loading...</div>
+            <div class="hero-email" id="profileEmail">—</div>
+            <div class="hero-badges">
+                <span class="medal-badge medal-bronze" id="medalBadge"><i class="fas fa-medal"></i> Bronze</span>
+                <span class="joined-badge" id="joinedBadge"><i class="fas fa-calendar-alt"></i> Joined —</span>
             </div>
         </div>
-        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-        <div class="progress-labels">
-            <span id="curMedalLabel">Bronze (0)</span>
-            <span id="nxtMedalLabel">Silver (500)</span>
-        </div>
     </div>
-</div>
 
-<!-- EDIT PROFILE -->
-<div class="section-wrap">
-    <div class="section-head">
-        <div class="section-title"><i class="fas fa-pen"></i> Edit Profile</div>
-    </div>
-    <div class="edit-panel">
-        <div class="field-group">
-            <label>Username</label>
-            <div class="field-wrap"><i class="fas fa-at"></i><input type="text" id="editUsername" placeholder="username" maxlength="20"></div>
+    <div class="section-divider"></div>
+
+    <!-- CONTINUE WATCHING -->
+    <div class="section-wrap" id="cwSection">
+        <div class="section-head">
+            <div class="section-title"><i class="fas fa-play-circle"></i> Continue Watching</div>
+            <span class="section-count" id="cwCount">0 titles</span>
         </div>
-        <div class="field-group">
-            <label>Email</label>
-            <div class="field-wrap"><i class="fas fa-envelope"></i><input type="email" id="editEmail" disabled></div>
-        </div>
-        <div class="panel-actions">
-            <button class="save-btn" onclick="saveProfile()" id="saveBtn">
-                <div class="spin"></div>
-                <span class="btn-text"><i class="fas fa-check"></i> Save Changes</span>
-            </button>
-            <button class="ghost-btn" onclick="sendPasswordReset()"><i class="fas fa-key"></i> Reset Password</button>
-            <button class="danger-btn" onclick="confirmSignout()"><i class="fas fa-right-from-bracket"></i> Sign Out</button>
+        <div class="cw-wrap" id="cwWrap">
+            <div class="cw-row" id="cwRow">
+                <div class="cw-skeleton"><div class="sk-poster"></div><div class="sk-line"></div><div class="sk-line short"></div></div>
+                <div class="cw-skeleton"><div class="sk-poster"></div><div class="sk-line"></div><div class="sk-line short"></div></div>
+                <div class="cw-skeleton"><div class="sk-poster"></div><div class="sk-line"></div><div class="sk-line short"></div></div>
+                <div class="cw-skeleton"><div class="sk-poster"></div><div class="sk-line"></div><div class="sk-line short"></div></div>
+            </div>
         </div>
     </div>
-</div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-star"></i></div>
+            <div class="stat-value" id="statPoints">0</div>
+            <div class="stat-label">Total Points</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-bookmark"></i></div>
+            <div class="stat-value" id="statList">0</div>
+            <div class="stat-label">My List</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+            <div class="stat-value" id="statTime">0h</div>
+            <div class="stat-label">Watch Time</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-medal"></i></div>
+            <div class="stat-value" id="statMedal">—</div>
+            <div class="stat-label">Medal Rank</div>
+        </div>
+    </div>
+
+    <!-- POINTS PROGRESS -->
+    <div class="section-wrap">
+        <div class="section-head">
+            <div class="section-title"><i class="fas fa-trophy"></i> Points Progress</div>
+        </div>
+        <div class="points-card">
+            <div class="points-top">
+                <div>
+                    <div style="font-size:12px;color:var(--muted);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Current Points</div>
+                    <div class="points-current" id="pointsDisplay">0</div>
+                </div>
+                <div class="points-next">
+                    <span>Next rank at</span>
+                    <strong id="nextRankPts">500</strong>
+                </div>
+            </div>
+            <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+            <div class="progress-labels">
+                <span id="curMedalLabel">Bronze (0)</span>
+                <span id="nxtMedalLabel">Silver (500)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT PROFILE -->
+    <div class="section-wrap">
+        <div class="section-head">
+            <div class="section-title"><i class="fas fa-pen"></i> Edit Profile</div>
+        </div>
+        <div class="edit-panel">
+            <div class="field-group">
+                <label>Username</label>
+                <div class="field-wrap"><i class="fas fa-at"></i><input type="text" id="editUsername" placeholder="username" maxlength="20"></div>
+            </div>
+            <div class="field-group">
+                <label>Email</label>
+                <div class="field-wrap"><i class="fas fa-envelope"></i><input type="email" id="editEmail" disabled></div>
+            </div>
+            <div class="panel-actions">
+                <button class="save-btn" onclick="saveProfile()" id="saveBtn">
+                    <div class="spin"></div>
+                    <span class="btn-text"><i class="fas fa-check"></i> Save Changes</span>
+                </button>
+                <button class="ghost-btn" onclick="sendPasswordReset()"><i class="fas fa-key"></i> Reset Password</button>
+                <button class="danger-btn" onclick="confirmSignout()"><i class="fas fa-right-from-bracket"></i> Sign Out</button>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /authContent -->
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav" id="bottomNav">
@@ -409,7 +450,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// ── Firebase Init ──
 const firebaseConfig = {
     apiKey: "AIzaSyBGE29YUks6sp4jZS4MzE2JIMF-RMLwVLg",
     authDomain: "moddy-store.firebaseapp.com",
@@ -426,7 +466,6 @@ const database = firebase.database();
 
 const TMDB_IMG = 'https://image.tmdb.org/t/p/w300';
 
-// ── Toast ──
 function showToast(msg, type = 'success') {
     const t = document.getElementById('toast');
     const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
@@ -437,7 +476,6 @@ function showToast(msg, type = 'success') {
     setTimeout(() => t.classList.remove('show'), 3200);
 }
 
-// ── Medal logic ──
 function getMedalFromPoints(pts) {
     if (pts >= 2000) return { name: 'Gold',   cls: 'medal-gold',   next: null,     nextPts: 2000, cur: 2000 };
     if (pts >= 500)  return { name: 'Silver', cls: 'medal-silver', next: 'Gold',   nextPts: 2000, cur: 500  };
@@ -467,44 +505,23 @@ function timeAgo(ts) {
     return `${Math.floor(h / 24)}d ago`;
 }
 
-// ══════════════════════════════════════
-//  CONTINUE WATCHING
-// ══════════════════════════════════════
-let _cwUid = null; // store uid for remove function
+let _cwUid = null;
 
 async function loadContinueWatching(uid) {
     _cwUid = uid;
     const row = document.getElementById('cwRow');
-
     try {
         const snap = await database.ref('ContinueWatching/' + uid).once('value');
         const data = snap.val();
-
-        if (!data) {
-            renderCWEmpty();
-            return;
-        }
-
-        // Convert object to array and sort by timestamp desc (most recent first)
+        if (!data) { renderCWEmpty(); return; }
         const items = Object.entries(data)
             .map(([key, val]) => ({ key, ...val }))
             .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-
         if (items.length === 0) { renderCWEmpty(); return; }
-
-        // Update count badge
         document.getElementById('cwCount').textContent = `${items.length} title${items.length !== 1 ? 's' : ''}`;
-
-        // Build cards
         row.innerHTML = '';
-        items.forEach(item => {
-            const card = buildCWCard(item);
-            row.appendChild(card);
-        });
-
-        // Add scroll arrows if overflow
+        items.forEach(item => row.appendChild(buildCWCard(item)));
         setupCWArrows();
-
     } catch (e) {
         console.error('CW load error:', e);
         renderCWEmpty();
@@ -515,26 +532,17 @@ function buildCWCard(item) {
     const isMovie = item.isMovie;
     const title   = item.title || 'Unknown';
     const poster  = item.posterPath && item.posterPath !== 'null' ? TMDB_IMG + item.posterPath : null;
-
-    // Build watch URL
     let watchUrl;
     if (isMovie) {
         watchUrl = `https://streamify.website/watch?id=${item.id}&type=movie`;
     } else {
-        const season  = item.season  || 1;
-        const episode = item.episode || 1;
+        const season = item.season || 1, episode = item.episode || 1;
         watchUrl = `https://streamify.website/watch?type=tv&id=${item.id}&season=${season}&episode=${episode}`;
     }
-
     const card = document.createElement('a');
-    card.href       = watchUrl;
-    card.className  = 'cw-card';
-    card.target     = '_self';
-
-    const metaText = isMovie
-        ? timeAgo(item.timestamp)
-        : `S${item.season || 1}E${item.episode || 1} · ${timeAgo(item.timestamp)}`;
-
+    card.href = watchUrl;
+    card.className = 'cw-card';
+    const metaText = isMovie ? timeAgo(item.timestamp) : `S${item.season || 1}E${item.episode || 1} · ${timeAgo(item.timestamp)}`;
     card.innerHTML = `
         <div class="cw-poster-wrap">
             ${poster
@@ -544,48 +552,32 @@ function buildCWCard(item) {
             }
             <div class="cw-overlay"><div class="cw-play"><i class="fas fa-play"></i></div></div>
             <span class="cw-badge">${isMovie ? 'Movie' : 'Series'}</span>
-            <button class="cw-remove-btn" title="Remove" onclick="removeCWItem(event, '${item.key}', this)">
-                <i class="fas fa-times"></i>
-            </button>
+            <button class="cw-remove-btn" title="Remove" onclick="removeCWItem(event, '${item.key}', this)"><i class="fas fa-times"></i></button>
         </div>
         <div class="cw-info">
             <div class="cw-title">${title}</div>
             <div class="cw-meta">${metaText}</div>
-        </div>
-    `;
-
+        </div>`;
     return card;
 }
 
 function renderCWEmpty() {
     const row = document.getElementById('cwRow');
     document.getElementById('cwCount').textContent = '0 titles';
-    row.innerHTML = `
-        <div class="cw-empty" style="width:100%;">
-            <i class="fas fa-play-circle"></i>
-            <div>Nothing here yet</div>
-            <div style="margin-top:4px;font-size:12px;">Start watching movies or shows and they'll appear here</div>
-        </div>
-    `;
+    row.innerHTML = `<div class="cw-empty" style="width:100%;"><i class="fas fa-play-circle"></i><div>Nothing here yet</div><div style="margin-top:4px;font-size:12px;">Start watching movies or shows and they'll appear here</div></div>`;
 }
 
 async function removeCWItem(e, key, btn) {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault(); e.stopPropagation();
     if (!_cwUid) return;
-
-    // Animate card out
     const card = btn.closest('.cw-card');
     if (card) { card.style.opacity = '0'; card.style.transform = 'scale(0.85)'; card.style.transition = '0.25s'; }
-
     try {
         await database.ref('ContinueWatching/' + _cwUid + '/' + key).remove();
         setTimeout(() => {
             if (card) card.remove();
-            // Check if row is now empty
             const row = document.getElementById('cwRow');
             if (!row.querySelector('.cw-card')) renderCWEmpty();
-            // Update count
             const remaining = row.querySelectorAll('.cw-card').length;
             document.getElementById('cwCount').textContent = `${remaining} title${remaining !== 1 ? 's' : ''}`;
         }, 260);
@@ -598,27 +590,20 @@ async function removeCWItem(e, key, btn) {
 function setupCWArrows() {
     const wrap = document.getElementById('cwWrap');
     const row  = document.getElementById('cwRow');
-
-    // Remove old arrows
     wrap.querySelectorAll('.cw-arrow').forEach(a => a.remove());
-
     if (row.scrollWidth <= row.clientWidth) return;
-
     const leftArr = document.createElement('button');
     leftArr.className = 'cw-arrow left';
     leftArr.innerHTML = '<i class="fas fa-chevron-left"></i>';
     leftArr.onclick = () => row.scrollBy({ left: -320, behavior: 'smooth' });
-
     const rightArr = document.createElement('button');
     rightArr.className = 'cw-arrow right';
     rightArr.innerHTML = '<i class="fas fa-chevron-right"></i>';
     rightArr.onclick = () => row.scrollBy({ left: 320, behavior: 'smooth' });
-
     wrap.appendChild(leftArr);
     wrap.appendChild(rightArr);
 }
 
-// ── Render user data ──
 function renderUser(userData, authUser) {
     const name   = userData.displayName || userData.username || authUser.displayName || 'User';
     const email  = authUser.email || '';
@@ -664,15 +649,25 @@ function renderUser(userData, authUser) {
     document.getElementById('editEmail').value    = email;
 }
 
-// ── Auth state ──
+// ── Auth state — show guest UI instead of redirecting ──
 auth.onAuthStateChanged(async user => {
-    if (!user) { window.location.href = 'login.html'; return; }
+    if (!user) {
+        // Not logged in — show guest state, hide authenticated content
+        document.getElementById('guestState').style.display = 'block';
+        document.getElementById('authContent').style.display = 'none';
+        document.getElementById('pageLoader').classList.add('gone');
+        return;
+    }
+
+    // Logged in — show authenticated content
+    document.getElementById('guestState').style.display = 'none';
+    document.getElementById('authContent').style.display = 'block';
+    document.getElementById('navSignoutBtn').style.display = 'flex';
 
     try {
         const snap = await database.ref('Users/' + user.uid).once('value');
         const data = snap.val() || {};
         renderUser(data, user);
-        // Load Continue Watching
         await loadContinueWatching(user.uid);
     } catch (e) {
         console.error(e);
@@ -683,11 +678,10 @@ auth.onAuthStateChanged(async user => {
     setTimeout(() => document.getElementById('pageLoader').classList.add('gone'), 600);
 });
 
-// ── Save profile ──
 async function saveProfile() {
-    const user     = auth.currentUser;
+    const user = auth.currentUser;
     if (!user) return;
-    const btn      = document.getElementById('saveBtn');
+    const btn = document.getElementById('saveBtn');
     const username = document.getElementById('editUsername').value.trim().toLowerCase();
     if (!username) { showToast('Username cannot be empty.', 'error'); return; }
     if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) { showToast('Username: 3-20 chars, letters/numbers/underscores only.', 'error'); return; }
@@ -709,7 +703,6 @@ async function saveProfile() {
     btn.classList.remove('loading'); btn.disabled = false;
 }
 
-// ── Reset password ──
 async function sendPasswordReset() {
     const user = auth.currentUser;
     if (!user || !user.email) { showToast('No email on account.', 'error'); return; }
@@ -717,7 +710,6 @@ async function sendPasswordReset() {
     catch (e) { showToast('Failed to send reset email.', 'error'); }
 }
 
-// ── Sign out ──
 function confirmSignout() { document.getElementById('signoutModal').classList.add('open'); }
 function closeSignout()   { document.getElementById('signoutModal').classList.remove('open'); }
 async function doSignout() {
@@ -727,7 +719,6 @@ async function doSignout() {
     window.location.href = 'login.html';
 }
 
-// ── Bottom nav scroll hide/show ──
 (function(){
     var nav = document.getElementById('bottomNav');
     nav.style.transform = 'translateY(0)';
