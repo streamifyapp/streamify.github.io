@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Watch - Streamify</title>
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-3GTEG9YQHV"></script>
     <script>
@@ -13,11 +14,133 @@
       gtag('config', 'G-3GTEG9YQHV');
     </script>
 
+    <!-- ✅ Firebase SDKs — must be first so presence fires immediately -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
+
+    <!-- Firebase Config — inline so presence fires immediately -->
+    <script>
+        const firebaseConfig = {
+            apiKey:            "AIzaSyBGE29YUks6sp4jZS4MzE2JIMF-RMLwVLg",
+            authDomain:        "moddy-store.firebaseapp.com",
+            databaseURL:       "https://moddy-store-default-rtdb.firebaseio.com",
+            projectId:         "moddy-store",
+            storageBucket:     "moddy-store.appspot.com",
+            messagingSenderId: "37854973622",
+            appId:             "1:37854973622:web:8f927e0a1d267d099ca017"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db   = firebase.database();
+    </script>
+
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/watch.css">
     <link rel="stylesheet" href="css/ads.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        /* ══════════════════════════════════════
+           PRESENCE BADGE — avatar dot
+        ══════════════════════════════════════ */
+        .bnav-avatar-wrap {
+            position: relative;
+            width: auto;
+            display: inline-flex;
+        }
+        .presence-dot {
+            position: absolute;
+            bottom: 0px;
+            right: -1px;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            border: 2px solid #0a0a0f;
+            background: #555;
+            transition: background 0.4s ease;
+            z-index: 2;
+        }
+        .presence-dot.online  { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.8); }
+        .presence-dot.offline { background: #555; box-shadow: none; }
+
+        /* Pulse ring only when online */
+        .presence-dot.online::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            border: 2px solid rgba(34,197,94,0.5);
+            animation: presencePulse 2s ease-out infinite;
+        }
+        @keyframes presencePulse {
+            0%   { transform: scale(1);   opacity: 0.8; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+
+        /* ══════════════════════════════════════
+           BOTTOM NAV (same as index.html)
+        ══════════════════════════════════════ */
+        body { padding-bottom: 80px; }
+
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 9000;
+            height: 70px; display: flex; align-items: stretch;
+            background: rgba(10,10,15,0.82);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-top: 1px solid rgba(255,255,255,0.07);
+            box-shadow: 0 -4px 30px rgba(0,0,0,0.6), 0 -1px 0 rgba(229,9,20,0.15) inset;
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            transition: transform 0.35s ease;
+        }
+        .bottom-nav::before {
+            content: '';
+            position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(229,9,20,0.5) 30%, rgba(255,107,107,0.6) 50%, rgba(229,9,20,0.5) 70%, transparent);
+            filter: blur(0.5px);
+        }
+        .bottom-nav-item {
+            flex: 1; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; gap: 5px; text-decoration: none;
+            color: rgba(255,255,255,0.45); font-size: 10px; font-weight: 600;
+            letter-spacing: 0.5px; text-transform: uppercase;
+            cursor: pointer; background: none; border: none; padding: 0;
+            transition: color 0.25s ease; position: relative;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .bottom-nav-item:hover  { color: rgba(255,255,255,0.75); }
+        .bottom-nav-item.active { color: #fff; }
+
+        .bnav-icon-wrap {
+            position: relative; width: 44px; height: 30px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 14px; transition: background 0.3s ease, transform 0.2s ease;
+        }
+        .bottom-nav-item.active .bnav-icon-wrap { background: rgba(229,9,20,0.18); transform: translateY(-1px); }
+        .bottom-nav-item:active .bnav-icon-wrap { transform: scale(0.88) translateY(-1px); }
+        .bnav-icon-wrap i { font-size: 18px; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), color 0.25s ease; }
+        .bottom-nav-item.active .bnav-icon-wrap i { color: #e50914; filter: drop-shadow(0 0 8px rgba(229,9,20,0.7)); transform: scale(1.15); }
+
+        .bnav-label { font-family: 'Inter', sans-serif; font-size: 9.5px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; transition: color 0.25s ease, opacity 0.25s ease; opacity: 0.7; }
+        .bottom-nav-item.active .bnav-label { opacity: 1; color: #fff; }
+
+        .bnav-dot { position: absolute; top: -8px; left: 50%; transform: translateX(-50%) scaleX(0); width: 20px; height: 3px; border-radius: 0 0 3px 3px; background: linear-gradient(90deg, #e50914, #ff6b6b); box-shadow: 0 2px 8px rgba(229,9,20,0.6); transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+        .bottom-nav-item.active .bnav-dot { transform: translateX(-50%) scaleX(1); }
+
+        .bnav-avatar { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.2); transition: border-color 0.25s ease, transform 0.25s ease; }
+        .bottom-nav-item.active .bnav-avatar { border-color: #e50914; box-shadow: 0 0 10px rgba(229,9,20,0.5); transform: scale(1.08) translateY(-1px); }
+
+        .bnav-ripple { position: absolute; border-radius: 50%; background: rgba(229,9,20,0.25); transform: scale(0); animation: bnavRipple 0.5s ease-out forwards; pointer-events: none; }
+        @keyframes bnavRipple { to { transform: scale(3.5); opacity: 0; } }
+
+        /* Presence label under avatar */
+        #bnav-profile .presence-label { font-size: 8px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-top: -2px; transition: color 0.3s; display: none; }
+        #bnav-profile.has-user  .presence-label { display: block; }
+        #bnav-profile.online-now .presence-label { color: #22c55e; }
+    </style>
 </head>
 <body class="watch-body">
 
@@ -66,12 +189,7 @@
             <div class="episodes-grid" id="episodesGrid"></div>
         </div>
 
-        <!--
-            ACTION BUTTONS
-            JS in initWatchPage() repositions this block:
-              MOVIE  → moved to after .watch-desc  (below description)
-              SERIES → moved to after #episodeSelector (below episodes, above description)
-        -->
+        <!-- Action Buttons -->
         <div class="watch-actions" id="watchActions">
             <button class="action-btn" id="listBtn">
                 <i class="fas fa-plus"></i>
@@ -104,15 +222,205 @@
 
     </div>
 
-    <!-- ✅ Firebase SDKs MUST load before firebase-config.js and watch.js -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    <script src="firebase-config.js"></script>
+    <!-- ══════════════════════════════════════
+         BOTTOM NAVIGATION BAR
+    ══════════════════════════════════════ -->
+    <nav class="bottom-nav" id="bottomNav" role="navigation" aria-label="Main navigation">
 
+        <!-- Home -->
+        <a href="index.html" class="bottom-nav-item" id="bnav-home" aria-label="Home">
+            <div class="bnav-dot"></div>
+            <div class="bnav-icon-wrap"><i class="fas fa-house"></i></div>
+            <span class="bnav-label">Home</span>
+        </a>
+
+        <!-- Search -->
+        <a href="index.html#search" class="bottom-nav-item" id="bnav-search" aria-label="Search">
+            <div class="bnav-dot"></div>
+            <div class="bnav-icon-wrap"><i class="fas fa-magnifying-glass"></i></div>
+            <span class="bnav-label">Search</span>
+        </a>
+
+        <!-- My List -->
+        <a href="mylist.html" class="bottom-nav-item" id="bnav-mylist" aria-label="My List">
+            <div class="bnav-dot"></div>
+            <div class="bnav-icon-wrap"><i class="fas fa-bookmark"></i></div>
+            <span class="bnav-label">My List</span>
+        </a>
+
+        <!-- Profile — avatar + live presence dot -->
+        <a href="profile.html" class="bottom-nav-item" id="bnav-profile" aria-label="Profile">
+            <div class="bnav-dot"></div>
+            <div class="bnav-icon-wrap" style="width:auto;background:transparent !important;">
+                <div class="bnav-avatar-wrap">
+                    <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png"
+                        alt="Profile"
+                        class="bnav-avatar"
+                        id="bnavAvatar"
+                    >
+                    <span class="presence-dot offline" id="presenceDot"></span>
+                </div>
+            </div>
+            <span class="bnav-label presence-label" id="presenceLabel">Profile</span>
+        </a>
+
+    </nav>
+
+    <!-- App JS -->
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/watch.js"></script>
+
+    <!-- ══════════════════════════════════════════════════════════
+         REALTIME PRESENCE SYSTEM
+         • On page open   → isActive: true,  lastSeen: now
+         • On page close  → isActive: false, lastSeen: now
+           (onDisconnect fires even on hard/tab close)
+         • Live listener  → updates the badge in the bottom nav
+    ══════════════════════════════════════════════════════════ -->
+    <script>
+    (function () {
+
+        var presenceDot   = document.getElementById('presenceDot');
+        var presenceLabel = document.getElementById('presenceLabel');
+        var bnavProfile   = document.getElementById('bnav-profile');
+        var lastSeenRef   = null;
+
+        /* ── Helpers ── */
+        function setOnline() {
+            presenceDot.className     = 'presence-dot online';
+            presenceLabel.textContent = 'Active';
+            bnavProfile.classList.add('online-now', 'has-user');
+        }
+
+        function setOffline(lastSeen) {
+            presenceDot.className = 'presence-dot offline';
+            bnavProfile.classList.remove('online-now');
+            bnavProfile.classList.add('has-user');
+            presenceLabel.textContent = lastSeen ? formatLastSeen(lastSeen) : 'Offline';
+        }
+
+        function setNoUser() {
+            presenceDot.className     = 'presence-dot offline';
+            presenceLabel.textContent = 'Profile';
+            bnavProfile.classList.remove('online-now', 'has-user');
+        }
+
+        function formatLastSeen(ts) {
+            var diff = Date.now() - ts;
+            var m = Math.floor(diff / 60000);
+            var h = Math.floor(diff / 3600000);
+            var d = Math.floor(diff / 86400000);
+            if (diff < 60000)   return 'Just now';
+            if (diff < 3600000) return m + 'm ago';
+            if (diff < 86400000) return h + 'h ago';
+            return d + 'd ago';
+        }
+
+        /* ── Firebase Auth state ── */
+        auth.onAuthStateChanged(function (user) {
+
+            /* Detach any previous DB listener */
+            if (lastSeenRef) {
+                lastSeenRef.off();
+                lastSeenRef = null;
+            }
+
+            if (!user) {
+                setNoUser();
+                return;
+            }
+
+            var userRef = db.ref('Users/' + user.uid);
+
+            /* 1. Mark ONLINE immediately */
+            userRef.update({
+                isActive : true,
+                lastSeen : Date.now()
+            });
+
+            /* 2. onDisconnect — runs server-side even on hard close */
+            userRef.onDisconnect().update({
+                isActive : false,
+                lastSeen : Date.now()
+            });
+
+            /* 3. Real-time listener → update badge live */
+            lastSeenRef = userRef;
+            userRef.on('value', function (snap) {
+                if (!snap.exists()) { setNoUser(); return; }
+                var isActive = snap.child('isActive').val();
+                var lastSeen = snap.child('lastSeen').val();
+                if (isActive === true) {
+                    setOnline();
+                } else {
+                    setOffline(lastSeen);
+                }
+            });
+
+            /* 4. Heartbeat — keep lastSeen fresh every 60 s */
+            var heartbeat = setInterval(function () {
+                if (auth.currentUser) {
+                    userRef.update({ lastSeen: Date.now() });
+                } else {
+                    clearInterval(heartbeat);
+                }
+            }, 60000);
+
+            /* 5. beforeunload backup (complement to onDisconnect) */
+            window.addEventListener('beforeunload', function () {
+                userRef.update({
+                    isActive : false,
+                    lastSeen : Date.now()
+                });
+            });
+
+        });
+
+    })();
+    </script>
+
+    <!-- Bottom Nav active-state + ripple + hide-on-scroll -->
+    <script>
+    (function () {
+        var path     = window.location.pathname.split('/').pop() || 'index.html';
+        var map      = { 'index.html': 'bnav-home', '': 'bnav-home', 'mylist.html': 'bnav-mylist', 'profile.html': 'bnav-profile', 'watch.html': 'bnav-home' };
+        var activeId = map[path];
+        if (activeId) {
+            document.querySelectorAll('.bottom-nav-item').forEach(function (el) { el.classList.remove('active'); });
+            var activeEl = document.getElementById(activeId);
+            if (activeEl) activeEl.classList.add('active');
+        }
+
+        /* Ripple on tap */
+        document.querySelectorAll('.bottom-nav-item').forEach(function (item) {
+            item.addEventListener('click', function (e) {
+                var wrap = item.querySelector('.bnav-icon-wrap'); if (!wrap) return;
+                var rip  = document.createElement('span'); rip.className = 'bnav-ripple';
+                var rect = wrap.getBoundingClientRect(), size = Math.max(rect.width, rect.height);
+                rip.style.cssText = 'width:' + size + 'px;height:' + size + 'px;top:' + (e.clientY - rect.top - size / 2) + 'px;left:' + (e.clientX - rect.left - size / 2) + 'px';
+                wrap.style.position = 'relative'; wrap.style.overflow = 'hidden';
+                wrap.appendChild(rip);
+                rip.addEventListener('animationend', function () { rip.remove(); });
+            });
+        });
+
+        /* Hide-on-scroll */
+        var nav        = document.getElementById('bottomNav');
+        var lastScroll = window.pageYOffset;
+        var scrollReady = false;
+        setTimeout(function () { lastScroll = window.pageYOffset; scrollReady = true; }, 600);
+        window.addEventListener('scroll', function () {
+            if (!scrollReady) return;
+            var cur = window.pageYOffset;
+            if (cur <= 80)               { nav.style.transform = 'translateY(0)'; lastScroll = cur; return; }
+            if (cur > lastScroll + 6)    { nav.style.transform = 'translateY(110%)'; }
+            else if (cur < lastScroll - 6) { nav.style.transform = 'translateY(0)'; }
+            lastScroll = cur;
+        }, { passive: true });
+    })();
+    </script>
 
 </body>
 </html>
