@@ -8,7 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
 
-    <!-- Firebase Config -->
+    <!-- Firebase Config — inline so presence fires immediately -->
     <script>
         const firebaseConfig = {
             apiKey:            "AIzaSyBGE29YUks6sp4jZS4MzE2JIMF-RMLwVLg",
@@ -47,7 +47,7 @@
         @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
         @keyframes glowPulse { 0%,100%{box-shadow:0 0 20px rgba(229,9,20,0.3)} 50%{box-shadow:0 0 40px rgba(229,9,20,0.6)} }
         @keyframes textGradient { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-        .btn-play,.btn-info{position:relative;overflow:hidden}
+        .btn-play,.btn-info,.popup-btn{position:relative;overflow:hidden}
         .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,0.4);transform:scale(0);animation:ripple 0.6s linear;pointer-events:none}
         @keyframes ripple{to{transform:scale(4);opacity:0}}
         body{animation:pageLoad 0.8s ease-out}
@@ -55,6 +55,14 @@
         .card{position:relative;overflow:hidden}
         .card .shine{position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);transition:0.5s;z-index:4;pointer-events:none}
         .card:hover .shine{left:100%}
+        .popup-dont-ask{display:flex;align-items:center;justify-content:center;gap:12px;margin:18px 0 8px 0;cursor:pointer;user-select:none}
+        .popup-dont-ask input[type="checkbox"]{display:none}
+        .popup-dont-ask .custom-checkbox{width:22px;height:22px;border:2px solid rgba(255,255,255,0.3);border-radius:6px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.3s cubic-bezier(0.4,0,0.2,1)}
+        .popup-dont-ask input[type="checkbox"]:checked+.custom-checkbox{background:linear-gradient(135deg,#e50914 0%,#b20710 100%);border-color:#e50914;box-shadow:0 0 15px rgba(229,9,20,0.4)}
+        .popup-dont-ask input[type="checkbox"]:checked+.custom-checkbox::after{content:'';display:block;width:6px;height:10px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translate(-1px,-1px)}
+        .popup-dont-ask .checkbox-label{font-size:14px;color:rgba(255,255,255,0.6);transition:color 0.3s}
+        .popup-dont-ask:hover .checkbox-label{color:#fff}
+        .popup-dont-ask:hover .custom-checkbox{border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.1)}
         .page-loader{position:fixed;inset:0;background:#0a0a0f;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;transition:opacity 0.5s,visibility 0.5s}
         .page-loader.hidden{opacity:0;visibility:hidden}
         .loader-logo{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:4px;background:linear-gradient(135deg,#e50914 0%,#ff6b6b 50%,#e50914 100%);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:gradientShift 2s ease infinite}
@@ -83,39 +91,6 @@
         body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;padding-bottom:80px}
 
         /* ══════════════════════════════════════
-           HORIZONTAL SCROLL FIX
-           Prevents vertical page scroll from
-           competing with horizontal row scroll
-        ══════════════════════════════════════ */
-        .row-wrapper {
-            position: relative;
-            /* isolate stacking context */
-        }
-
-        .content-row {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            overflow-y: hidden;         /* hide any accidental vertical bleed */
-            -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            /* key: allow horizontal pan to take over on touch */
-            overscroll-behavior-x: contain;
-            overscroll-behavior-y: none;
-            /* stop touch events from bubbling to page scroll during horiz swipe */
-            touch-action: pan-x;
-            padding-bottom: 4px;        /* small gap so cards don't clip shadow */
-            will-change: scroll-position;
-        }
-        .content-row::-webkit-scrollbar { display: none; }
-
-        /* cards must not shrink */
-        .content-row .card,
-        .content-row > * { flex-shrink: 0; }
-
-        /* ══════════════════════════════════════
            BOTTOM NAV
         ══════════════════════════════════════ */
         .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:9000;height:70px;display:flex;align-items:stretch;background:rgba(10,10,15,0.82);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-top:1px solid rgba(255,255,255,0.07);box-shadow:0 -4px 30px rgba(0,0,0,0.6),0 -1px 0 rgba(229,9,20,0.15) inset;padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -137,20 +112,60 @@
         .bnav-ripple{position:absolute;border-radius:50%;background:rgba(229,9,20,0.25);transform:scale(0);animation:bnavRipple 0.5s ease-out forwards;pointer-events:none}
         @keyframes bnavRipple{to{transform:scale(3.5);opacity:0}}
         @media(min-width:1024px){body{padding-bottom:80px}}
+        .bottom-nav-item[data-action="search"]{cursor:pointer}
 
         /* ══════════════════════════════════════
-           PRESENCE BADGE
+           PRESENCE BADGE on profile avatar
+           Green dot  = isActive: true
+           Grey dot   = isActive: false
         ══════════════════════════════════════ */
-        .bnav-avatar-wrap{position:relative;width:auto;display:inline-flex}
-        .presence-dot{position:absolute;bottom:0;right:-1px;width:9px;height:9px;border-radius:50%;border:2px solid #0a0a0f;background:#555;transition:background 0.4s ease;z-index:2}
-        .presence-dot.online{background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,0.8)}
-        .presence-dot.offline{background:#555;box-shadow:none}
-        .presence-dot.online::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:2px solid rgba(34,197,94,0.5);animation:presencePulse 2s ease-out infinite}
-        @keyframes presencePulse{0%{transform:scale(1);opacity:0.8}100%{transform:scale(2.2);opacity:0}}
-        #bnav-profile .presence-label{font-size:8px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:-2px;transition:color 0.3s}
-        #bnav-profile.has-user .presence-label{display:block}
-        #bnav-profile .presence-label{display:none}
-        #bnav-profile.online-now .presence-label{color:#22c55e}
+        .bnav-avatar-wrap {
+            position: relative;
+            width: auto;
+            display: inline-flex;
+        }
+        .presence-dot {
+            position: absolute;
+            bottom: 0px;
+            right: -1px;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            border: 2px solid #0a0a0f;
+            background: #555;                     /* default: offline/grey */
+            transition: background 0.4s ease;
+            z-index: 2;
+        }
+        .presence-dot.online  { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.8); }
+        .presence-dot.offline { background: #555; box-shadow: none; }
+
+        /* Pulse ring only when online */
+        .presence-dot.online::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            border: 2px solid rgba(34,197,94,0.5);
+            animation: presencePulse 2s ease-out infinite;
+        }
+        @keyframes presencePulse {
+            0%   { transform: scale(1);   opacity: 0.8; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+
+        /* Small "Active / Last seen" tooltip on the profile nav item */
+        #bnav-profile .presence-label {
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+            margin-top: -2px;
+            transition: color 0.3s;
+        }
+        #bnav-profile.has-user .presence-label { display: block; }
+        #bnav-profile .presence-label { display: none; }
+        #bnav-profile.online-now .presence-label { color: #22c55e; }
     </style>
 </head>
 <body>
@@ -169,6 +184,26 @@
         <div class="particle"></div>
     </div>
 
+    <!-- Welcome Popup -->
+    <div class="welcome-popup" id="welcomePopup">
+        <div class="popup-box">
+            <div class="popup-icon"><i class="fas fa-bookmark"></i></div>
+            <h2>Welcome to Streamify!</h2>
+            <p>To ensure you never lose access to unlimited free movies and TV shows, please <strong>bookmark this website</strong> now.</p>
+            <div class="popup-instructions">
+                <div class="instruction-item"><i class="fab fa-windows"></i><span><strong>Windows:</strong> Press <kbd>Ctrl + D</kbd></span></div>
+                <div class="instruction-item"><i class="fab fa-apple"></i><span><strong>Mac:</strong> Press <kbd>Cmd + D</kbd></span></div>
+                <div class="instruction-item"><i class="fab fa-android"></i><span><strong>Android:</strong> Tap <i class="fas fa-ellipsis-v"></i> menu, then ⭐ Add to bookmarks</span></div>
+            </div>
+            <label class="popup-dont-ask" id="dontAskLabel">
+                <input type="checkbox" id="dontAskCheckbox">
+                <span class="custom-checkbox"></span>
+                <span class="checkbox-label">Don't show this again</span>
+            </label>
+            <button class="popup-btn" id="popupClose"><i class="fas fa-check"></i> Got it, Thanks!</button>
+        </div>
+    </div>
+
     <!-- Navbar -->
     <nav class="navbar" id="navbar">
         <div class="nav-left">
@@ -181,6 +216,9 @@
             </ul>
         </div>
         <div class="nav-right">
+            <a href="https://streamifyapp.github.io/" target="_blank" class="download-btn" data-tooltip="Download Android App">
+                <i class="fab fa-android"></i><span>Get App</span>
+            </a>
             <button class="nav-btn" id="searchBtn" data-tooltip="Search"><i class="fas fa-search"></i></button>
             <button class="nav-btn menu-toggle" id="menuBtn" data-tooltip="Menu"><i class="fas fa-bars"></i></button>
             <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" alt="Profile" class="profile-img" data-tooltip="Profile">
@@ -198,6 +236,8 @@
             <li><a href="movies.html"><i class="fas fa-film"></i> Movies</a></li>
             <li><a href="series.html"><i class="fas fa-tv"></i> TV Shows</a></li>
             <li><a href="mylist.html"><i class="fas fa-bookmark"></i> My List</a></li>
+            <li class="menu-divider"></li>
+            <li><a href="https://streamifyapp.github.io/" target="_blank" class="download-link"><i class="fab fa-android"></i> Download App</a></li>
         </ul>
     </div>
     <div class="overlay" id="overlay"></div>
@@ -324,6 +364,7 @@
 
     <footer class="footer">
         <div class="footer-logo">STREAMIFY</div>
+        <a href="https://streamifyapp.github.io/" target="_blank" class="footer-download"><i class="fab fa-android"></i> Download Streamify for Android</a>
         <p>© 2025 Streamify. All rights reserved.</p>
     </footer>
 
@@ -356,7 +397,9 @@
         </div>
     </div>
 
-    <!-- BOTTOM NAVIGATION BAR -->
+    <!-- ══════════════════════════════════════
+         BOTTOM NAVIGATION BAR
+    ══════════════════════════════════════ -->
     <nav class="bottom-nav" id="bottomNav" role="navigation" aria-label="Main navigation">
 
         <!-- Home -->
@@ -380,8 +423,8 @@
             <span class="bnav-label">My List</span>
         </a>
 
-        <!-- Profile -->
-        <a href="profile.html" class="bottom-nav-item" id="bnav-profile" aria-label="Profile">
+        <!-- Profile — avatar + live presence dot -->
+        <a href="login.html" class="bottom-nav-item" id="bnav-profile" aria-label="Profile">
             <div class="bnav-dot"></div>
             <div class="bnav-icon-wrap" style="width:auto;background:transparent !important;">
                 <div class="bnav-avatar-wrap">
@@ -391,15 +434,17 @@
                         class="bnav-avatar"
                         id="bnavAvatar"
                     >
+                    <!-- Green = online · Grey = offline · Hidden if not logged in -->
                     <span class="presence-dot offline" id="presenceDot"></span>
                 </div>
             </div>
+            <!-- Shows "Active" or "Offline" under the avatar -->
             <span class="bnav-label presence-label" id="presenceLabel">Profile</span>
         </a>
 
     </nav>
 
-    <!-- SCRIPTS -->
+    <!-- ═══ SCRIPTS ═══ -->
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/home.js"></script>
@@ -410,166 +455,137 @@
     setTimeout(function(){var l=document.getElementById('pageLoader');if(l&&!l.classList.contains('hidden'))l.classList.add('hidden');},3000);
     </script>
 
+    <!-- Bookmark Popup -->
+    <script>
+    (function(){var K='streamify_bookmark_popup_dismissed',p=document.getElementById('welcomePopup'),c=document.getElementById('popupClose'),x=document.getElementById('dontAskCheckbox');if(localStorage.getItem(K)==='true')p.style.display='none';c.addEventListener('click',function(){if(x.checked)localStorage.setItem(K,'true');p.style.display='none';});})();
+    </script>
+
     <!-- Premium Effects -->
     <script>
-    document.addEventListener('click',function(e){
-        var t=e.target.closest('.btn-play,.btn-info');
-        if(!t)return;
-        var r=document.createElement('span');r.classList.add('ripple');
-        var b=t.getBoundingClientRect(),s=Math.max(b.width,b.height);
-        r.style.width=r.style.height=s+'px';
-        r.style.left=e.clientX-b.left-s/2+'px';
-        r.style.top=e.clientY-b.top-s/2+'px';
-        t.appendChild(r);r.addEventListener('animationend',function(){r.remove();});
-    });
-
+    document.addEventListener('click',function(e){var t=e.target.closest('.btn-play,.btn-info,.popup-btn,.action-btn');if(!t)return;var r=document.createElement('span');r.classList.add('ripple');var b=t.getBoundingClientRect(),s=Math.max(b.width,b.height);r.style.width=r.style.height=s+'px';r.style.left=e.clientX-b.left-s/2+'px';r.style.top=e.clientY-b.top-s/2+'px';t.appendChild(r);r.addEventListener('animationend',function(){r.remove();});});
     var obs=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}});},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
     setTimeout(function(){document.querySelectorAll('.content-section').forEach(function(s){obs.observe(s);});},100);
-
-    var ticking=false;
-    window.addEventListener('scroll',function(){
-        if(!ticking){window.requestAnimationFrame(function(){
-            var h=document.querySelector('.hero-bg');
-            if(h){var s=window.pageYOffset;if(s<window.innerHeight)h.style.transform='translateY('+s*0.3+'px) scale('+(1+s*0.0002)+')';}
-            ticking=false;
-        });ticking=true;}
-    });
-
-    document.addEventListener('DOMContentLoaded',function(){
-        var a=function(){document.querySelectorAll('.card:not(.shine-added)').forEach(function(c){var s=document.createElement('div');s.classList.add('shine');c.appendChild(s);c.classList.add('shine-added');});};
-        setTimeout(a,1000);
-        var m=new MutationObserver(a),mc=document.querySelector('.main-content');
-        if(mc)m.observe(mc,{childList:true,subtree:true});
-    });
-
-    document.addEventListener('keydown',function(e){
-        if(e.key==='Escape'){['searchModal','seeAllModal','detailModal','mobileMenu','overlay'].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove('active');});document.body.style.overflow='';}
-        if(e.key==='/'&&!e.ctrlKey&&!e.metaKey){var a=document.activeElement;if(a.tagName!=='INPUT'&&a.tagName!=='TEXTAREA'){e.preventDefault();var b=document.getElementById('searchBtn');if(b)b.click();}}
-    });
+    var ticking=false;window.addEventListener('scroll',function(){if(!ticking){window.requestAnimationFrame(function(){var h=document.querySelector('.hero-bg');if(h){var s=window.pageYOffset;if(s<window.innerHeight)h.style.transform='translateY('+s*0.3+'px) scale('+(1+s*0.0002)+')';}ticking=false;});ticking=true;}});
+    document.addEventListener('DOMContentLoaded',function(){var a=function(){document.querySelectorAll('.card:not(.shine-added)').forEach(function(c){var s=document.createElement('div');s.classList.add('shine');c.appendChild(s);c.classList.add('shine-added');});};setTimeout(a,1000);var m=new MutationObserver(a),mc=document.querySelector('.main-content');if(mc)m.observe(mc,{childList:true,subtree:true});});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'){['searchModal','seeAllModal','detailModal','mobileMenu','overlay'].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove('active');});document.body.style.overflow='';}if(e.key==='/'&&!e.ctrlKey&&!e.metaKey){var a=document.activeElement;if(a.tagName!=='INPUT'&&a.tagName!=='TEXTAREA'){e.preventDefault();var b=document.getElementById('searchBtn');if(b)b.click();}}});
     </script>
 
-    <!-- ══════════════════════════════════════
-         HORIZONTAL SCROLL — Touch fix
-         When a finger starts horizontally on a
-         content-row, lock that element to handle
-         the gesture so the page doesn't steal it.
-    ══════════════════════════════════════ -->
+    <!-- ══════════════════════════════════════════════════════════
+         REALTIME PRESENCE SYSTEM
+         Mirrors PresenceManager from the Android app:
+         • On page open   → isActive: true,  lastSeen: now
+         • On page close  → isActive: false, lastSeen: now
+           (using Firebase onDisconnect — fires even on hard close)
+         • Live listener  → updates the badge in the bottom nav
+           in real time as the DB value changes
+    ══════════════════════════════════════════════════════════ -->
     <script>
     (function () {
-        var THRESHOLD = 8;   // px before we decide direction
 
-        document.querySelectorAll('.content-row').forEach(function (row) {
-            var startX = 0, startY = 0, locked = false, dir = null;
-
-            row.addEventListener('touchstart', function (e) {
-                startX = e.touches[0].clientX;
-                startY = e.touches[0].clientY;
-                locked = false;
-                dir    = null;
-            }, { passive: true });
-
-            row.addEventListener('touchmove', function (e) {
-                if (!e.touches.length) return;
-                var dx = Math.abs(e.touches[0].clientX - startX);
-                var dy = Math.abs(e.touches[0].clientY - startY);
-
-                if (!locked && (dx > THRESHOLD || dy > THRESHOLD)) {
-                    dir    = dx > dy ? 'h' : 'v';
-                    locked = true;
-                }
-
-                /* If the gesture is horizontal, eat the event so the
-                   page doesn't also scroll vertically */
-                if (dir === 'h') {
-                    e.stopPropagation();
-                    /* NOTE: we intentionally do NOT call preventDefault()
-                       here — that would need passive:false and hurts perf.
-                       stopPropagation alone is enough in most browsers. */
-                }
-            }, { passive: true });
-        });
-
-        /* Re-apply to dynamically added rows (cards load async) */
-        var mc = document.querySelector('.main-content');
-        if (mc) {
-            new MutationObserver(function () {
-                document.querySelectorAll('.content-row:not([data-scroll-fixed])').forEach(function (row) {
-                    row.setAttribute('data-scroll-fixed', '1');
-                    var startX = 0, startY = 0, locked = false, dir = null;
-                    row.addEventListener('touchstart', function (e) {
-                        startX = e.touches[0].clientX;
-                        startY = e.touches[0].clientY;
-                        locked = false; dir = null;
-                    }, { passive: true });
-                    row.addEventListener('touchmove', function (e) {
-                        if (!e.touches.length) return;
-                        var dx = Math.abs(e.touches[0].clientX - startX);
-                        var dy = Math.abs(e.touches[0].clientY - startY);
-                        if (!locked && (dx > THRESHOLD || dy > THRESHOLD)) { dir = dx > dy ? 'h' : 'v'; locked = true; }
-                        if (dir === 'h') e.stopPropagation();
-                    }, { passive: true });
-                });
-            }).observe(mc, { childList: true, subtree: true });
-        }
-    })();
-    </script>
-
-    <!-- REALTIME PRESENCE SYSTEM -->
-    <script>
-    (function () {
         var presenceDot   = document.getElementById('presenceDot');
         var presenceLabel = document.getElementById('presenceLabel');
         var bnavProfile   = document.getElementById('bnav-profile');
-        var lastSeenRef   = null;
+        var lastSeenRef   = null;   // holds the DB ref so we can detach listener
 
+        /* ── Helpers ── */
         function setOnline() {
-            presenceDot.className     = 'presence-dot online';
+            presenceDot.className   = 'presence-dot online';
             presenceLabel.textContent = 'Active';
             bnavProfile.classList.add('online-now', 'has-user');
         }
+
         function setOffline(lastSeen) {
-            presenceDot.className = 'presence-dot offline';
+            presenceDot.className   = 'presence-dot offline';
             bnavProfile.classList.remove('online-now');
             bnavProfile.classList.add('has-user');
-            presenceLabel.textContent = lastSeen ? formatLastSeen(lastSeen) : 'Offline';
+            if (lastSeen) {
+                presenceLabel.textContent = formatLastSeen(lastSeen);
+            } else {
+                presenceLabel.textContent = 'Offline';
+            }
         }
+
         function setNoUser() {
             presenceDot.className     = 'presence-dot offline';
             presenceLabel.textContent = 'Profile';
             bnavProfile.classList.remove('online-now', 'has-user');
         }
+
         function formatLastSeen(ts) {
             var diff = Date.now() - ts;
-            var m = Math.floor(diff / 60000), h = Math.floor(diff / 3600000), d = Math.floor(diff / 86400000);
-            if (diff < 60000)   return 'Just now';
+            var m    = Math.floor(diff / 60000);
+            var h    = Math.floor(diff / 3600000);
+            var d    = Math.floor(diff / 86400000);
+            if (diff < 60000)  return 'Just now';
             if (diff < 3600000) return m + 'm ago';
             if (diff < 86400000) return h + 'h ago';
             return d + 'd ago';
         }
 
+        /* ── Firebase Auth state ── */
         auth.onAuthStateChanged(function (user) {
-            if (lastSeenRef) { lastSeenRef.off(); lastSeenRef = null; }
-            if (!user) { setNoUser(); return; }
+
+            /* Detach any previous DB listener */
+            if (lastSeenRef) {
+                lastSeenRef.off();
+                lastSeenRef = null;
+            }
+
+            if (!user) {
+                setNoUser();
+                return;
+            }
 
             var userRef = db.ref('Users/' + user.uid);
-            userRef.update({ isActive: true, lastSeen: Date.now() });
-            userRef.onDisconnect().update({ isActive: false, lastSeen: Date.now() });
 
+            /* ── 1. Set ONLINE immediately on page load ── */
+            userRef.update({
+                isActive : true,
+                lastSeen : Date.now()
+            });
+
+            /* ── 2. Set OFFLINE automatically when tab closes / network drops
+                    onDisconnect runs on Firebase servers — works even on hard close ── */
+            userRef.onDisconnect().update({
+                isActive : false,
+                lastSeen : Date.now()   // approximate; server will record close time
+            });
+
+            /* ── 3. Real-time listener — reads isActive + lastSeen from DB
+                    and updates the badge live whenever the value changes ── */
             lastSeenRef = userRef;
             userRef.on('value', function (snap) {
                 if (!snap.exists()) { setNoUser(); return; }
-                snap.child('isActive').val() === true ? setOnline() : setOffline(snap.child('lastSeen').val());
+
+                var isActive = snap.child('isActive').val();
+                var lastSeen = snap.child('lastSeen').val();
+
+                if (isActive === true) {
+                    setOnline();
+                } else {
+                    setOffline(lastSeen);
+                }
             });
 
+            /* ── 4. Update lastSeen every 60 seconds while page is open ── */
             var heartbeat = setInterval(function () {
-                if (auth.currentUser) userRef.update({ lastSeen: Date.now() });
-                else clearInterval(heartbeat);
+                if (auth.currentUser) {
+                    userRef.update({ lastSeen: Date.now() });
+                } else {
+                    clearInterval(heartbeat);
+                }
             }, 60000);
 
+            /* ── 5. Set OFFLINE on browser unload (backup for onDisconnect) ── */
             window.addEventListener('beforeunload', function () {
-                userRef.update({ isActive: false, lastSeen: Date.now() });
+                userRef.update({
+                    isActive : false,
+                    lastSeen : Date.now()
+                });
             });
+
         });
+
     })();
     </script>
 
@@ -577,7 +593,7 @@
     <script>
     (function () {
         var path     = window.location.pathname.split('/').pop() || 'index.html';
-        var map      = {'index.html':'bnav-home','':'bnav-home','mylist.html':'bnav-mylist','profile.html':'bnav-profile'};
+        var map      = {'index.html':'bnav-home','':'bnav-home','mylist.html':'bnav-mylist','login.html':'bnav-profile'};
         var activeId = map[path];
         if (activeId) {
             document.querySelectorAll('.bottom-nav-item').forEach(function(el){ el.classList.remove('active'); });
@@ -614,8 +630,8 @@
                 var rip = document.createElement('span'); rip.className = 'bnav-ripple';
                 var rect = wrap.getBoundingClientRect(), size = Math.max(rect.width, rect.height);
                 rip.style.cssText = 'width:'+size+'px;height:'+size+'px;top:'+(e.clientY-rect.top-size/2)+'px;left:'+(e.clientX-rect.left-size/2)+'px';
-                wrap.style.position='relative'; wrap.style.overflow='hidden';
-                wrap.appendChild(rip); rip.addEventListener('animationend',function(){ rip.remove(); });
+                wrap.style.position = 'relative'; wrap.style.overflow = 'hidden';
+                wrap.appendChild(rip); rip.addEventListener('animationend', function(){ rip.remove(); });
             });
         });
 
