@@ -406,7 +406,7 @@
         </a>
 
         <!-- Profile — avatar + live presence dot -->
-        <a href="login.html" class="bottom-nav-item" id="bnav-profile" aria-label="Profile">
+       <a href="profile.html" class="bottom-nav-item" id="bnav-profile" aria-label="Profile">
             <div class="bnav-dot"></div>
             <div class="bnav-icon-wrap" style="width:auto;background:transparent !important;">
                 <div class="bnav-avatar-wrap">
@@ -572,7 +572,7 @@
     <script>
     (function () {
         var path     = window.location.pathname.split('/').pop() || 'index.html';
-        var map      = {'index.html':'bnav-home','':'bnav-home','mylist.html':'bnav-mylist','login.html':'bnav-profile'};
+        var map = {'index.html':'bnav-home','':'bnav-home','mylist.html':'bnav-mylist','profile.html':'bnav-profile'};
         var activeId = map[path];
         if (activeId) {
             document.querySelectorAll('.bottom-nav-item').forEach(function(el){ el.classList.remove('active'); });
