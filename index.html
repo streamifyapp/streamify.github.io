@@ -184,25 +184,7 @@
         <div class="particle"></div>
     </div>
 
-    <!-- Welcome Popup -->
-    <div class="welcome-popup" id="welcomePopup">
-        <div class="popup-box">
-            <div class="popup-icon"><i class="fas fa-bookmark"></i></div>
-            <h2>Welcome to Streamify!</h2>
-            <p>To ensure you never lose access to unlimited free movies and TV shows, please <strong>bookmark this website</strong> now.</p>
-            <div class="popup-instructions">
-                <div class="instruction-item"><i class="fab fa-windows"></i><span><strong>Windows:</strong> Press <kbd>Ctrl + D</kbd></span></div>
-                <div class="instruction-item"><i class="fab fa-apple"></i><span><strong>Mac:</strong> Press <kbd>Cmd + D</kbd></span></div>
-                <div class="instruction-item"><i class="fab fa-android"></i><span><strong>Android:</strong> Tap <i class="fas fa-ellipsis-v"></i> menu, then ⭐ Add to bookmarks</span></div>
-            </div>
-            <label class="popup-dont-ask" id="dontAskLabel">
-                <input type="checkbox" id="dontAskCheckbox">
-                <span class="custom-checkbox"></span>
-                <span class="checkbox-label">Don't show this again</span>
-            </label>
-            <button class="popup-btn" id="popupClose"><i class="fas fa-check"></i> Got it, Thanks!</button>
-        </div>
-    </div>
+  
 
     <!-- Navbar -->
     <nav class="navbar" id="navbar">
@@ -216,7 +198,7 @@
             </ul>
         </div>
         <div class="nav-right">
-            <a href="https://streamifyapp.github.io/" target="_blank" class="download-btn" data-tooltip="Download Android App">
+           
                 <i class="fab fa-android"></i><span>Get App</span>
             </a>
             <button class="nav-btn" id="searchBtn" data-tooltip="Search"><i class="fas fa-search"></i></button>
@@ -237,7 +219,7 @@
             <li><a href="series.html"><i class="fas fa-tv"></i> TV Shows</a></li>
             <li><a href="mylist.html"><i class="fas fa-bookmark"></i> My List</a></li>
             <li class="menu-divider"></li>
-            <li><a href="https://streamifyapp.github.io/" target="_blank" class="download-link"><i class="fab fa-android"></i> Download App</a></li>
+            
         </ul>
     </div>
     <div class="overlay" id="overlay"></div>
@@ -364,7 +346,7 @@
 
     <footer class="footer">
         <div class="footer-logo">STREAMIFY</div>
-        <a href="https://streamifyapp.github.io/" target="_blank" class="footer-download"><i class="fab fa-android"></i> Download Streamify for Android</a>
+    
         <p>© 2025 Streamify. All rights reserved.</p>
     </footer>
 
@@ -455,10 +437,7 @@
     setTimeout(function(){var l=document.getElementById('pageLoader');if(l&&!l.classList.contains('hidden'))l.classList.add('hidden');},3000);
     </script>
 
-    <!-- Bookmark Popup -->
-    <script>
-    (function(){var K='streamify_bookmark_popup_dismissed',p=document.getElementById('welcomePopup'),c=document.getElementById('popupClose'),x=document.getElementById('dontAskCheckbox');if(localStorage.getItem(K)==='true')p.style.display='none';c.addEventListener('click',function(){if(x.checked)localStorage.setItem(K,'true');p.style.display='none';});})();
-    </script>
+  
 
     <!-- Premium Effects -->
     <script>
