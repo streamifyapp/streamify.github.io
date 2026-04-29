@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body class="watch-body">
+
     <!-- Back Button -->
     <a href="index.html" class="back-btn">
         <i class="fas fa-arrow-left"></i>
@@ -39,14 +40,12 @@
     <div class="server-selector">
         <h3><i class="fas fa-server"></i> Select Server</h3>
         <p class="server-hint">If current server doesn't work, try another one</p>
-        <div class="server-buttons" id="serverButtons">
-            <!-- Servers will be added dynamically -->
-        </div>
+        <div class="server-buttons" id="serverButtons"></div>
     </div>
 
     <!-- Content -->
     <div class="watch-main">
-        
+
         <!-- Title & Meta -->
         <div class="watch-header">
             <h1 id="watchTitle">Loading...</h1>
@@ -97,10 +96,18 @@
             <h2><i class="fas fa-film"></i> More Like This</h2>
             <div class="similar-grid" id="similarGrid"></div>
         </div>
+
     </div>
+
+    <!-- ✅ Firebase SDKs MUST load before firebase-config.js and watch.js -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
 
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/watch.js"></script>
+
 </body>
 </html>
