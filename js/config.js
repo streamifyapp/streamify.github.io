@@ -20,7 +20,7 @@ const CONFIG = {
     // ============ STREAMING SERVERS ============
    SERVERS: {
     server1: {
-        name: 'Server 1 - Peachify',
+        name: 'Server 1 - Earth [Multi Lang]',
         getMovieUrl: function(tmdbId) {
             return `https://peachify.top/?type=movie&id=${tmdbId}`;
         },
@@ -29,7 +29,7 @@ const CONFIG = {
         }
     },
     server2: {
-        name: 'Server 2 - VidRock',
+        name: 'Server 2 - Mars',
         getMovieUrl: function(tmdbId) {
             return `https://vidrock.net/movie/${tmdbId}`;
         },
