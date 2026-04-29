@@ -1,3 +1,4 @@
+```javascript
 /* ============================================
    STREAMIFY - WATCH PAGE
    Player & Server Management + Firebase CW + Firebase Favorites
@@ -14,9 +15,6 @@ let currentServer  = null;
 let mediaData      = null;
 
 // ── Firebase — already initialized by firebase-config.js ─────────────────────
-// firebase-app, firebase-auth, firebase-database SDKs are loaded in watch.html
-// firebase.initializeApp() is called in firebase-config.js
-// We just grab the already-ready instances here.
 window._fbReady = true;
 window._fbAuth  = firebase.auth();
 window._fbDB    = firebase.database();
@@ -34,7 +32,7 @@ window._fbAuth.onAuthStateChanged(user => {
 async function saveToContinueWatching() {
     if (!mediaData) return;
     const user = window._fbAuth.currentUser;
-    if (!user) return; // Not logged in — skip silently
+    if (!user) return;
 
     const isMovie = currentType === 'movie';
     const itemKey = currentId + (isMovie ? '_movie' : '_series');
@@ -68,11 +66,6 @@ async function saveToContinueWatching() {
 //  FAVORITES — FIREBASE READ / WRITE
 // ============================================
 
-/**
- * Save item to Firebase Favorites/{uid}/{itemId}
- * Structure matches your existing DB:
- * { id, movie (bool), title, posterPath, addedAt }
- */
 async function addToFavoritesFirebase() {
     if (!mediaData) return;
     const user = window._fbAuth.currentUser;
@@ -101,9 +94,6 @@ async function addToFavoritesFirebase() {
     }
 }
 
-/**
- * Remove item from Firebase Favorites/{uid}/{itemId}
- */
 async function removeFromFavoritesFirebase() {
     const user = window._fbAuth.currentUser;
     if (!user) return;
@@ -119,10 +109,6 @@ async function removeFromFavoritesFirebase() {
     }
 }
 
-/**
- * Check Firebase Favorites to see if this item is already saved,
- * then update the button state to match reality (cross-device sync).
- */
 async function syncListButtonWithFirebase(uid) {
     if (!currentId) return;
     try {
@@ -154,7 +140,12 @@ async function initWatchPage() {
     initServerButtons();
     await loadContentData();
     loadPlayer();
-    setupActionButtons();
+
+    // For movies, action buttons are already injected inside initServerButtons
+    // so we just bind them here
+    if (currentType === 'movie') {
+        setupActionButtons();
+    }
 }
 
 // ============ SERVER MANAGEMENT ============
@@ -162,6 +153,7 @@ async function initWatchPage() {
 function initServerButtons() {
     const container = document.getElementById('serverButtons');
     container.innerHTML = '';
+
     CONFIG.getServerKeys().forEach(key => {
         const btn          = document.createElement('button');
         btn.className      = `server-btn ${key === currentServer ? 'active' : ''}`;
@@ -170,6 +162,33 @@ function initServerButtons() {
         btn.addEventListener('click', () => switchServer(key));
         container.appendChild(btn);
     });
+
+    // Inject action buttons below server buttons for movies only
+    // For TV, they are injected after episodes load
+    if (currentType === 'movie') {
+        injectActionButtons(container.parentElement);
+    }
+}
+
+// ── Inject My List / Share / Like buttons into a parent element ──────────────
+function injectActionButtons(parentElement) {
+    // Avoid duplicate injection
+    if (parentElement.querySelector('.action-buttons-row')) return;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'action-buttons-row';
+    wrapper.innerHTML = `
+        <button class="action-btn" id="listBtn">
+            <i class="fas fa-plus"></i><span>My List</span>
+        </button>
+        <button class="action-btn" id="shareBtn">
+            <i class="fas fa-share-alt"></i><span>Share</span>
+        </button>
+        <button class="action-btn" id="likeBtn">
+            <i class="far fa-heart"></i><span>Like</span>
+        </button>
+    `;
+    parentElement.appendChild(wrapper);
 }
 
 function switchServer(serverKey) {
@@ -201,7 +220,6 @@ function loadPlayer() {
     player.onload = () => {
         loader.style.display = 'none';
         player.style.opacity = '1';
-        // Save to Continue Watching once player loads successfully
         saveToContinueWatching();
     };
 
@@ -309,6 +327,15 @@ async function loadEpisodes(seasonNumber) {
                 </div>
             </div>
         `).join('');
+
+        // Inject action buttons below episodes section for TV
+        // episodesGrid's parent is the episodeSelector container
+        const episodeSelectorEl = document.getElementById('episodeSelector');
+        if (!document.querySelector('.action-buttons-row')) {
+            injectActionButtons(episodeSelectorEl);
+            setupActionButtons();
+        }
+
     } catch (error) {
         console.error('Error loading episodes:', error);
         episodesGrid.innerHTML = '<p>Failed to load episodes</p>';
@@ -326,7 +353,7 @@ function playEpisode(season, episode) {
         card.classList.toggle('active', parseInt(card.dataset.episode) === episode);
     });
 
-    loadPlayer(); // also re-saves ContinueWatching with updated season/episode
+    loadPlayer();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -359,10 +386,13 @@ function setupActionButtons() {
     const inLocal = Storage.isInMyList(parseInt(currentId), currentType);
     setListButtonState(inLocal);
 
-    document.getElementById('listBtn').addEventListener('click', toggleMyList);
-    document.getElementById('shareBtn').addEventListener('click', shareContent);
-    document.getElementById('likeBtn').addEventListener('click', () => {
-        const likeBtn = document.getElementById('likeBtn');
+    const listBtn  = document.getElementById('listBtn');
+    const shareBtn = document.getElementById('shareBtn');
+    const likeBtn  = document.getElementById('likeBtn');
+
+    if (listBtn)  listBtn.addEventListener('click', toggleMyList);
+    if (shareBtn) shareBtn.addEventListener('click', shareContent);
+    if (likeBtn)  likeBtn.addEventListener('click', () => {
         likeBtn.classList.toggle('liked');
         likeBtn.querySelector('i').classList.toggle('fas');
         likeBtn.querySelector('i').classList.toggle('far');
@@ -392,12 +422,10 @@ async function toggleMyList() {
     setListButtonState(!isInList);
 
     if (isInList) {
-        // REMOVE
         Storage.removeFromMyList(parseInt(currentId), currentType);
         await removeFromFavoritesFirebase();
         showNotification('Removed from My List');
     } else {
-        // ADD — localStorage (keeps other pages working)
         Storage.addToMyList({
             id:            parseInt(currentId),
             type:          currentType,
@@ -406,7 +434,6 @@ async function toggleMyList() {
             backdrop_path: mediaData?.backdrop_path,
             vote_average:  mediaData?.vote_average
         });
-        // ADD — Firebase Favorites (powers mylist.html real-time)
         await addToFavoritesFirebase();
         showNotification('Added to My List ✓');
     }
@@ -449,3 +476,4 @@ function showNotification(message) {
         setTimeout(() => notification.remove(), 300);
     }, 3000);
 }
+```
