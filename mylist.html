@@ -22,8 +22,112 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
-        /* Space for bottom nav */
         body { padding-bottom: 80px; }
+
+        /* ══════════════════════════════════════
+           GUEST STATE
+        ══════════════════════════════════════ */
+        #guestState {
+            display: none;
+            min-height: 70vh;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+        }
+        .guest-card {
+            max-width: 460px;
+            width: 100%;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            padding: 52px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .guest-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(229,9,20,0.5), transparent);
+        }
+        .guest-icon-wrap {
+            width: 84px; height: 84px;
+            border-radius: 50%;
+            background: rgba(229,9,20,0.1);
+            border: 1px solid rgba(229,9,20,0.2);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 24px;
+        }
+        .guest-icon-wrap i { font-size: 32px; color: #e50914; }
+        .guest-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 30px;
+            letter-spacing: 2px;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+        .guest-desc {
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+            line-height: 1.75;
+            margin-bottom: 32px;
+        }
+        .guest-perks {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 32px;
+            text-align: left;
+        }
+        .guest-perk {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.65);
+            font-family: 'Inter', sans-serif;
+        }
+        .guest-perk i {
+            width: 18px;
+            color: #e50914;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .guest-signin-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #e50914, #c1000e);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 24px rgba(229,9,20,0.3);
+            margin-bottom: 14px;
+            letter-spacing: 0.3px;
+        }
+        .guest-signin-btn:hover {
+            box-shadow: 0 8px 32px rgba(229,9,20,0.5);
+            transform: translateY(-2px);
+        }
+        .guest-register-link {
+            font-size: 13px;
+            color: rgba(255,255,255,0.4);
+            font-family: 'Inter', sans-serif;
+        }
+        .guest-register-link a {
+            color: #e50914;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .guest-register-link a:hover { text-decoration: underline; }
 
         /* ══════════════════════════════════════
            BOTTOM NAVIGATION BAR
@@ -139,8 +243,29 @@
         </div>
     </header>
 
-    <!-- My List Content -->
-    <main class="browse-content">
+    <!-- ══════════════════════════════════════
+         GUEST STATE (shown when not logged in)
+    ══════════════════════════════════════ -->
+    <div id="guestState" style="display:none; min-height:60vh; align-items:center; justify-content:center; padding:60px 20px;">
+        <div class="guest-card">
+            <div class="guest-icon-wrap">
+                <i class="fas fa-bookmark"></i>
+            </div>
+            <div class="guest-title">Assemble Your Watchlist</div>
+            <div class="guest-desc">Sign in to bookmark movies and shows so you never lose track of what to watch next. Your list syncs across all your devices.</div>
+            <div class="guest-perks">
+                <div class="guest-perk"><i class="fas fa-bookmark"></i> Save any movie or TV show instantly</div>
+                <div class="guest-perk"><i class="fas fa-sync-alt"></i> Syncs across all your devices</div>
+                <div class="guest-perk"><i class="fas fa-infinity"></i> No limits — add as many titles as you like</div>
+                <div class="guest-perk"><i class="fas fa-bell"></i> Never forget what you wanted to watch</div>
+            </div>
+            <a href="login.html" class="guest-signin-btn"><i class="fas fa-right-to-bracket"></i> &nbsp;Sign In to View My List</a>
+            <div class="guest-register-link">New here? <a href="register.html">Create a free account</a></div>
+        </div>
+    </div>
+
+    <!-- My List Content (shown when logged in) -->
+    <main class="browse-content" id="authContent" style="display:none;">
         <!-- Empty State -->
         <div class="empty-state" id="emptyState">
             <div class="empty-icon">
@@ -176,65 +301,48 @@
         </div>
     </footer>
 
-    <!-- ═══════════════════════════════════════
-         BOTTOM NAVIGATION BAR
-    ═══════════════════════════════════════ -->
+    <!-- BOTTOM NAVIGATION BAR -->
     <nav class="bottom-nav" id="bottomNav" role="navigation" aria-label="Main navigation">
-
-        <!-- Home -->
         <a href="index.html" class="bottom-nav-item" id="bnav-home" aria-label="Home">
             <div class="bnav-dot"></div>
             <div class="bnav-icon-wrap"><i class="fas fa-house"></i></div>
             <span class="bnav-label">Home</span>
         </a>
-
-        <!-- Search -->
         <a href="index.html" class="bottom-nav-item" id="bnav-search" aria-label="Search">
             <div class="bnav-dot"></div>
             <div class="bnav-icon-wrap"><i class="fas fa-magnifying-glass"></i></div>
             <span class="bnav-label">Search</span>
         </a>
-
-        <!-- My List — ACTIVE on this page -->
         <a href="mylist.html" class="bottom-nav-item active" id="bnav-mylist" aria-label="My List">
             <div class="bnav-dot"></div>
             <div class="bnav-icon-wrap"><i class="fas fa-bookmark"></i></div>
             <span class="bnav-label">My List</span>
         </a>
-
-        <!-- Profile -->
-        <a href="login.html" class="bottom-nav-item" id="bnav-profile" aria-label="Profile">
+        <a href="profile.html" class="bottom-nav-item" id="bnav-profile" aria-label="Profile">
             <div class="bnav-dot"></div>
             <div class="bnav-icon-wrap" style="width:auto;background:transparent !important;">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" alt="Profile" class="bnav-avatar">
             </div>
             <span class="bnav-label">Profile</span>
         </a>
-
     </nav>
 
-<!-- Scripts -->
-<script src="js/config.js"></script>
-<script src="js/api.js"></script>
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
 
-<!-- 🔥 ADD THESE 3 LINES (Firebase — required for mylist.js) -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-<script src="js/mylist.js"></script>
-    
+    <script src="js/mylist.js"></script>
 
-
-    <!-- ═══ BOTTOM NAV SCRIPT ═══ -->
+    <!-- BOTTOM NAV SCRIPT -->
     <script>
     (function () {
         var nav = document.getElementById('bottomNav');
-
-        /* Always visible on load */
         nav.style.transform = 'translateY(0)';
 
-        /* Ripple on tap */
         document.querySelectorAll('.bottom-nav-item').forEach(function (item) {
             item.addEventListener('click', function (e) {
                 var wrap = item.querySelector('.bnav-icon-wrap');
@@ -256,7 +364,6 @@
             });
         });
 
-        /* Scroll-aware hide/show — delayed so page-load events don't fire it */
         var lastScroll    = window.pageYOffset;
         var scrollEnabled = false;
         setTimeout(function () {
@@ -275,11 +382,11 @@
     })();
     </script>
 
-<!-- Toast (optional but recommended) -->
-<div class="toast" id="toast" style="position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(10,10,12,0.95);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 20px;display:flex;align-items:center;gap:10px;font-size:14px;color:#fff;z-index:9999;opacity:0;transition:all 0.35s ease;pointer-events:none;">
-    <i class="fas fa-circle-check"></i>
-    <span id="toastMsg">Done</span>
-</div>
-    
+    <!-- Toast -->
+    <div class="toast" id="toast" style="position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(10,10,12,0.95);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 20px;display:flex;align-items:center;gap:10px;font-size:14px;color:#fff;z-index:9999;opacity:0;transition:all 0.35s ease;pointer-events:none;">
+        <i class="fas fa-circle-check"></i>
+        <span id="toastMsg">Done</span>
+    </div>
+
 </body>
 </html>
