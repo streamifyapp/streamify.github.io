@@ -213,10 +213,18 @@
 
     </nav>
 
-    <!-- Scripts -->
-    <script src="js/config.js"></script>
-    <script src="js/api.js"></script>
-    <script src="js/mylist.js"></script>
+<!-- Scripts -->
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+
+<!-- 🔥 ADD THESE 3 LINES (Firebase — required for mylist.js) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script src="js/mylist.js"></script>
+    
+
 
     <!-- ═══ BOTTOM NAV SCRIPT ═══ -->
     <script>
@@ -267,5 +275,11 @@
     })();
     </script>
 
+<!-- Toast (optional but recommended) -->
+<div class="toast" id="toast" style="position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(10,10,12,0.95);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 20px;display:flex;align-items:center;gap:10px;font-size:14px;color:#fff;z-index:9999;opacity:0;transition:all 0.35s ease;pointer-events:none;">
+    <i class="fas fa-circle-check"></i>
+    <span id="toastMsg">Done</span>
+</div>
+    
 </body>
 </html>
