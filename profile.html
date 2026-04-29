@@ -34,8 +34,12 @@
         body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; padding-bottom: 100px; -webkit-font-smoothing: antialiased; }
 
         /* ── LOADER ── */
-        #pageLoader { position: fixed; inset: 0; background: var(--bg); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; transition: opacity 0.6s ease, visibility 0.6s ease; }
-        #pageLoader.gone { opacity: 0; visibility: hidden; }
+        #pageLoader {
+            position: fixed; inset: 0; background: var(--bg); z-index: 99999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        #pageLoader.gone { opacity: 0; visibility: hidden; pointer-events: none; }
         .loader-brand { font-family: var(--font-display); font-size: 52px; letter-spacing: 5px; background: linear-gradient(135deg, #e50914, #ff6b6b, #e50914); background-size: 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: brandPulse 1.8s ease infinite; }
         @keyframes brandPulse { 0%,100% { background-position: 0%; } 50% { background-position: 100%; } }
         .loader-track { width: 180px; height: 2px; background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden; }
@@ -93,49 +97,33 @@
         .section-title i { color: var(--red); font-size: 16px; }
         .section-count { font-size: 12px; font-weight: 600; letter-spacing: 1px; color: var(--muted); background: var(--surface); border: 1px solid var(--border); padding: 3px 10px; border-radius: 20px; }
 
-        /* ══════════════════════════════════════
-           CONTINUE WATCHING
-        ══════════════════════════════════════ */
+        /* ══ CONTINUE WATCHING ══ */
         .cw-wrap { position: relative; }
         .cw-row { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; scroll-behavior: smooth; -ms-overflow-style: none; scrollbar-width: none; }
         .cw-row::-webkit-scrollbar { display: none; }
 
-        .cw-card {
-            flex-shrink: 0; width: 150px;
-            border-radius: 12px; overflow: hidden;
-            background: var(--surface); border: 1px solid var(--border);
-            text-decoration: none; display: block; position: relative;
-            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-        }
+        .cw-card { flex-shrink: 0; width: 150px; border-radius: 12px; overflow: hidden; background: var(--surface); border: 1px solid var(--border); text-decoration: none; display: block; position: relative; transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
         .cw-card:hover { transform: scale(1.05) translateY(-3px); border-color: rgba(229,9,20,0.45); box-shadow: 0 14px 40px rgba(0,0,0,0.6), 0 0 20px rgba(229,9,20,0.15); }
-
         .cw-poster-wrap { position: relative; width: 100%; aspect-ratio: 2/3; }
         .cw-poster { width: 100%; height: 100%; object-fit: cover; display: block; background: #111; }
         .cw-poster-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg,#1a1a2e,#16213e); color: var(--red); font-size: 36px; }
-
         .cw-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0); display: flex; align-items: center; justify-content: center; transition: background 0.25s; }
         .cw-card:hover .cw-overlay { background: rgba(0,0,0,0.45); }
         .cw-play { width: 46px; height: 46px; border-radius: 50%; background: var(--red); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 17px; opacity: 0; transform: scale(0.6); transition: opacity 0.25s, transform 0.25s; box-shadow: 0 4px 20px rgba(229,9,20,0.6); }
         .cw-card:hover .cw-play { opacity: 1; transform: scale(1); }
-
         .cw-badge { position: absolute; top: 7px; left: 7px; background: rgba(229,9,20,0.88); backdrop-filter: blur(4px); color: #fff; font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 7px; border-radius: 5px; }
-
         .cw-remove-btn { position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; border-radius: 50%; background: rgba(0,0,0,0.75); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; font-size: 9px; cursor: pointer; opacity: 0; transition: opacity 0.2s, background 0.2s; z-index: 10; }
         .cw-card:hover .cw-remove-btn { opacity: 1; }
         .cw-remove-btn:hover { background: rgba(229,9,20,0.85); color: #fff; }
-
         .cw-info { padding: 9px 10px 11px; }
         .cw-title { font-size: 12px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
         .cw-meta { font-size: 10px; color: var(--muted); font-weight: 500; }
-
         .cw-arrow { position: absolute; top: 50%; transform: translateY(-55%); width: 32px; height: 32px; border-radius: 50%; background: rgba(10,10,15,0.92); border: 1px solid var(--border); color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 5; font-size: 12px; transition: background 0.2s, border-color 0.2s; box-shadow: 0 4px 16px rgba(0,0,0,0.5); }
         .cw-arrow:hover { background: var(--red); border-color: var(--red); }
         .cw-arrow.left { left: -13px; }
         .cw-arrow.right { right: -13px; }
-
         .cw-empty { text-align: center; padding: 30px 20px; color: var(--muted); font-size: 13px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; }
         .cw-empty i { font-size: 26px; margin-bottom: 8px; display: block; opacity: 0.3; }
-
         .cw-skeleton { flex-shrink: 0; width: 150px; border-radius: 12px; overflow: hidden; background: var(--surface); border: 1px solid var(--border); }
         .cw-skeleton .sk-poster { width: 100%; aspect-ratio: 2/3; background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
         .cw-skeleton .sk-line { height: 10px; margin: 9px 10px 5px; border-radius: 4px; background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
@@ -251,7 +239,7 @@
 </head>
 <body>
 
-<!-- LOADER -->
+<!-- LOADER — always visible on start, hidden ONLY after auth resolves -->
 <div id="pageLoader">
     <div class="loader-brand">STREAMIFY</div>
     <div class="loader-track"><div class="loader-fill"></div></div>
@@ -282,9 +270,7 @@
     </div>
 </nav>
 
-<!-- ══════════════════════════════════════
-     GUEST STATE (shown when not logged in)
-══════════════════════════════════════ -->
+<!-- GUEST STATE -->
 <div id="guestState">
     <div class="guest-card">
         <div class="guest-icon-wrap">
@@ -303,12 +289,9 @@
     </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     AUTHENTICATED CONTENT
-══════════════════════════════════════ -->
+<!-- AUTHENTICATED CONTENT -->
 <div id="authContent" style="display:none;">
 
-    <!-- PROFILE HERO -->
     <div class="profile-hero">
         <div class="avatar-ring">
             <div class="avatar-placeholder" id="avatarPlaceholder">?</div>
@@ -450,6 +433,9 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
+/* ─────────────────────────────────────────
+   FIREBASE INIT
+───────────────────────────────────────── */
 const firebaseConfig = {
     apiKey: "AIzaSyBGE29YUks6sp4jZS4MzE2JIMF-RMLwVLg",
     authDomain: "moddy-store.firebaseapp.com",
@@ -464,8 +450,15 @@ if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth     = firebase.auth();
 const database = firebase.database();
 
+// KEY FIX: Set persistence to LOCAL so Firebase checks cached auth state
+// immediately without a network round-trip, preventing any redirect flash.
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(() => {});
+
 const TMDB_IMG = 'https://image.tmdb.org/t/p/w300';
 
+/* ─────────────────────────────────────────
+   HELPERS
+───────────────────────────────────────── */
 function showToast(msg, type = 'success') {
     const t = document.getElementById('toast');
     const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
@@ -481,7 +474,6 @@ function getMedalFromPoints(pts) {
     if (pts >= 500)  return { name: 'Silver', cls: 'medal-silver', next: 'Gold',   nextPts: 2000, cur: 500  };
     return               { name: 'Bronze', cls: 'medal-bronze', next: 'Silver', nextPts: 500,  cur: 0    };
 }
-
 function getInitials(name) {
     if (!name) return '?';
     return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
@@ -505,6 +497,9 @@ function timeAgo(ts) {
     return `${Math.floor(h / 24)}d ago`;
 }
 
+/* ─────────────────────────────────────────
+   CONTINUE WATCHING
+───────────────────────────────────────── */
 let _cwUid = null;
 
 async function loadContinueWatching(uid) {
@@ -604,6 +599,9 @@ function setupCWArrows() {
     wrap.appendChild(rightArr);
 }
 
+/* ─────────────────────────────────────────
+   RENDER USER DATA
+───────────────────────────────────────── */
 function renderUser(userData, authUser) {
     const name   = userData.displayName || userData.username || authUser.displayName || 'User';
     const email  = authUser.email || '';
@@ -649,17 +647,36 @@ function renderUser(userData, authUser) {
     document.getElementById('editEmail').value    = email;
 }
 
-// ── Auth state — show guest UI instead of redirecting ──
+/* ─────────────────────────────────────────
+   AUTH STATE OBSERVER
+   - NEVER redirects on guest
+   - Loader hides only after auth resolves
+   - Safety timeout: hide loader after 5s max
+     in case Firebase SDK fails to fire
+───────────────────────────────────────── */
+
+// Safety net: if Firebase never calls onAuthStateChanged (SDK load failure,
+// network block, etc.) we still reveal the guest UI after 5 seconds.
+const loaderSafetyTimer = setTimeout(() => {
+    document.getElementById('guestState').style.display = 'block';
+    document.getElementById('authContent').style.display = 'none';
+    document.getElementById('pageLoader').classList.add('gone');
+}, 5000);
+
 auth.onAuthStateChanged(async user => {
+    // Auth state resolved — cancel safety timer
+    clearTimeout(loaderSafetyTimer);
+
     if (!user) {
-        // Not logged in — show guest state, hide authenticated content
+        // ── GUEST: show guest card, never redirect ──
         document.getElementById('guestState').style.display = 'block';
         document.getElementById('authContent').style.display = 'none';
+        document.getElementById('navSignoutBtn').style.display = 'none';
         document.getElementById('pageLoader').classList.add('gone');
         return;
     }
 
-    // Logged in — show authenticated content
+    // ── LOGGED IN: show authenticated content ──
     document.getElementById('guestState').style.display = 'none';
     document.getElementById('authContent').style.display = 'block';
     document.getElementById('navSignoutBtn').style.display = 'flex';
@@ -670,14 +687,18 @@ auth.onAuthStateChanged(async user => {
         renderUser(data, user);
         await loadContinueWatching(user.uid);
     } catch (e) {
-        console.error(e);
+        console.error('Profile load error:', e);
         renderUser({}, user);
         renderCWEmpty();
     }
 
-    setTimeout(() => document.getElementById('pageLoader').classList.add('gone'), 600);
+    // Small delay so the transition feels smooth, not jarring
+    setTimeout(() => document.getElementById('pageLoader').classList.add('gone'), 400);
 });
 
+/* ─────────────────────────────────────────
+   PROFILE ACTIONS
+───────────────────────────────────────── */
 async function saveProfile() {
     const user = auth.currentUser;
     if (!user) return;
@@ -712,13 +733,23 @@ async function sendPasswordReset() {
 
 function confirmSignout() { document.getElementById('signoutModal').classList.add('open'); }
 function closeSignout()   { document.getElementById('signoutModal').classList.remove('open'); }
+
 async function doSignout() {
     const user = auth.currentUser;
-    if (user) await database.ref('Users/' + user.uid).update({ isActive: false, lastSeen: Date.now() });
+    if (user) {
+        try { await database.ref('Users/' + user.uid).update({ isActive: false, lastSeen: Date.now() }); } catch(_) {}
+    }
     await auth.signOut();
-    window.location.href = 'login.html';
+    // After sign out, DO NOT redirect — just show the guest state in place
+    document.getElementById('signoutModal').classList.remove('open');
+    document.getElementById('guestState').style.display = 'block';
+    document.getElementById('authContent').style.display = 'none';
+    document.getElementById('navSignoutBtn').style.display = 'none';
 }
 
+/* ─────────────────────────────────────────
+   BOTTOM NAV HIDE ON SCROLL
+───────────────────────────────────────── */
 (function(){
     var nav = document.getElementById('bottomNav');
     nav.style.transform = 'translateY(0)';
