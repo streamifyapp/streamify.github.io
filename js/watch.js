@@ -136,10 +136,19 @@ async function initWatchPage() {
 
     currentServer = localStorage.getItem(CONFIG.STORAGE_KEYS.selectedServer) || CONFIG.DEFAULT_SERVER;
 
+    // ── Reposition action buttons based on content type ──────────────────────
+    // MOVIE  → buttons appear right below the server selector
+    // TV     → buttons stay in HTML position (naturally below episodeSelector)
+    const actionsEl = document.querySelector('.watch-actions');
+    if (actionsEl && currentType === 'movie') {
+        document.querySelector('.server-selector')
+            .insertAdjacentElement('afterend', actionsEl);
+    }
+
     initServerButtons();
     await loadContentData();
     loadPlayer();
-    setupActionButtons(); // buttons already exist in HTML, just bind them
+    setupActionButtons();
 }
 
 // ============ SERVER MANAGEMENT ============
@@ -339,7 +348,7 @@ function loadSimilarContent(items) {
 }
 
 // ============ ACTION BUTTONS ============
-// Buttons are already in watch.html — we just bind events here
+// Buttons are hardcoded in watch.html — we just bind events here
 
 function setupActionButtons() {
     const inLocal = Storage.isInMyList(parseInt(currentId), currentType);
