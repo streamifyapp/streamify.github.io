@@ -18,38 +18,27 @@ const CONFIG = {
     },
     
     // ============ STREAMING SERVERS ============
-    SERVERS: {
-        server1: {
-            name: 'Server 1 - Earth',
-            getMovieUrl: function(tmdbId) {
-                return `https://vidrock.net/movie/${tmdbId}`;
-            },
-            getTVUrl: function(tmdbId, season, episode) {
-                return `https://vidrock.net/tv/${tmdbId}/${season}/${episode}`;
-            }
+   SERVERS: {
+    server1: {
+        name: 'Server 1 - Peachify',
+        getMovieUrl: function(tmdbId) {
+            return `https://peachify.top/?type=movie&id=${tmdbId}`;
         },
-        server2: {
-            name: 'Server 2 - Mars',
-            getMovieUrl: function(tmdbId) {
-                return `https://peachify.top/?type=movie&id=${tmdbId}`;
-            },
-            getTVUrl: function(tmdbId, season, episode) {
-                return `https://peachify.top/?type=tv&id=${tmdbId}&s=${season}&e=${episode}`;
-            }
-        },
-        server3: {
-            name: 'Server 3 - Jupiter',
-            getMovieUrl: function(tmdbId) {
-                return `https://player.videasy.net/movie/${tmdbId}`;
-            },
-            getTVUrl: function(tmdbId, season, episode) {
-                return `https://player.videasy.net/tv/${tmdbId}/${season}/${episode}`;
-            }
+        getTVUrl: function(tmdbId, season, episode) {
+            return `https://peachify.top/?type=tv&id=${tmdbId}&s=${season}&e=${episode}`;
         }
     },
-
-    // Default server
-    DEFAULT_SERVER: 'server1',
+    server2: {
+        name: 'Server 2 - VidRock',
+        getMovieUrl: function(tmdbId) {
+            return `https://vidrock.net/movie/${tmdbId}`;
+        },
+        getTVUrl: function(tmdbId, season, episode) {
+            return `https://vidrock.net/tv/${tmdbId}/${season}/${episode}`;
+        }
+    }
+},
+DEFAULT_SERVER: 'server1',
 
     // Get movie stream URL
     getMovieStreamUrl: function(tmdbId, server) {
