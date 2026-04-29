@@ -5,7 +5,6 @@
    adds/removes items from any device.
 ============================================ */
 
-// ── Firebase Config (same project as profile.html) ──────────────────────────
 const firebaseConfig = {
     apiKey:            "AIzaSyBGE29YUks6sp4jZS4MzE2JIMF-RMLwVLg",
     authDomain:        "moddy-store.firebaseapp.com",
@@ -16,7 +15,6 @@ const firebaseConfig = {
     appId:             "1:37854873622:web:8f927e0a1d267d099ca017"
 };
 
-// Only initialise once (guard for pages that already init Firebase)
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
 const _auth = firebase.auth();
@@ -24,36 +22,39 @@ const _db   = firebase.database();
 
 const TMDB_IMG = 'https://image.tmdb.org/t/p/w500';
 
-// ── DOM helpers ──────────────────────────────────────────────────────────────
 const MyListDOM = {
-    get grid()       { return document.getElementById('myListGrid');  },
-    get empty()      { return document.getElementById('emptyState');  },
-    get count()      { return document.getElementById('mylistCount'); },
-    get loader()     { return document.getElementById('myListLoader'); } // optional skeleton
+    get grid()   { return document.getElementById('myListGrid');  },
+    get empty()  { return document.getElementById('emptyState');  },
+    get count()  { return document.getElementById('mylistCount'); },
+    get loader() { return document.getElementById('myListLoader'); }
 };
 
-// ── Real-time listener ref (so we can detach on signout) ────────────────────
 let _favRef      = null;
 let _favListener = null;
 
-// ── Entry point ──────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-    // Show skeleton / loading state immediately
-    showLoader();
-
     _auth.onAuthStateChanged(user => {
         if (!user) {
-            // Not logged in — redirect to login
-            window.location.href = 'login.html';
+            // Not logged in — show guest state, hide auth content
+            const guestEl  = document.getElementById('guestState');
+            const authEl   = document.getElementById('authContent');
+            if (guestEl) guestEl.style.display = 'flex';
+            if (authEl)  authEl.style.display  = 'none';
             return;
         }
+
+        // Logged in — show auth content, hide guest state
+        const guestEl  = document.getElementById('guestState');
+        const authEl   = document.getElementById('authContent');
+        if (guestEl) guestEl.style.display = 'none';
+        if (authEl)  authEl.style.display  = 'block';
+
+        showLoader();
         attachFavoritesListener(user.uid);
     });
 });
 
-// ── Attach real-time listener to Favorites/{uid} ─────────────────────────────
 function attachFavoritesListener(uid) {
-    // Detach previous listener if any
     if (_favRef && _favListener) {
         _favRef.off('value', _favListener);
     }
@@ -64,15 +65,9 @@ function attachFavoritesListener(uid) {
         const data = snap.val();
         hideLoader();
 
-        if (!data) {
-            renderEmpty();
-            return;
-        }
+        if (!data) { renderEmpty(); return; }
 
-        // Convert Firebase object → sorted array (most-recently-added first)
-        // Firebase key is the item id; each value has { id, title, posterPath, movie }
         const items = Object.values(data).sort((a, b) => {
-            // If a timestamp field exists use it; otherwise keep insertion order
             return (b.addedAt || 0) - (a.addedAt || 0);
         });
 
@@ -88,9 +83,8 @@ function attachFavoritesListener(uid) {
     });
 }
 
-// ── Render grid of cards ─────────────────────────────────────────────────────
 function renderGrid(items, uid) {
-    const grid = MyListDOM.grid;
+    const grid  = MyListDOM.grid;
     const empty = MyListDOM.empty;
     const count = MyListDOM.count;
 
@@ -102,31 +96,25 @@ function renderGrid(items, uid) {
 
     grid.innerHTML = items.map(item => buildCard(item, uid)).join('');
 
-    // Delegate click events
     grid.querySelectorAll('.grid-card').forEach(card => {
         card.addEventListener('click', e => {
             const removeBtn = e.target.closest('[data-action="remove"]');
             if (removeBtn) {
                 e.preventDefault();
                 e.stopPropagation();
-                const itemId = card.dataset.id;
-                removeFromFirebase(uid, itemId, card);
+                removeFromFirebase(uid, card.dataset.id, card);
             } else {
-                const id   = card.dataset.id;
-                const type = card.dataset.type;
-                window.location.href = `watch.html?id=${id}&type=${type}`;
+                window.location.href = `watch.html?id=${card.dataset.id}&type=${card.dataset.type}`;
             }
         });
     });
 }
 
-// ── Build a single card HTML string ─────────────────────────────────────────
 function buildCard(item, uid) {
     const id    = item.id;
-    const type  = item.movie === false ? 'tv' : 'movie';   // movie:false → tv series
+    const type  = item.movie === false ? 'tv' : 'movie';
     const title = item.title || 'Untitled';
 
-    // Resolve poster
     let poster = 'https://via.placeholder.com/300x450/1a1a1a/666?text=No+Image';
     if (item.posterPath && item.posterPath !== 'null') {
         poster = item.posterPath.startsWith('http')
@@ -158,22 +146,16 @@ function buildCard(item, uid) {
     `;
 }
 
-// ── Remove item from Firebase ────────────────────────────────────────────────
 async function removeFromFirebase(uid, itemId, cardEl) {
-    // Animate out immediately for snappy UX
     if (cardEl) {
         cardEl.style.transition  = 'opacity 0.25s ease, transform 0.25s ease';
         cardEl.style.opacity     = '0';
         cardEl.style.transform   = 'scale(0.85)';
     }
-
     try {
         await _db.ref(`Favorites/${uid}/${itemId}`).remove();
-        // The real-time listener will fire and re-render automatically,
-        // but the card is already faded so the UX feels instant.
     } catch (err) {
         console.error('Failed to remove from Favorites:', err);
-        // Restore card if remove failed
         if (cardEl) {
             cardEl.style.opacity   = '1';
             cardEl.style.transform = '';
@@ -182,7 +164,6 @@ async function removeFromFirebase(uid, itemId, cardEl) {
     }
 }
 
-// ── Empty state ──────────────────────────────────────────────────────────────
 function renderEmpty() {
     const grid  = MyListDOM.grid;
     const empty = MyListDOM.empty;
@@ -193,7 +174,6 @@ function renderEmpty() {
     if (count) count.textContent   = '0 titles';
 }
 
-// ── Skeleton / loader helpers ────────────────────────────────────────────────
 function showLoader() {
     const loader = MyListDOM.loader;
     const grid   = MyListDOM.grid;
@@ -206,9 +186,7 @@ function hideLoader() {
     if (loader) loader.style.display = 'none';
 }
 
-// ── Optional toast (reuse your existing one if already on the page) ──────────
 function showToast(msg, type = 'info') {
-    // If the page already has a #toast element (like profile.html) use it
     const t = document.getElementById('toast');
     if (!t) { console.warn('Toast:', msg); return; }
     const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
