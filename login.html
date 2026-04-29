@@ -141,7 +141,7 @@
         .mbtn-send:hover { background:#f40612; box-shadow:0 5px 22px rgba(229,9,20,0.4); }
         .mbtn-send:disabled { opacity:0.55; cursor:not-allowed; }
 
-        /* ── USERNAME SETUP MODAL (matches app's UsernameSetupDialog) ── */
+        /* ── USERNAME SETUP MODAL ── */
         .umodal-wrap { position:fixed; inset:0; background:rgba(0,0,0,0.92); backdrop-filter:blur(16px); z-index:9999; display:none; align-items:center; justify-content:center; padding:20px; }
         .umodal-wrap.open { display:flex; }
         .umodal-box { background:#1a1a2e; border:1px solid rgba(224,64,251,0.25); border-radius:20px; padding:32px 28px; width:100%; max-width:400px; box-shadow:0 30px 80px rgba(0,0,0,0.9); animation:cardIn 0.4s cubic-bezier(0.16,1,0.3,1) both; }
@@ -287,7 +287,7 @@
     </div>
 </div>
 
-<!-- ══════════ USERNAME SETUP MODAL (mirrors app's UsernameSetupDialog) ══════════ -->
+<!-- ══════════ USERNAME SETUP MODAL ══════════ -->
 <div class="umodal-wrap" id="usernameModal">
     <div class="umodal-box">
         <div class="umodal-icon">👋</div>
@@ -345,13 +345,35 @@ const auth = firebase.auth();
 const db   = firebase.database();
 
 /* ════════════════════════════════════════════════════
-   AUTH STATE — mirrors MainActivity.onCreate logic:
-   If logged in → check if Users/{uid} exists AND
-   has a username. If not → show UsernameSetupDialog.
-   If yes → go to profile.
+   ANDROID BRIDGE HELPER
+   Safely calls AndroidApp.onUserLogin(uid, email)
+   only when running inside the Android WebView.
+   This triggers FCM token fetch + permission request
+   on the native side.
+════════════════════════════════════════════════════ */
+function notifyAndroidLogin(uid, email) {
+    try {
+        if (typeof AndroidApp !== 'undefined' && AndroidApp.onUserLogin) {
+            AndroidApp.onUserLogin(uid, email || '');
+            console.log('[Bridge] onUserLogin called for uid=' + uid);
+        }
+    } catch (e) {
+        // Not running in Android WebView — safe to ignore
+        console.log('[Bridge] AndroidApp not available (browser mode)');
+    }
+}
+
+/* ════════════════════════════════════════════════════
+   AUTH STATE — If logged in:
+   • Check Users/{uid} for username
+   • If no username → show UsernameSetupDialog
+   • If username exists → go to profile
 ════════════════════════════════════════════════════ */
 auth.onAuthStateChanged(async user => {
-    if (!user) return;   // not logged in — stay on this page
+    if (!user) return;
+
+    // ── Notify Android of login (triggers FCM token save) ────────────────
+    notifyAndroidLogin(user.uid, user.email);
 
     try {
         const snap = await db.ref('Users/' + user.uid).get();
@@ -359,18 +381,14 @@ auth.onAuthStateChanged(async user => {
         if (snap.exists()) {
             const username = snap.child('username').val();
             if (!username || username.trim() === '') {
-                // Node exists but no username — show setup dialog
                 openUsernameModal();
             } else {
-                // All good — go to profile
                 window.location.href = 'profile.html';
             }
         } else {
-            // No DB record at all — show username setup dialog
             openUsernameModal();
         }
     } catch (e) {
-        // If DB read fails, fall back to displayName check like the app does
         const dn = user.displayName;
         if (!dn || dn.trim() === '' || dn === 'Anonymous User') {
             openUsernameModal();
@@ -381,17 +399,11 @@ auth.onAuthStateChanged(async user => {
 });
 
 /* ════════════════════════════════════════════════════
-   SAVE USERNAME TO DB — exact copy of UsernameSetupDialog:
-   Writes ONLY these 6 fields to Users/{uid}:
-     uid · email · username · createdAt · lastSeen · isActive
+   SAVE USERNAME TO DB
 ════════════════════════════════════════════════════ */
 async function writeUsernameRecord(user, username) {
     const now = Date.now();
-
-    // 1. Update Firebase Auth displayName (same as app's updateProfile)
     await user.updateProfile({ displayName: username });
-
-    // 2. Write to Realtime DB → Users/{uid} (same as app's setValue)
     const userData = {
         uid      : user.uid,
         email    : user.email || '',
@@ -399,8 +411,9 @@ async function writeUsernameRecord(user, username) {
         createdAt: now,
         lastSeen : now,
         isActive : true
+        // NOTE: fcmToken is saved by Android side via updateUserActivity()
+        //       after onUserLogin() is called. No need to set it here.
     };
-
     await db.ref('Users/' + user.uid).set(userData);
 }
 
@@ -491,7 +504,9 @@ function setBtnLoad(id, on, label) {
 }
 
 /* ════════════════════════════════════════════════════
-   LOGIN — same as app's LoginScreen
+   LOGIN
+   After success → onAuthStateChanged fires →
+   notifyAndroidLogin() is called there automatically.
 ════════════════════════════════════════════════════ */
 async function doLogin() {
     const email = document.getElementById('loginEmail').value.trim();
@@ -500,8 +515,8 @@ async function doLogin() {
     if (!email || !pwd) { showAlert('loginAlert','Please fill in all fields.'); return; }
     setBtnLoad('loginBtn', true, 'Signing in…');
     try {
-        const cred = await auth.signInWithEmailAndPassword(email, pwd);
-        // onAuthStateChanged will handle the username check + redirect
+        await auth.signInWithEmailAndPassword(email, pwd);
+        // onAuthStateChanged handles: notifyAndroidLogin + username check + redirect
     } catch (e) {
         showAlert('loginAlert', fbErr(e.code));
         setBtnLoad('loginBtn', false, 'Sign In');
@@ -509,9 +524,9 @@ async function doLogin() {
 }
 
 /* ════════════════════════════════════════════════════
-   SIGNUP — same as app's SignupScreen:
-   ONLY creates Firebase Auth account.
-   No DB write here. Username dialog handles the DB.
+   SIGNUP
+   After Auth account created → onAuthStateChanged fires →
+   notifyAndroidLogin() is called automatically.
 ════════════════════════════════════════════════════ */
 async function doSignup() {
     const email = document.getElementById('signupEmail').value.trim();
@@ -519,7 +534,6 @@ async function doSignup() {
     const cpwd  = document.getElementById('confirmPwd').value;
     clearAlerts();
 
-    // Validate — mirrors app's validateEmail / validatePassword
     if (!email || !pwd || !cpwd)    { showAlert('signupAlert','Please fill in all fields.'); return; }
     if (!/\S+@\S+\.\S+/.test(email)){ showAlert('signupAlert','Invalid email format.'); return; }
     if (pwd.length < 6)             { showAlert('signupAlert','Password must be at least 6 characters.'); return; }
@@ -528,9 +542,8 @@ async function doSignup() {
 
     setBtnLoad('signupBtn', true, 'Creating account…');
     try {
-        // ONLY Firebase Auth — same as app's createUserWithEmailAndPassword
         await auth.createUserWithEmailAndPassword(email, pwd);
-        // onAuthStateChanged fires → detects no username → opens UsernameSetupDialog
+        // onAuthStateChanged fires → notifyAndroidLogin() called → username modal shown
         document.getElementById('signupFields').style.display   = 'none';
         document.getElementById('redirectScreen').style.display = 'flex';
     } catch (e) {
@@ -540,7 +553,7 @@ async function doSignup() {
 }
 
 /* ════════════════════════════════════════════════════
-   USERNAME MODAL — mirrors UsernameSetupDialog exactly
+   USERNAME MODAL
 ════════════════════════════════════════════════════ */
 function openUsernameModal() {
     document.getElementById('usernameModal').classList.add('open');
@@ -548,14 +561,11 @@ function openUsernameModal() {
 }
 
 function onUsernameType(inp) {
-    // Same filter as app: only letters, digits, underscore
     inp.value = inp.value.replace(/[^a-zA-Z0-9_]/g, '');
     const len = inp.value.length;
     document.getElementById('uCharCount').textContent = len + '/20';
     document.getElementById('usernameErr').style.display = 'none';
     inp.classList.remove('err');
-
-    // Enable button only if 3–20 chars (same as app's enabled condition)
     document.getElementById('usernameBtn').disabled = (len < 3 || len > 20);
 }
 
@@ -567,22 +577,12 @@ async function saveUsername() {
     const spin     = document.getElementById('uSpin');
     const lbl      = document.getElementById('uBtnLabel');
 
-    // Validation — mirrors app's validation block exactly
-    if (!username) {
-        showUErr('⚠️ Username cannot be empty'); return;
-    }
-    if (username.length < 3) {
-        showUErr('⚠️ Username must be at least 3 characters'); return;
-    }
-    if (username.length > 20) {
-        showUErr('⚠️ Username must be less than 20 characters'); return;
-    }
-    if (!/^[a-zA-Z]/.test(username)) {
-        showUErr('⚠️ Username must start with a letter'); return;
-    }
+    if (!username)              { showUErr('⚠️ Username cannot be empty'); return; }
+    if (username.length < 3)    { showUErr('⚠️ Username must be at least 3 characters'); return; }
+    if (username.length > 20)   { showUErr('⚠️ Username must be less than 20 characters'); return; }
+    if (!/^[a-zA-Z]/.test(username)) { showUErr('⚠️ Username must start with a letter'); return; }
 
-    // Loading state
-    btn.disabled  = true;
+    btn.disabled       = true;
     spin.style.display = 'block';
     lbl.textContent    = 'Saving…';
 
@@ -590,10 +590,12 @@ async function saveUsername() {
         const user = auth.currentUser;
         if (!user) { showUErr('❌ User not logged in'); return; }
 
-        // Write to DB — exact same logic as UsernameSetupDialog
         await writeUsernameRecord(user, username);
 
-        // Close modal and redirect — same as onUsernameSet() → PresenceManager.onUserLoggedIn()
+        // ── After username saved, notify Android again so FCM token
+        //    is written alongside the new DB record ────────────────────────
+        notifyAndroidLogin(user.uid, user.email);
+
         document.getElementById('usernameModal').classList.remove('open');
         window.location.href = 'profile.html';
 
