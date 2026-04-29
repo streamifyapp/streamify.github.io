@@ -1,4 +1,3 @@
-```javascript
 /* ============================================
    STREAMIFY - WATCH PAGE
    Player & Server Management + Firebase CW + Firebase Favorites
@@ -140,12 +139,7 @@ async function initWatchPage() {
     initServerButtons();
     await loadContentData();
     loadPlayer();
-
-    // For movies, action buttons are already injected inside initServerButtons
-    // so we just bind them here
-    if (currentType === 'movie') {
-        setupActionButtons();
-    }
+    setupActionButtons(); // buttons already exist in HTML, just bind them
 }
 
 // ============ SERVER MANAGEMENT ============
@@ -162,33 +156,6 @@ function initServerButtons() {
         btn.addEventListener('click', () => switchServer(key));
         container.appendChild(btn);
     });
-
-    // Inject action buttons below server buttons for movies only
-    // For TV, they are injected after episodes load
-    if (currentType === 'movie') {
-        injectActionButtons(container.parentElement);
-    }
-}
-
-// ── Inject My List / Share / Like buttons into a parent element ──────────────
-function injectActionButtons(parentElement) {
-    // Avoid duplicate injection
-    if (parentElement.querySelector('.action-buttons-row')) return;
-
-    const wrapper = document.createElement('div');
-    wrapper.className = 'action-buttons-row';
-    wrapper.innerHTML = `
-        <button class="action-btn" id="listBtn">
-            <i class="fas fa-plus"></i><span>My List</span>
-        </button>
-        <button class="action-btn" id="shareBtn">
-            <i class="fas fa-share-alt"></i><span>Share</span>
-        </button>
-        <button class="action-btn" id="likeBtn">
-            <i class="far fa-heart"></i><span>Like</span>
-        </button>
-    `;
-    parentElement.appendChild(wrapper);
 }
 
 function switchServer(serverKey) {
@@ -328,14 +295,6 @@ async function loadEpisodes(seasonNumber) {
             </div>
         `).join('');
 
-        // Inject action buttons below episodes section for TV
-        // episodesGrid's parent is the episodeSelector container
-        const episodeSelectorEl = document.getElementById('episodeSelector');
-        if (!document.querySelector('.action-buttons-row')) {
-            injectActionButtons(episodeSelectorEl);
-            setupActionButtons();
-        }
-
     } catch (error) {
         console.error('Error loading episodes:', error);
         episodesGrid.innerHTML = '<p>Failed to load episodes</p>';
@@ -380,9 +339,9 @@ function loadSimilarContent(items) {
 }
 
 // ============ ACTION BUTTONS ============
+// Buttons are already in watch.html — we just bind events here
 
 function setupActionButtons() {
-    // Show initial state from localStorage while Firebase auth loads
     const inLocal = Storage.isInMyList(parseInt(currentId), currentType);
     setListButtonState(inLocal);
 
@@ -476,4 +435,3 @@ function showNotification(message) {
         setTimeout(() => notification.remove(), 300);
     }, 3000);
 }
-```
