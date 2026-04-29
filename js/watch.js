@@ -1,6 +1,8 @@
 /* ============================================
    STREAMIFY - WATCH PAGE
    Player & Server Management + Firebase CW + Firebase Favorites
+   NOTE: Firebase is initialized by firebase-config.js
+         which is loaded BEFORE this file in watch.html
 ============================================ */
 
 // Global variables
@@ -11,48 +13,28 @@ let currentEpisode = 1;
 let currentServer  = null;
 let mediaData      = null;
 
-// ── Firebase Init ──
-const firebaseConfig = {
-    apiKey:            "AIzaSyBGE29YUks6sp4jZS4MzE2JIMF-RMLwVLg",
-    authDomain:        "moddy-store.firebaseapp.com",
-    databaseURL:       "https://moddy-store-default-rtdb.firebaseio.com",
-    projectId:         "moddy-store",
-    storageBucket:     "moddy-store.appspot.com",
-    messagingSenderId: "37854973622",
-    appId:             "1:37854873622:web:8f927e0a1d267d099ca017"
-};
+// ── Firebase — already initialized by firebase-config.js ─────────────────────
+// firebase-app, firebase-auth, firebase-database SDKs are loaded in watch.html
+// firebase.initializeApp() is called in firebase-config.js
+// We just grab the already-ready instances here.
+window._fbReady = true;
+window._fbAuth  = firebase.auth();
+window._fbDB    = firebase.database();
 
-// Load Firebase SDKs dynamically then init
-(function loadFirebase() {
-    function loadScript(src, cb) {
-        const s = document.createElement('script');
-        s.src = src; s.onload = cb;
-        document.head.appendChild(s);
+// Once auth state is known, sync the My List button with Firebase truth
+window._fbAuth.onAuthStateChanged(user => {
+    if (user && currentId) {
+        syncListButtonWithFirebase(user.uid);
     }
-    loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js', function () {
-        loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js', function () {
-            loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js', function () {
-                if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-                window._fbReady = true;
-                window._fbAuth  = firebase.auth();
-                window._fbDB    = firebase.database();
-
-                // ── Once Firebase is ready, sync the list button with Firebase state ──
-                window._fbAuth.onAuthStateChanged(user => {
-                    if (user && currentId) syncListButtonWithFirebase(user.uid);
-                });
-            });
-        });
-    });
-})();
+});
 
 // ============================================
 //  SAVE TO CONTINUE WATCHING (Firebase)
 // ============================================
 async function saveToContinueWatching() {
-    if (!window._fbAuth || !window._fbDB || !mediaData) return;
+    if (!mediaData) return;
     const user = window._fbAuth.currentUser;
-    if (!user) return;
+    if (!user) return; // Not logged in — skip silently
 
     const isMovie = currentType === 'movie';
     const itemKey = currentId + (isMovie ? '_movie' : '_series');
@@ -66,69 +48,85 @@ async function saveToContinueWatching() {
         posterPath: poster,
         timestamp:  Date.now()
     };
-    if (!isMovie) { entry.season = currentSeason; entry.episode = currentEpisode; }
+
+    if (!isMovie) {
+        entry.season  = currentSeason;
+        entry.episode = currentEpisode;
+    }
 
     try {
-        await window._fbDB.ref('ContinueWatching/' + user.uid + '/' + itemKey).set(entry);
+        await window._fbDB
+            .ref('ContinueWatching/' + user.uid + '/' + itemKey)
+            .set(entry);
+        console.log('Saved to ContinueWatching');
     } catch (e) {
         console.warn('ContinueWatching save failed:', e);
     }
 }
 
 // ============================================
-//  FAVORITES — SAVE TO FIREBASE
+//  FAVORITES — FIREBASE READ / WRITE
 // ============================================
 
 /**
- * Add item to Firebase Favorites/{uid}/{id}
- * Also keeps localStorage in sync so existing pages still work.
+ * Save item to Firebase Favorites/{uid}/{itemId}
+ * Structure matches your existing DB:
+ * { id, movie (bool), title, posterPath, addedAt }
  */
 async function addToFavoritesFirebase() {
-    if (!window._fbAuth || !window._fbDB || !mediaData) return;
+    if (!mediaData) return;
     const user = window._fbAuth.currentUser;
-    if (!user) return;
+    if (!user) {
+        showNotification('Please log in to save to My List');
+        return;
+    }
 
     const isMovie = currentType === 'movie';
     const entry   = {
         id:         parseInt(currentId),
-        movie:      isMovie,                          // false = TV series (matches your DB structure)
+        movie:      isMovie,
         title:      mediaData.title || mediaData.name || 'Unknown',
         posterPath: mediaData.poster_path || null,
         addedAt:    Date.now()
     };
 
     try {
-        await window._fbDB.ref('Favorites/' + user.uid + '/' + currentId).set(entry);
-        console.log('Saved to Firebase Favorites');
+        await window._fbDB
+            .ref('Favorites/' + user.uid + '/' + currentId)
+            .set(entry);
+        console.log('Saved to Firebase Favorites:', entry);
     } catch (e) {
         console.warn('Favorites save failed:', e);
+        showNotification('Failed to save. Try again.');
     }
 }
 
 /**
- * Remove item from Firebase Favorites/{uid}/{id}
+ * Remove item from Firebase Favorites/{uid}/{itemId}
  */
 async function removeFromFavoritesFirebase() {
-    if (!window._fbAuth || !window._fbDB) return;
     const user = window._fbAuth.currentUser;
     if (!user) return;
 
     try {
-        await window._fbDB.ref('Favorites/' + user.uid + '/' + currentId).remove();
+        await window._fbDB
+            .ref('Favorites/' + user.uid + '/' + currentId)
+            .remove();
         console.log('Removed from Firebase Favorites');
     } catch (e) {
         console.warn('Favorites remove failed:', e);
+        showNotification('Failed to remove. Try again.');
     }
 }
 
 /**
- * Check Firebase to see if this item is already in Favorites,
- * then update the button state to match.
+ * Check Firebase Favorites to see if this item is already saved,
+ * then update the button state to match reality (cross-device sync).
  */
 async function syncListButtonWithFirebase(uid) {
-    if (!window._fbDB || !currentId) return;
+    if (!currentId) return;
     try {
-        const snap = await window._fbDB.ref('Favorites/' + uid + '/' + currentId).once('value');
+        const snap       = await window._fbDB.ref('Favorites/' + uid + '/' + currentId).once('value');
         const inFirebase = snap.exists();
         setListButtonState(inFirebase);
     } catch (e) {
@@ -165,10 +163,10 @@ function initServerButtons() {
     const container = document.getElementById('serverButtons');
     container.innerHTML = '';
     CONFIG.getServerKeys().forEach(key => {
-        const btn = document.createElement('button');
-        btn.className   = `server-btn ${key === currentServer ? 'active' : ''}`;
+        const btn          = document.createElement('button');
+        btn.className      = `server-btn ${key === currentServer ? 'active' : ''}`;
         btn.dataset.server = key;
-        btn.innerHTML   = `<i class="fas fa-play-circle"></i><span>${CONFIG.getServerName(key)}</span>`;
+        btn.innerHTML      = `<i class="fas fa-play-circle"></i><span>${CONFIG.getServerName(key)}</span>`;
         btn.addEventListener('click', () => switchServer(key));
         container.appendChild(btn);
     });
@@ -203,16 +201,8 @@ function loadPlayer() {
     player.onload = () => {
         loader.style.display = 'none';
         player.style.opacity = '1';
-
-        // Save to Continue Watching once player loads
-        const trySave = () => {
-            if (window._fbReady) {
-                saveToContinueWatching();
-            } else {
-                setTimeout(trySave, 300);
-            }
-        };
-        trySave();
+        // Save to Continue Watching once player loads successfully
+        saveToContinueWatching();
     };
 
     player.onerror = () => {
@@ -307,7 +297,9 @@ async function loadEpisodes(seasonNumber) {
                  data-episode="${ep.episode_number}"
                  onclick="playEpisode(${seasonNumber}, ${ep.episode_number})">
                 <div class="episode-thumb">
-                    <img src="${ep.still_path ? API.getImageUrl(ep.still_path, 'card') : 'https://via.placeholder.com/300x170?text=No+Image'}"
+                    <img src="${ep.still_path
+                        ? API.getImageUrl(ep.still_path, 'card')
+                        : 'https://via.placeholder.com/300x170?text=No+Image'}"
                          alt="${ep.name}" loading="lazy">
                     <div class="episode-play"><i class="fas fa-play"></i></div>
                 </div>
@@ -334,7 +326,7 @@ function playEpisode(season, episode) {
         card.classList.toggle('active', parseInt(card.dataset.episode) === episode);
     });
 
-    loadPlayer();
+    loadPlayer(); // also re-saves ContinueWatching with updated season/episode
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -348,7 +340,9 @@ function loadSimilarContent(items) {
     }
     similarGrid.innerHTML = items.slice(0, 12).map(item => `
         <a href="watch.html?type=${currentType}&id=${item.id}" class="similar-card">
-            <img src="${item.poster_path ? API.getImageUrl(item.poster_path, 'poster') : 'https://via.placeholder.com/200x300?text=No+Image'}"
+            <img src="${item.poster_path
+                ? API.getImageUrl(item.poster_path, 'poster')
+                : 'https://via.placeholder.com/200x300?text=No+Image'}"
                  alt="${item.title || item.name}" loading="lazy">
             <div class="similar-info">
                 <h4>${item.title || item.name}</h4>
@@ -361,9 +355,9 @@ function loadSimilarContent(items) {
 // ============ ACTION BUTTONS ============
 
 function setupActionButtons() {
-    // Initial button state — start from localStorage while Firebase loads
-    const inLocalStorage = Storage.isInMyList(parseInt(currentId), currentType);
-    setListButtonState(inLocalStorage);
+    // Show initial state from localStorage while Firebase auth loads
+    const inLocal = Storage.isInMyList(parseInt(currentId), currentType);
+    setListButtonState(inLocal);
 
     document.getElementById('listBtn').addEventListener('click', toggleMyList);
     document.getElementById('shareBtn').addEventListener('click', shareContent);
@@ -389,24 +383,21 @@ function setListButtonState(isInList) {
     }
 }
 
-// ── Toggle My List — saves to BOTH Firebase + localStorage ───────────────────
+// ── Toggle My List — saves to Firebase + localStorage ────────────────────────
 async function toggleMyList() {
     const listBtn  = document.getElementById('listBtn');
     const isInList = listBtn.classList.contains('in-list');
 
-    // Optimistic UI update
+    // Optimistic UI — update immediately so it feels instant
     setListButtonState(!isInList);
 
     if (isInList) {
-        // ── REMOVE ──────────────────────────────────────────────────────────
-        // localStorage
+        // REMOVE
         Storage.removeFromMyList(parseInt(currentId), currentType);
-        // Firebase
         await removeFromFavoritesFirebase();
         showNotification('Removed from My List');
     } else {
-        // ── ADD ──────────────────────────────────────────────────────────────
-        // localStorage (keep existing pages working)
+        // ADD — localStorage (keeps other pages working)
         Storage.addToMyList({
             id:            parseInt(currentId),
             type:          currentType,
@@ -415,9 +406,9 @@ async function toggleMyList() {
             backdrop_path: mediaData?.backdrop_path,
             vote_average:  mediaData?.vote_average
         });
-        // Firebase Favorites (powers mylist.html and profile.html stat)
+        // ADD — Firebase Favorites (powers mylist.html real-time)
         await addToFavoritesFirebase();
-        showNotification('Added to My List');
+        showNotification('Added to My List ✓');
     }
 }
 
