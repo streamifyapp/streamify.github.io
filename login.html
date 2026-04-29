@@ -14,8 +14,7 @@
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --red:      #e50914;
-            --red-dark: #b20710;
-            --red-glow: rgba(229, 9, 20, 0.35);
+            --red-glow: rgba(229,9,20,0.35);
             --bg:       #070709;
             --border:   rgba(255,255,255,0.08);
             --text:     #ffffff;
@@ -23,17 +22,17 @@
             --font-display: 'Bebas Neue', sans-serif;
             --font-body:    'DM Sans', sans-serif;
         }
-        html, body { height: 100%; font-family: var(--font-body); background: var(--bg); color: var(--text); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-        body { display: flex; flex-direction: column; min-height: 100vh; padding-bottom: 80px; }
+        html, body { height:100%; font-family:var(--font-body); background:var(--bg); color:var(--text); overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+        body { display:flex; flex-direction:column; min-height:100vh; padding-bottom:80px; }
 
-        /* BG */
-        .bg-wrap { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-        .bg-base { width: 100%; height: 100%; background: radial-gradient(ellipse 80% 60% at 0% 0%, rgba(229,9,20,0.09) 0%, transparent 55%), radial-gradient(ellipse 60% 80% at 100% 100%, rgba(229,9,20,0.06) 0%, transparent 55%), radial-gradient(ellipse 100% 100% at 50% 50%, #0d0005 0%, #070709 60%); animation: bgDrift 18s ease-in-out infinite alternate; }
+        /* ── BG ── */
+        .bg-wrap { position:fixed; inset:0; z-index:0; pointer-events:none; }
+        .bg-base { width:100%; height:100%; background: radial-gradient(ellipse 80% 60% at 0% 0%,rgba(229,9,20,0.09) 0%,transparent 55%), radial-gradient(ellipse 60% 80% at 100% 100%,rgba(229,9,20,0.06) 0%,transparent 55%), radial-gradient(ellipse 100% 100% at 50% 50%,#0d0005 0%,#070709 60%); animation:bgDrift 18s ease-in-out infinite alternate; }
         @keyframes bgDrift { 0%{background-position:0% 0%} 100%{background-position:100% 100%} }
-        .bg-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(229,9,20,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(229,9,20,0.025) 1px, transparent 1px); background-size: 64px 64px; }
-        .bg-vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 30%, rgba(7,7,9,0.85) 100%); }
-        .particles { position: absolute; inset: 0; overflow: hidden; }
-        .p { position: absolute; border-radius: 50%; background: rgba(229,9,20,0.55); animation: pFloat linear infinite; }
+        .bg-grid { position:absolute; inset:0; background-image:linear-gradient(rgba(229,9,20,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(229,9,20,0.025) 1px,transparent 1px); background-size:64px 64px; }
+        .bg-vignette { position:absolute; inset:0; background:radial-gradient(ellipse at center,transparent 30%,rgba(7,7,9,0.85) 100%); }
+        .particles { position:absolute; inset:0; overflow:hidden; }
+        .p { position:absolute; border-radius:50%; background:rgba(229,9,20,0.55); animation:pFloat linear infinite; }
         .p:nth-child(1){left:5%;width:2px;height:2px;animation-duration:16s;animation-delay:0s}
         .p:nth-child(2){left:18%;width:1px;height:1px;animation-duration:20s;animation-delay:3s}
         .p:nth-child(3){left:30%;width:3px;height:3px;animation-duration:13s;animation-delay:5s}
@@ -45,21 +44,21 @@
         .p:nth-child(9){left:95%;width:2px;height:2px;animation-duration:17s;animation-delay:3s}
         @keyframes pFloat { 0%{transform:translateY(110vh) scale(0);opacity:0} 8%{opacity:1} 92%{opacity:0.7} 100%{transform:translateY(-60px) scale(1);opacity:0} }
 
-        /* NAVBAR */
-        .navbar { position: relative; z-index: 10; display: flex; align-items: center; justify-content: space-between; padding: 22px 52px; background: linear-gradient(180deg, rgba(7,7,9,0.9) 0%, transparent 100%); }
-        .logo { font-family: var(--font-display); font-size: 30px; letter-spacing: 3px; color: var(--red); text-decoration: none; text-shadow: 0 0 35px var(--red-glow); transition: text-shadow 0.3s; }
-        .logo:hover { text-shadow: 0 0 55px rgba(229,9,20,0.8); }
-        .nav-help { font-size: 13px; font-weight: 500; color: var(--muted); text-decoration: none; transition: color 0.3s; }
-        .nav-help:hover { color: var(--text); }
+        /* ── NAVBAR ── */
+        .navbar { position:relative; z-index:10; display:flex; align-items:center; justify-content:space-between; padding:22px 52px; background:linear-gradient(180deg,rgba(7,7,9,0.9) 0%,transparent 100%); }
+        .logo { font-family:var(--font-display); font-size:30px; letter-spacing:3px; color:var(--red); text-decoration:none; text-shadow:0 0 35px var(--red-glow); transition:text-shadow 0.3s; }
+        .logo:hover { text-shadow:0 0 55px rgba(229,9,20,0.8); }
+        .nav-help { font-size:13px; font-weight:500; color:var(--muted); text-decoration:none; transition:color 0.3s; }
+        .nav-help:hover { color:var(--text); }
 
-        /* MAIN / CARD */
-        .main { position: relative; z-index: 10; flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px 20px 60px; }
-        .card { width: 100%; max-width: 440px; background: rgba(5,5,8,0.88); backdrop-filter: blur(32px) saturate(160%); -webkit-backdrop-filter: blur(32px) saturate(160%); border: 1px solid rgba(255,255,255,0.075); border-radius: 20px; padding: 44px 44px 38px; box-shadow: 0 0 0 1px rgba(229,9,20,0.03), 0 32px 80px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.04); animation: cardIn 0.8s cubic-bezier(0.16,1,0.3,1) both; position: relative; }
+        /* ── MAIN / CARD ── */
+        .main { position:relative; z-index:10; flex:1; display:flex; align-items:center; justify-content:center; padding:20px 20px 60px; }
+        .card { width:100%; max-width:440px; background:rgba(5,5,8,0.88); backdrop-filter:blur(32px) saturate(160%); -webkit-backdrop-filter:blur(32px) saturate(160%); border:1px solid rgba(255,255,255,0.075); border-radius:20px; padding:44px 44px 38px; box-shadow:0 0 0 1px rgba(229,9,20,0.03),0 32px 80px rgba(0,0,0,0.9),inset 0 1px 0 rgba(255,255,255,0.04); animation:cardIn 0.8s cubic-bezier(0.16,1,0.3,1) both; position:relative; }
         @keyframes cardIn { from{opacity:0;transform:translateY(36px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
         .card::before { content:''; position:absolute; inset:-1px; border-radius:21px; z-index:-1; background:linear-gradient(135deg,rgba(229,9,20,0.18),transparent 45%,rgba(229,9,20,0.09)); opacity:0; transition:opacity 0.5s; }
         .card:hover::before { opacity:1; }
 
-        /* TABS */
+        /* ── TABS ── */
         .tabs { display:flex; background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:12px; padding:4px; margin-bottom:34px; }
         .tab { flex:1; padding:11px 0; border:none; background:transparent; color:var(--muted); font-family:var(--font-body); font-size:14px; font-weight:600; cursor:pointer; border-radius:9px; transition:all 0.3s cubic-bezier(0.16,1,0.3,1); }
         .tab.on { background:var(--red); color:#fff; box-shadow:0 4px 22px rgba(229,9,20,0.4); }
@@ -73,7 +72,7 @@
         .panel.on { display:flex; animation:panelIn 0.35s ease; }
         @keyframes panelIn { from{opacity:0;transform:translateX(10px)} to{opacity:1;transform:translateX(0)} }
 
-        /* INPUTS */
+        /* ── INPUTS ── */
         .ig { position:relative; }
         .ig label { display:block; font-size:10.5px; font-weight:700; color:rgba(255,255,255,0.38); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:7px; }
         .iw { position:relative; display:flex; align-items:center; }
@@ -87,6 +86,7 @@
         .eye { position:absolute; right:13px; z-index:2; background:none; border:none; cursor:pointer; color:rgba(255,255,255,0.22); font-size:13px; padding:4px; transition:color 0.25s; }
         .eye:hover { color:rgba(255,255,255,0.6); }
 
+        /* password strength */
         .strength { margin-top:8px; display:none; }
         .s-bars { display:flex; gap:4px; margin-bottom:5px; }
         .s-bar { flex:1; height:3px; background:rgba(255,255,255,0.07); border-radius:99px; transition:background 0.4s; }
@@ -99,7 +99,7 @@
         .forgot { font-size:13px; color:var(--muted); cursor:pointer; transition:color 0.25s; background:none; border:none; }
         .forgot:hover { color:#fff; text-decoration:underline; }
 
-        /* SUBMIT */
+        /* ── SUBMIT ── */
         .submit { width:100%; padding:14px; background:linear-gradient(135deg,#e50914,#c1000e); border:none; border-radius:11px; color:#fff; font-family:var(--font-body); font-size:15px; font-weight:700; cursor:pointer; position:relative; overflow:hidden; margin-top:2px; box-shadow:0 4px 20px rgba(229,9,20,0.28); transition:all 0.28s ease; display:flex; align-items:center; justify-content:center; gap:8px; }
         .submit::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.11),transparent); transition:left 0.55s; }
         .submit:hover::before { left:100%; }
@@ -111,13 +111,12 @@
         .submit.loading .spin-sm { display:block; }
         .submit.loading .lbl { opacity:0.7; }
 
-        /* ALERTS */
+        /* ── ALERTS ── */
         .alert { padding:11px 14px; border-radius:9px; font-size:13px; font-weight:500; line-height:1.5; display:flex; align-items:flex-start; gap:9px; animation:alertIn 0.3s ease; }
         @keyframes alertIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
         .alert i { flex-shrink:0; margin-top:1px; }
         .alert-err  { background:rgba(229,9,20,0.09);  border:1px solid rgba(229,9,20,0.22);  color:#ff8080; }
         .alert-ok   { background:rgba(39,174,96,0.09); border:1px solid rgba(39,174,96,0.22); color:#6bcb77; }
-        .alert-info { background:rgba(52,152,219,0.09);border:1px solid rgba(52,152,219,0.22);color:#74b9e7; }
 
         .switch { text-align:center; font-size:13px; color:var(--muted); }
         .switch a { color:#fff; font-weight:700; text-decoration:none; cursor:pointer; transition:color 0.25s; }
@@ -125,9 +124,10 @@
         .terms { font-size:12px; color:rgba(255,255,255,0.22); text-align:center; line-height:1.7; }
         .terms a { color:rgba(255,255,255,0.4); text-decoration:underline; }
         .terms a:hover { color:#fff; }
+
         .footer { position:relative; z-index:10; text-align:center; padding:16px; color:rgba(255,255,255,0.18); font-size:12px; }
 
-        /* FORGOT MODAL */
+        /* ── FORGOT MODAL ── */
         .modal-wrap { position:fixed; inset:0; background:rgba(0,0,0,0.82); backdrop-filter:blur(10px); z-index:9000; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.3s; }
         .modal-wrap.open { opacity:1; pointer-events:all; }
         .modal-box { background:rgba(8,8,12,0.98); border:1px solid rgba(255,255,255,0.09); border-radius:18px; padding:38px 34px; width:100%; max-width:390px; box-shadow:0 30px 80px rgba(0,0,0,0.85); transform:scale(0.91) translateY(18px); transition:all 0.38s cubic-bezier(0.16,1,0.3,1); }
@@ -141,11 +141,28 @@
         .mbtn-send:hover { background:#f40612; box-shadow:0 5px 22px rgba(229,9,20,0.4); }
         .mbtn-send:disabled { opacity:0.55; cursor:not-allowed; }
 
-        /* REDIRECT SCREEN */
+        /* ── USERNAME SETUP MODAL (matches app's UsernameSetupDialog) ── */
+        .umodal-wrap { position:fixed; inset:0; background:rgba(0,0,0,0.92); backdrop-filter:blur(16px); z-index:9999; display:none; align-items:center; justify-content:center; padding:20px; }
+        .umodal-wrap.open { display:flex; }
+        .umodal-box { background:#1a1a2e; border:1px solid rgba(224,64,251,0.25); border-radius:20px; padding:32px 28px; width:100%; max-width:400px; box-shadow:0 30px 80px rgba(0,0,0,0.9); animation:cardIn 0.4s cubic-bezier(0.16,1,0.3,1) both; }
+        .umodal-icon { width:80px; height:80px; border-radius:40px; background:rgba(224,64,251,0.15); display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:32px; }
+        .umodal-title { font-size:24px; font-weight:800; text-align:center; margin-bottom:8px; }
+        .umodal-sub { font-size:14px; color:var(--muted); text-align:center; line-height:1.6; margin-bottom:28px; }
+        .umodal-input { width:100%; padding:13px 14px; background:rgba(255,255,255,0.045); border:1.5px solid rgba(255,255,255,0.12); border-radius:11px; color:var(--text); font-family:var(--font-body); font-size:14px; font-weight:500; outline:none; transition:all 0.25s ease; }
+        .umodal-input:focus { border-color:#e040fb; box-shadow:0 0 0 3px rgba(224,64,251,0.15); background:rgba(224,64,251,0.04); }
+        .umodal-input.err { border-color:rgba(255,82,82,0.6); }
+        .umodal-meta { display:flex; justify-content:space-between; font-size:11px; color:rgba(255,255,255,0.4); margin-top:6px; margin-bottom:4px; }
+        .umodal-err { background:rgba(255,82,82,0.1); border:1px solid rgba(255,82,82,0.25); border-radius:8px; padding:10px; font-size:12px; color:#ff5252; margin-top:12px; }
+        .umodal-btn { width:100%; padding:15px; background:#e040fb; border:none; border-radius:12px; color:#fff; font-family:var(--font-body); font-size:15px; font-weight:700; cursor:pointer; margin-top:24px; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.25s; }
+        .umodal-btn:hover:not(:disabled) { background:#cc30e0; box-shadow:0 6px 24px rgba(224,64,251,0.4); transform:translateY(-1px); }
+        .umodal-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+        .umodal-hint { text-align:center; font-size:11px; color:rgba(255,255,255,0.3); margin-top:12px; }
+
+        /* ── REDIRECT SCREEN ── */
         .redirect-screen { display:none; flex-direction:column; align-items:center; text-align:center; gap:14px; padding:10px 0; animation:panelIn 0.5s ease; }
-        .redirect-icon { width:70px; height:70px; border-radius:50%; background:rgba(39,174,96,0.1); border:2px solid rgba(39,174,96,0.3); display:flex; align-items:center; justify-content:center; font-size:26px; color:#6bcb77; animation:popIn 0.5s cubic-bezier(0.16,1,0.3,1); box-shadow:0 0 35px rgba(39,174,96,0.12); }
+        .redirect-icon { width:70px; height:70px; border-radius:50%; background:rgba(39,174,96,0.1); border:2px solid rgba(39,174,96,0.3); display:flex; align-items:center; justify-content:center; font-size:26px; color:#6bcb77; animation:popIn 0.5s cubic-bezier(0.16,1,0.3,1); }
         @keyframes popIn { from{transform:scale(0) rotate(-12deg);opacity:0} to{transform:scale(1) rotate(0);opacity:1} }
-        .redirect-title { font-size:22px; font-weight:800; letter-spacing:-0.3px; }
+        .redirect-title { font-size:22px; font-weight:800; }
         .redirect-sub   { font-size:14px; color:var(--muted); line-height:1.6; }
         .redirect-dots  { display:flex; gap:6px; }
         .redirect-dots span { width:7px; height:7px; border-radius:50%; background:var(--red); animation:dotBounce 1.2s ease infinite; }
@@ -153,15 +170,9 @@
         .redirect-dots span:nth-child(3){animation-delay:0.3s}
         @keyframes dotBounce { 0%,80%,100%{transform:scale(0.6);opacity:0.4} 40%{transform:scale(1);opacity:1} }
 
-        /* DB STATUS BANNER (shows write result) */
-        .db-status { display:none; margin-top:8px; padding:9px 13px; border-radius:9px; font-size:12px; font-weight:600; gap:7px; align-items:center; }
-        .db-status.show { display:flex; animation:alertIn 0.3s ease; }
-        .db-status.ok  { background:rgba(39,174,96,0.09); border:1px solid rgba(39,174,96,0.22); color:#6bcb77; }
-        .db-status.err { background:rgba(229,9,20,0.09);  border:1px solid rgba(229,9,20,0.22);  color:#ff8080; }
-
         @media (max-width:500px) { .navbar{padding:16px 22px} .card{padding:30px 22px 26px} .logo{font-size:26px} }
 
-        /* BOTTOM NAV */
+        /* ── BOTTOM NAV ── */
         .bottom-nav { position:fixed; bottom:0; left:0; right:0; z-index:9000; height:70px; display:flex; align-items:stretch; background:rgba(10,10,15,0.82); backdrop-filter:blur(24px) saturate(180%); -webkit-backdrop-filter:blur(24px) saturate(180%); border-top:1px solid rgba(255,255,255,0.07); box-shadow:0 -4px 30px rgba(0,0,0,0.6),0 -1px 0 rgba(229,9,20,0.15) inset; padding-bottom:env(safe-area-inset-bottom,0px); transition:transform 0.35s cubic-bezier(0.4,0,0.2,1); }
         .bottom-nav::before { content:''; position:absolute; top:0; left:10%; right:10%; height:1px; background:linear-gradient(90deg,transparent,rgba(229,9,20,0.5) 30%,rgba(255,107,107,0.6) 50%,rgba(229,9,20,0.5) 70%,transparent); filter:blur(0.5px); }
         .bottom-nav-item { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; text-decoration:none; color:rgba(255,255,255,0.45); font-size:10px; font-weight:600; letter-spacing:0.5px; text-transform:uppercase; cursor:pointer; background:none; border:none; padding:0; transition:color 0.25s ease; position:relative; -webkit-tap-highlight-color:transparent; }
@@ -201,7 +212,7 @@
             <button class="tab"    id="tabSignup" onclick="goTab('signup')">Create Account</button>
         </div>
 
-        <!-- ══ LOGIN ══ -->
+        <!-- ══════════ LOGIN PANEL ══════════ -->
         <div class="panel on" id="panelLogin">
             <div class="fh"><h1>Welcome back 👋</h1><p>Sign in to your Streamify account</p></div>
             <div id="loginAlert"></div>
@@ -221,33 +232,26 @@
             <div class="switch">New here? <a onclick="goTab('signup')">Create an account</a></div>
         </div>
 
-        <!-- ══ SIGNUP ══ -->
+        <!-- ══════════ SIGNUP PANEL ══════════ -->
         <div class="panel" id="panelSignup">
-
-            <!-- Success screen -->
+            <!-- Success screen shown after Auth account created -->
             <div class="redirect-screen" id="redirectScreen">
                 <div class="redirect-icon"><i class="fas fa-check"></i></div>
                 <div class="redirect-title">Account Created!</div>
-                <div class="redirect-sub">Signing you in automatically…</div>
+                <div class="redirect-sub">Setting up your profile…</div>
                 <div class="redirect-dots"><span></span><span></span><span></span></div>
             </div>
-
             <div id="signupFields">
                 <div class="fh"><h1>Join Streamify 🚀</h1><p>Create your free account in seconds</p></div>
                 <div id="signupAlert" style="margin-bottom:4px;"></div>
                 <div style="display:flex;flex-direction:column;gap:15px;">
-
-                    <div class="ig">
-                        <label>Username</label>
-                        <div class="iw"><i class="fas fa-at ico"></i><input type="text" id="signupUsername" placeholder="cooluser123" maxlength="20"></div>
-                    </div>
                     <div class="ig">
                         <label>Email Address</label>
                         <div class="iw"><i class="fas fa-envelope ico"></i><input type="email" id="signupEmail" placeholder="your@email.com" autocomplete="email"></div>
                     </div>
                     <div class="ig">
                         <label>Password</label>
-                        <div class="iw"><i class="fas fa-lock ico"></i><input type="password" id="signupPwd" placeholder="Min. 6 characters" oninput="checkStr(this.value)"><button class="eye" onclick="toggleEye('signupPwd',this)" type="button"><i class="fas fa-eye"></i></button></div>
+                        <div class="iw"><i class="fas fa-lock ico"></i><input type="password" id="signupPwd" placeholder="Min. 6 chars + 1 number" oninput="checkStr(this.value)"><button class="eye" onclick="toggleEye('signupPwd',this)" type="button"><i class="fas fa-eye"></i></button></div>
                         <div class="strength" id="strMeter">
                             <div class="s-bars"><div class="s-bar" id="sb1"></div><div class="s-bar" id="sb2"></div><div class="s-bar" id="sb3"></div><div class="s-bar" id="sb4"></div></div>
                             <span class="s-label" id="strLabel"></span>
@@ -257,10 +261,6 @@
                         <label>Confirm Password</label>
                         <div class="iw"><i class="fas fa-shield-alt ico"></i><input type="password" id="confirmPwd" placeholder="Re-enter password"><button class="eye" onclick="toggleEye('confirmPwd',this)" type="button"><i class="fas fa-eye"></i></button></div>
                     </div>
-
-                    <!-- DB write status shown here -->
-                    <div class="db-status" id="dbStatus"><i class="fas fa-circle-check"></i><span id="dbStatusMsg"></span></div>
-
                     <button class="submit" id="signupBtn" onclick="doSignup()"><div class="spin-sm"></div><span class="lbl">Create Account</span></button>
                     <p class="terms">By signing up you agree to our <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a></p>
                     <div class="switch">Already have an account? <a onclick="goTab('login')">Sign in</a></div>
@@ -273,7 +273,7 @@
 
 <footer class="footer">© 2025 Streamify · All rights reserved</footer>
 
-<!-- FORGOT MODAL -->
+<!-- ══════════ FORGOT PASSWORD MODAL ══════════ -->
 <div class="modal-wrap" id="forgotModal" onclick="backdropClose(event)">
     <div class="modal-box">
         <div class="modal-title">Reset Password</div>
@@ -284,6 +284,33 @@
             <button class="mbtn-cancel" onclick="closeForgot()">Cancel</button>
             <button class="mbtn-send" id="forgotSendBtn" onclick="doForgot()">Send Link</button>
         </div>
+    </div>
+</div>
+
+<!-- ══════════ USERNAME SETUP MODAL (mirrors app's UsernameSetupDialog) ══════════ -->
+<div class="umodal-wrap" id="usernameModal">
+    <div class="umodal-box">
+        <div class="umodal-icon">👋</div>
+        <div class="umodal-title">Welcome!</div>
+        <div class="umodal-sub">Please create a unique username<br>for your account</div>
+        <input
+            class="umodal-input"
+            id="usernameInput"
+            type="text"
+            maxlength="20"
+            placeholder="e.g., movie_lover_123"
+            oninput="onUsernameType(this)"
+        >
+        <div class="umodal-meta">
+            <span>Must start with a letter · letters, numbers, _ only</span>
+            <span id="uCharCount">0/20</span>
+        </div>
+        <div class="umodal-err" id="usernameErr" style="display:none;"></div>
+        <button class="umodal-btn" id="usernameBtn" onclick="saveUsername()" disabled>
+            <div class="spin-sm" id="uSpin"></div>
+            <span id="uBtnLabel">Continue</span>
+        </button>
+        <div class="umodal-hint">You can change this later in settings</div>
     </div>
 </div>
 
@@ -301,9 +328,9 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-/* ══════════════════════════════════════════════════
+/* ════════════════════════════════════════════════════
    FIREBASE INIT
-══════════════════════════════════════════════════ */
+════════════════════════════════════════════════════ */
 const firebaseConfig = {
     apiKey:            "AIzaSyBGE29YUks6sp4jZS4MzE2JIMF-RMLwVLg",
     authDomain:        "moddy-store.firebaseapp.com",
@@ -315,65 +342,84 @@ const firebaseConfig = {
 };
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const db   = firebase.database();   // Realtime Database
+const db   = firebase.database();
 
-/* ══════════════════════════════════════════════════
-   AUTO-REDIRECT IF ALREADY LOGGED IN
-══════════════════════════════════════════════════ */
-auth.onAuthStateChanged(user => {
-    if (user) window.location.href = 'profile.html';
+/* ════════════════════════════════════════════════════
+   AUTH STATE — mirrors MainActivity.onCreate logic:
+   If logged in → check if Users/{uid} exists AND
+   has a username. If not → show UsernameSetupDialog.
+   If yes → go to profile.
+════════════════════════════════════════════════════ */
+auth.onAuthStateChanged(async user => {
+    if (!user) return;   // not logged in — stay on this page
+
+    try {
+        const snap = await db.ref('Users/' + user.uid).get();
+
+        if (snap.exists()) {
+            const username = snap.child('username').val();
+            if (!username || username.trim() === '') {
+                // Node exists but no username — show setup dialog
+                openUsernameModal();
+            } else {
+                // All good — go to profile
+                window.location.href = 'profile.html';
+            }
+        } else {
+            // No DB record at all — show username setup dialog
+            openUsernameModal();
+        }
+    } catch (e) {
+        // If DB read fails, fall back to displayName check like the app does
+        const dn = user.displayName;
+        if (!dn || dn.trim() === '' || dn === 'Anonymous User') {
+            openUsernameModal();
+        } else {
+            window.location.href = 'profile.html';
+        }
+    }
 });
 
-/* ══════════════════════════════════════════════════
-   WRITE USER RECORD TO REALTIME DATABASE
-   Path : Users/{uid}
-   Fields written (exactly matching your DB schema):
-     uid · email · username · currentMedal
-     totalPoints · totalActiveTime
-     isActive · createdAt · lastSeen · fcmToken
-   ➜ No other database path is written to.
-══════════════════════════════════════════════════ */
-async function writeUserRecord(uid, email, username) {
+/* ════════════════════════════════════════════════════
+   SAVE USERNAME TO DB — exact copy of UsernameSetupDialog:
+   Writes ONLY these 6 fields to Users/{uid}:
+     uid · email · username · createdAt · lastSeen · isActive
+════════════════════════════════════════════════════ */
+async function writeUsernameRecord(user, username) {
     const now = Date.now();
 
+    // 1. Update Firebase Auth displayName (same as app's updateProfile)
+    await user.updateProfile({ displayName: username });
+
+    // 2. Write to Realtime DB → Users/{uid} (same as app's setValue)
     const userData = {
-        uid             : uid,
-        email           : email,
-        username        : username,
-        currentMedal    : "bronze",
-        totalPoints     : 0,
-        totalActiveTime : 0,
-        isActive        : true,
-        createdAt       : now,
-        lastSeen        : now,
-        fcmToken        : ""
+        uid      : user.uid,
+        email    : user.email || '',
+        username : username,
+        createdAt: now,
+        lastSeen : now,
+        isActive : true
     };
 
-    console.log("Writing to Users/" + uid, userData);   // visible in browser console
-
-    // Use .set() — overwrites the node completely with our clean schema
-    await db.ref("Users/" + uid).set(userData);
-
-    console.log("DB write SUCCESS for Users/" + uid);
+    await db.ref('Users/' + user.uid).set(userData);
 }
 
-/* ══════════════════════════════════════════════════
-   UPDATE isActive + lastSeen ON EVERY LOGIN
-   Only updates two fields inside Users/{uid}
-══════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════
+   UPDATE lastSeen + isActive on every login
+════════════════════════════════════════════════════ */
 async function touchLoginStatus(uid) {
-    await db.ref("Users/" + uid).update({
+    await db.ref('Users/' + uid).update({
         isActive : true,
         lastSeen : Date.now()
     });
 }
 
-/* ══════════════════════════════════════════════════
+/* ════════════════════════════════════════════════════
    UI HELPERS
-══════════════════════════════════════════════════ */
+════════════════════════════════════════════════════ */
 function goTab(tab) {
     clearAlerts();
-    const isLogin = (tab === 'login');
+    const isLogin = tab === 'login';
     document.getElementById('tabLogin').classList.toggle('on',   isLogin);
     document.getElementById('tabSignup').classList.toggle('on',  !isLogin);
     document.getElementById('panelLogin').classList.toggle('on',  isLogin);
@@ -395,24 +441,24 @@ function checkStr(pwd) {
     if (!pwd) { meter.style.display = 'none'; return; }
     meter.style.display = 'block';
     let s = 0;
+    if (pwd.length >= 6)           s++;
     if (pwd.length >= 8)           s++;
     if (/[A-Z]/.test(pwd))         s++;
     if (/[0-9]/.test(pwd))         s++;
-    if (/[^A-Za-z0-9]/.test(pwd)) s++;
     const cfg = [
         {c:'#e50914',t:'Weak',  tc:'#ff8080'},
         {c:'#ff6b35',t:'Fair',  tc:'#ff9f70'},
         {c:'#f7b731',t:'Good',  tc:'#f7b731'},
         {c:'#27ae60',t:'Strong',tc:'#6bcb77'}
     ];
-    const v = cfg[Math.max(s-1,0)];
+    const v = cfg[Math.min(s, cfg.length) - 1] || cfg[0];
     bars.forEach((b,i) => b.style.background = i < s ? v.c : 'rgba(255,255,255,0.07)');
     label.textContent = 'Strength: ' + v.t;
     label.style.color = v.tc;
 }
 
 function showAlert(id, msg, type='err') {
-    const icons = {err:'fa-circle-exclamation', ok:'fa-circle-check', info:'fa-circle-info'};
+    const icons = {err:'fa-circle-exclamation', ok:'fa-circle-check'};
     document.getElementById(id).innerHTML =
         `<div class="alert alert-${type}"><i class="fas ${icons[type]}"></i><span>${msg}</span></div>`;
 }
@@ -422,24 +468,17 @@ function clearAlerts() {
         if (el) el.innerHTML = '';
     });
 }
-function showDbStatus(ok, msg) {
-    const el  = document.getElementById('dbStatus');
-    const txt = document.getElementById('dbStatusMsg');
-    el.className  = 'db-status show ' + (ok ? 'ok' : 'err');
-    el.querySelector('i').className = 'fas ' + (ok ? 'fa-circle-check' : 'fa-circle-exclamation');
-    txt.textContent = msg;
-}
 
 function fbErr(code) {
     const m = {
-        'auth/user-not-found'        :'No account found with this email.',
-        'auth/wrong-password'        :'Incorrect password.',
-        'auth/invalid-email'         :'Invalid email address.',
-        'auth/email-already-in-use'  :'This email is already registered.',
-        'auth/weak-password'         :'Password must be at least 6 characters.',
-        'auth/too-many-requests'     :'Too many attempts. Try again later.',
-        'auth/network-request-failed':'Network error. Check your connection.',
-        'auth/invalid-credential'    :'Invalid email or password.'
+        'auth/user-not-found'        : 'No account found with this email.',
+        'auth/wrong-password'        : 'Incorrect password.',
+        'auth/invalid-email'         : 'Invalid email address.',
+        'auth/email-already-in-use'  : 'This email is already registered.',
+        'auth/weak-password'         : 'Password must be at least 6 characters.',
+        'auth/too-many-requests'     : 'Too many attempts. Try again later.',
+        'auth/network-request-failed': 'Network error. Check your connection.',
+        'auth/invalid-credential'    : 'Invalid email or password.'
     };
     return m[code] || 'Something went wrong. Please try again.';
 }
@@ -451,9 +490,9 @@ function setBtnLoad(id, on, label) {
     if (label) b.querySelector('.lbl').textContent = label;
 }
 
-/* ══════════════════════════════════════════════════
-   LOGIN
-══════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════
+   LOGIN — same as app's LoginScreen
+════════════════════════════════════════════════════ */
 async function doLogin() {
     const email = document.getElementById('loginEmail').value.trim();
     const pwd   = document.getElementById('loginPwd').value;
@@ -462,78 +501,124 @@ async function doLogin() {
     setBtnLoad('loginBtn', true, 'Signing in…');
     try {
         const cred = await auth.signInWithEmailAndPassword(email, pwd);
-        // Update only isActive + lastSeen inside Users/{uid}
-        await touchLoginStatus(cred.user.uid);
-        showAlert('loginAlert','Signed in! Redirecting…','ok');
-        setTimeout(() => { window.location.href = 'profile.html'; }, 900);
+        // onAuthStateChanged will handle the username check + redirect
     } catch (e) {
-        console.error("Login error:", e.code, e.message);
         showAlert('loginAlert', fbErr(e.code));
         setBtnLoad('loginBtn', false, 'Sign In');
     }
 }
 
-/* ══════════════════════════════════════════════════
-   SIGNUP
-   Step 1 → Firebase Auth  (creates email+password)
-   Step 2 → Auth profile   (sets displayName = username)
-   Step 3 → Realtime DB    (writes Users/{uid} record)
-══════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════
+   SIGNUP — same as app's SignupScreen:
+   ONLY creates Firebase Auth account.
+   No DB write here. Username dialog handles the DB.
+════════════════════════════════════════════════════ */
 async function doSignup() {
-    const username = document.getElementById('signupUsername').value.trim();
-    const email    = document.getElementById('signupEmail').value.trim();
-    const pwd      = document.getElementById('signupPwd').value;
-    const cpwd     = document.getElementById('confirmPwd').value;
+    const email = document.getElementById('signupEmail').value.trim();
+    const pwd   = document.getElementById('signupPwd').value;
+    const cpwd  = document.getElementById('confirmPwd').value;
     clearAlerts();
 
-    // ── Validate ──
-    if (!username || !email || !pwd || !cpwd) { showAlert('signupAlert','Please fill in all fields.'); return; }
-    if (username.length < 2)                  { showAlert('signupAlert','Username must be at least 2 characters.'); return; }
-    if (pwd.length < 6)                       { showAlert('signupAlert','Password must be at least 6 characters.'); return; }
-    if (pwd !== cpwd)                         { showAlert('signupAlert','Passwords do not match.'); return; }
+    // Validate — mirrors app's validateEmail / validatePassword
+    if (!email || !pwd || !cpwd)    { showAlert('signupAlert','Please fill in all fields.'); return; }
+    if (!/\S+@\S+\.\S+/.test(email)){ showAlert('signupAlert','Invalid email format.'); return; }
+    if (pwd.length < 6)             { showAlert('signupAlert','Password must be at least 6 characters.'); return; }
+    if (!/\d/.test(pwd))            { showAlert('signupAlert','Password must contain at least one number.'); return; }
+    if (pwd !== cpwd)               { showAlert('signupAlert','Passwords do not match.'); return; }
 
     setBtnLoad('signupBtn', true, 'Creating account…');
-
     try {
-        // ── Step 1: Create Firebase Auth account ──
-        console.log("Step 1: Creating Firebase Auth account…");
-        const cred = await auth.createUserWithEmailAndPassword(email, pwd);
-        const uid  = cred.user.uid;
-        console.log("Auth account created, uid =", uid);
-
-        // ── Step 2: Set displayName in Auth profile ──
-        console.log("Step 2: Setting Auth profile displayName…");
-        await cred.user.updateProfile({ displayName: username });
-        console.log("Auth profile updated.");
-
-        // ── Step 3: Write all fields to Realtime DB → Users/{uid} ──
-        console.log("Step 3: Writing user record to Realtime Database…");
-        await writeUserRecord(uid, email, username);
-
-        // ── Success ──
-        showDbStatus(true, "Saved to database ✓");
+        // ONLY Firebase Auth — same as app's createUserWithEmailAndPassword
+        await auth.createUserWithEmailAndPassword(email, pwd);
+        // onAuthStateChanged fires → detects no username → opens UsernameSetupDialog
         document.getElementById('signupFields').style.display   = 'none';
         document.getElementById('redirectScreen').style.display = 'flex';
-        setTimeout(() => { window.location.href = 'profile.html'; }, 1800);
-
     } catch (e) {
-        console.error("Signup error:", e.code, e.message);
-
-        // If the error is a DB write failure (not Auth), tell the user clearly
-        if (e.code && e.code.startsWith('auth/')) {
-            showAlert('signupAlert', fbErr(e.code));
-        } else {
-            // DB write failed — show detailed error
-            showAlert('signupAlert', 'Account created but database save failed: ' + e.message);
-            showDbStatus(false, "DB write failed: " + (e.message || e.code));
-        }
+        showAlert('signupAlert', fbErr(e.code));
         setBtnLoad('signupBtn', false, 'Create Account');
     }
 }
 
-/* ══════════════════════════════════════════════════
+/* ════════════════════════════════════════════════════
+   USERNAME MODAL — mirrors UsernameSetupDialog exactly
+════════════════════════════════════════════════════ */
+function openUsernameModal() {
+    document.getElementById('usernameModal').classList.add('open');
+    setTimeout(() => document.getElementById('usernameInput').focus(), 300);
+}
+
+function onUsernameType(inp) {
+    // Same filter as app: only letters, digits, underscore
+    inp.value = inp.value.replace(/[^a-zA-Z0-9_]/g, '');
+    const len = inp.value.length;
+    document.getElementById('uCharCount').textContent = len + '/20';
+    document.getElementById('usernameErr').style.display = 'none';
+    inp.classList.remove('err');
+
+    // Enable button only if 3–20 chars (same as app's enabled condition)
+    document.getElementById('usernameBtn').disabled = (len < 3 || len > 20);
+}
+
+async function saveUsername() {
+    const inp      = document.getElementById('usernameInput');
+    const username = inp.value.trim();
+    const errEl    = document.getElementById('usernameErr');
+    const btn      = document.getElementById('usernameBtn');
+    const spin     = document.getElementById('uSpin');
+    const lbl      = document.getElementById('uBtnLabel');
+
+    // Validation — mirrors app's validation block exactly
+    if (!username) {
+        showUErr('⚠️ Username cannot be empty'); return;
+    }
+    if (username.length < 3) {
+        showUErr('⚠️ Username must be at least 3 characters'); return;
+    }
+    if (username.length > 20) {
+        showUErr('⚠️ Username must be less than 20 characters'); return;
+    }
+    if (!/^[a-zA-Z]/.test(username)) {
+        showUErr('⚠️ Username must start with a letter'); return;
+    }
+
+    // Loading state
+    btn.disabled  = true;
+    spin.style.display = 'block';
+    lbl.textContent    = 'Saving…';
+
+    try {
+        const user = auth.currentUser;
+        if (!user) { showUErr('❌ User not logged in'); return; }
+
+        // Write to DB — exact same logic as UsernameSetupDialog
+        await writeUsernameRecord(user, username);
+
+        // Close modal and redirect — same as onUsernameSet() → PresenceManager.onUserLoggedIn()
+        document.getElementById('usernameModal').classList.remove('open');
+        window.location.href = 'profile.html';
+
+    } catch (e) {
+        showUErr('❌ Failed to set username. Please try again.');
+        btn.disabled       = false;
+        spin.style.display = 'none';
+        lbl.textContent    = 'Continue';
+    }
+}
+
+function showUErr(msg) {
+    const errEl = document.getElementById('usernameErr');
+    const inp   = document.getElementById('usernameInput');
+    errEl.textContent    = msg;
+    errEl.style.display  = 'block';
+    inp.classList.add('err');
+    document.getElementById('usernameBtn').disabled = false;
+    document.getElementById('uSpin').style.display  = 'none';
+    document.getElementById('uBtnLabel').textContent = 'Continue';
+}
+
+/* ════════════════════════════════════════════════════
    FORGOT PASSWORD
-══════════════════════════════════════════════════ */
+════════════════════════════════════════════════════ */
 function openForgot() {
     const pre = document.getElementById('loginEmail').value.trim();
     if (pre) document.getElementById('forgotEmail').value = pre;
@@ -558,38 +643,39 @@ async function doForgot() {
     }
 }
 
-/* ── Enter key shortcut ── */
+/* keyboard shortcut */
 document.addEventListener('keydown', e => {
     if (e.key !== 'Enter') return;
-    if (document.getElementById('forgotModal').classList.contains('open')) { doForgot(); return; }
+    if (document.getElementById('usernameModal').classList.contains('open')) { saveUsername(); return; }
+    if (document.getElementById('forgotModal').classList.contains('open'))   { doForgot();    return; }
     document.getElementById('panelLogin').classList.contains('on') ? doLogin() : doSignup();
 });
 </script>
 
 <script>
-/* ── Bottom nav ripple + scroll hide ── */
-(function () {
-    var nav = document.getElementById('bottomNav');
-    nav.style.transform = 'translateY(0)';
+/* ── Bottom nav ── */
+(function(){
+    var nav=document.getElementById('bottomNav');
+    nav.style.transform='translateY(0)';
     document.querySelectorAll('.bottom-nav-item').forEach(function(item){
-        item.addEventListener('click', function(e){
-            var wrap = item.querySelector('.bnav-icon-wrap'); if(!wrap) return;
-            var rip=document.createElement('span'); rip.className='bnav-ripple';
-            var rect=wrap.getBoundingClientRect(), size=Math.max(rect.width,rect.height);
+        item.addEventListener('click',function(e){
+            var wrap=item.querySelector('.bnav-icon-wrap');if(!wrap)return;
+            var rip=document.createElement('span');rip.className='bnav-ripple';
+            var rect=wrap.getBoundingClientRect(),size=Math.max(rect.width,rect.height);
             rip.style.cssText='width:'+size+'px;height:'+size+'px;top:'+(e.clientY-rect.top-size/2)+'px;left:'+(e.clientX-rect.left-size/2)+'px';
-            wrap.style.position='relative'; wrap.style.overflow='hidden';
-            wrap.appendChild(rip); rip.addEventListener('animationend',function(){rip.remove();});
+            wrap.style.position='relative';wrap.style.overflow='hidden';
+            wrap.appendChild(rip);rip.addEventListener('animationend',function(){rip.remove();});
         });
     });
-    var lastScroll=window.pageYOffset, scrollEnabled=false;
-    setTimeout(function(){lastScroll=window.pageYOffset;scrollEnabled=true;},600);
+    var last=window.pageYOffset,enabled=false;
+    setTimeout(function(){last=window.pageYOffset;enabled=true;},600);
     window.addEventListener('scroll',function(){
-        if(!scrollEnabled) return;
+        if(!enabled)return;
         var cur=window.pageYOffset;
-        if(cur<=80){nav.style.transform='translateY(0)';lastScroll=cur;return;}
-        if(cur>lastScroll+6) nav.style.transform='translateY(110%)';
-        else if(cur<lastScroll-6) nav.style.transform='translateY(0)';
-        lastScroll=cur;
+        if(cur<=80){nav.style.transform='translateY(0)';last=cur;return;}
+        if(cur>last+6)nav.style.transform='translateY(110%)';
+        else if(cur<last-6)nav.style.transform='translateY(0)';
+        last=cur;
     },{passive:true});
 })();
 </script>
