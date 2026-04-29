@@ -12,7 +12,7 @@
       gtag('js', new Date());
       gtag('config', 'G-3GTEG9YQHV');
     </script>
-    
+
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/watch.css">
     <link rel="stylesheet" href="css/ads.css">
@@ -57,13 +57,34 @@
             </div>
         </div>
 
-        <!-- Episode Selector (TV Shows) -->
+        <!-- Episode Selector (TV Shows only — shown/hidden by JS) -->
         <div class="episode-selector" id="episodeSelector" style="display:none;">
             <div class="selector-header">
                 <h2><i class="fas fa-list"></i> Episodes</h2>
                 <select id="seasonSelect"></select>
             </div>
             <div class="episodes-grid" id="episodesGrid"></div>
+        </div>
+
+        <!--
+            ACTION BUTTONS
+            JS in initWatchPage() repositions this block:
+              MOVIE  → moved to after .watch-desc  (below description)
+              SERIES → moved to after #episodeSelector (below episodes, above description)
+        -->
+        <div class="watch-actions" id="watchActions">
+            <button class="action-btn" id="listBtn">
+                <i class="fas fa-plus"></i>
+                <span>My List</span>
+            </button>
+            <button class="action-btn" id="shareBtn">
+                <i class="fas fa-share-alt"></i>
+                <span>Share</span>
+            </button>
+            <button class="action-btn" id="likeBtn">
+                <i class="far fa-heart"></i>
+                <span>Like</span>
+            </button>
         </div>
 
         <!-- Description -->
@@ -73,22 +94,6 @@
                 <p><strong>Genres:</strong> <span id="watchGenres">-</span></p>
                 <p><strong>Cast:</strong> <span id="watchCast">-</span></p>
             </div>
-        </div>
-
-        <!-- Actions -->
-        <div class="watch-actions">
-            <button class="action-btn" id="listBtn">
-                <i class="fas fa-plus"></i>
-                <span>My List</span>
-            </button>
-            <button class="action-btn" id="shareBtn">
-                <i class="fas fa-share"></i>
-                <span>Share</span>
-            </button>
-            <button class="action-btn" id="likeBtn">
-                <i class="fas fa-thumbs-up"></i>
-                <span>Like</span>
-            </button>
         </div>
 
         <!-- Similar -->
