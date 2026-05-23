@@ -5,7 +5,7 @@
 
 const CONFIG = {
     // TMDB API Configuration
-    TMDB_API_KEY: 'e0ac94644d2e67f0dbda4bb9da3e900d',
+    TMDB_API_KEY: 'YOUR TMDB API HERE',
     TMDB_BASE_URL: 'https://api.themoviedb.org/3',
     TMDB_IMAGE_BASE: 'https://image.tmdb.org/t/p',
     
