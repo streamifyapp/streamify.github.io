@@ -31,10 +31,10 @@ const CONFIG = {
     server2: {
         name: 'Server 2 - Mars',
         getMovieUrl: function(tmdbId) {
-            return `https://vidrock.net/movie/${tmdbId}`;
+            return `https://vidrock.ru/movie/${tmdbId}`;
         },
         getTVUrl: function(tmdbId, season, episode) {
-            return `https://vidrock.net/tv/${tmdbId}/${season}/${episode}`;
+            return `https://vidrock.ru/tv/${tmdbId}/${season}/${episode}`;
         }
     }
 },
