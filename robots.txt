@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+# Sitemap Location
+Sitemap: https://streamify.website/sitemap.xml
+# Crawl-delay for polite indexing
+Crawl-delay: 1
