@@ -25,7 +25,7 @@ const CONFIG = {
             return `https://vidrock.ru/movie/${tmdbId}`;
         },
         getTVUrl: function(tmdbId, season, episode) {
-            return `https://vidrock.ru/tv/${tmdbId}/${season}/${episode}}`;
+            return `https://vidrock.ru/tv/${tmdbId}/${season}/${episode}`;
         }
     },
     server2: {
@@ -34,7 +34,7 @@ const CONFIG = {
             return `https://peachify.top/?type=movie&id=${tmdbId}`;
         },
         getTVUrl: function(tmdbId, season, episode) {
-            return `https://peachify.top/?type=tv&id=${tmdbId}&s=${season}&e=${episode}}`;
+            return `https://peachify.top/?type=tv&id=${tmdbId}&s=${season}&e=${episode}`;
         }
     }
 },
