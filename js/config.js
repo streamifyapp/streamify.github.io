@@ -20,7 +20,7 @@ const CONFIG = {
     // ============ STREAMING SERVERS ============
    SERVERS: {
     server1: {
-        name: 'Server 1 - Marsa',
+        name: 'Server 1 - Mars',
         getMovieUrl: function(tmdbId) {
             return `https://vidrock.ru/movie/${tmdbId}`;
         },
