@@ -587,6 +587,38 @@
     .footer-seo-col a:hover {
         color: #e50914;
     }
+
+    /* ══════════════════════════════════════
+       STREAMIFY AD PLACEMENTS
+    ══════════════════════════════════════ */
+    .streamify-ad {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+    .streamify-small-ad {
+        min-height: 50px;
+        margin: 18px auto 24px;
+    }
+    .streamify-medium-ad {
+        min-height: 250px;
+        margin: 28px auto 34px;
+    }
+    .streamify-ad iframe {
+        max-width: 100%;
+        border: 0;
+    }
+    @media (max-width: 360px) {
+        .streamify-small-ad {
+            padding: 0 10px;
+        }
+        .streamify-medium-ad {
+            padding: 0 8px;
+        }
+    }
 </style>
 
 <!-- Streamify automatic version check + cache busting -->
@@ -680,8 +712,6 @@
         </div>
     </section>
 
-    <div data-banner-id="1485855"></div>
-
     <!-- ══════════════════════════════════════════════════════════
          MAIN CONTENT — Semantic <main> with aria-labels on every section
     ══════════════════════════════════════════════════════════ -->
@@ -693,6 +723,21 @@
             <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row top-5-row" id="top5Today" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
 
+<!-- Streamify Small Banner Ad — 320x50 -->
+<div class="streamify-ad streamify-small-ad" aria-label="Advertisement">
+    <script>
+        atOptions = {
+            'key' : 'a0d5b5f1326c126f650c482f872fb82c',
+            'format' : 'iframe',
+            'height' : 50,
+            'width' : 320,
+            'params' : {}
+        };
+    </script>
+    <script src="https://www.highperformanceformat.com/a0d5b5f1326c126f650c482f872fb82c/invoke.js"></script>
+</div>
+
+
         <section class="content-section" aria-label="Trending free movies and TV shows">
             <div class="section-header"><h2><i class="fas fa-fire" aria-hidden="true"></i> Trending Now</h2><button class="see-all-btn" data-cat="trending" aria-label="See all trending content">See All <i class="fas fa-chevron-right"></i></button></div>
             <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="trendingNow" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
@@ -702,6 +747,21 @@
             <div class="section-header"><h2><i class="fas fa-film" aria-hidden="true"></i> Bollywood</h2><button class="see-all-btn" data-cat="bollywood" aria-label="See all free Bollywood movies">See All <i class="fas fa-chevron-right"></i></button></div>
             <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="bollywoodContent" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
+
+<!-- Streamify Medium Banner Ad — 300x250 -->
+<div class="streamify-ad streamify-medium-ad" aria-label="Advertisement">
+    <script>
+        atOptions = {
+            'key' : '05640c5548ff6e2662f9769bcbbeb043',
+            'format' : 'iframe',
+            'height' : 250,
+            'width' : 300,
+            'params' : {}
+        };
+    </script>
+    <script src="https://www.highperformanceformat.com/05640c5548ff6e2662f9769bcbbeb043/invoke.js"></script>
+</div>
+
 
         <section class="content-section" aria-label="Newest movie and TV show releases free">
             <div class="section-header"><h2><i class="fas fa-sparkles" aria-hidden="true"></i> New Releases</h2><button class="see-all-btn" data-cat="new" aria-label="See all new releases">See All <i class="fas fa-chevron-right"></i></button></div>
@@ -713,6 +773,21 @@
             <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="topRated" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
 
+<!-- Streamify Medium Banner Ad — 300x250 -->
+<div class="streamify-ad streamify-medium-ad" aria-label="Advertisement">
+    <script>
+        atOptions = {
+            'key' : '05640c5548ff6e2662f9769bcbbeb043',
+            'format' : 'iframe',
+            'height' : 250,
+            'width' : 300,
+            'params' : {}
+        };
+    </script>
+    <script src="https://www.highperformanceformat.com/05640c5548ff6e2662f9769bcbbeb043/invoke.js"></script>
+</div>
+
+
         <section class="content-section" aria-label="Free Korean drama K-drama streaming">
             <div class="section-header"><h2><i class="fas fa-masks-theater" aria-hidden="true"></i> Korean Drama</h2><button class="see-all-btn" data-cat="korean" aria-label="See all free Korean dramas">See All <i class="fas fa-chevron-right"></i></button></div>
             <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="koreanContent" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
@@ -722,6 +797,21 @@
             <div class="section-header"><h2><i class="fas fa-burst" aria-hidden="true"></i> Action</h2><button class="see-all-btn" data-cat="action" aria-label="See all free action movies">See All <i class="fas fa-chevron-right"></i></button></div>
             <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="actionMovies" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
+
+<!-- Streamify Medium Banner Ad — 300x250 -->
+<div class="streamify-ad streamify-medium-ad" aria-label="Advertisement">
+    <script>
+        atOptions = {
+            'key' : '05640c5548ff6e2662f9769bcbbeb043',
+            'format' : 'iframe',
+            'height' : 250,
+            'width' : 300,
+            'params' : {}
+        };
+    </script>
+    <script src="https://www.highperformanceformat.com/05640c5548ff6e2662f9769bcbbeb043/invoke.js"></script>
+</div>
+
 
         <section class="content-section" aria-label="Free adventure movies online">
             <div class="section-header"><h2><i class="fas fa-compass" aria-hidden="true"></i> Adventure</h2><button class="see-all-btn" data-cat="adventure" aria-label="See all free adventure movies">See All <i class="fas fa-chevron-right"></i></button></div>
@@ -733,6 +823,21 @@
             <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="comedyMovies" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
 
+<!-- Streamify Medium Banner Ad — 300x250 -->
+<div class="streamify-ad streamify-medium-ad" aria-label="Advertisement">
+    <script>
+        atOptions = {
+            'key' : '05640c5548ff6e2662f9769bcbbeb043',
+            'format' : 'iframe',
+            'height' : 250,
+            'width' : 300,
+            'params' : {}
+        };
+    </script>
+    <script src="https://www.highperformanceformat.com/05640c5548ff6e2662f9769bcbbeb043/invoke.js"></script>
+</div>
+
+
         <section class="content-section" aria-label="Free crime movies and TV series">
             <div class="section-header"><h2><i class="fas fa-user-secret" aria-hidden="true"></i> Crime</h2><button class="see-all-btn" data-cat="crime" aria-label="See all free crime shows">See All <i class="fas fa-chevron-right"></i></button></div>
             <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="crimeContent" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
@@ -742,6 +847,21 @@
             <div class="section-header"><h2><i class="fas fa-ghost" aria-hidden="true"></i> Horror</h2><button class="see-all-btn" data-cat="horror" aria-label="See all free horror movies">See All <i class="fas fa-chevron-right"></i></button></div>
             <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="horrorMovies" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
+
+<!-- Streamify Medium Banner Ad — 300x250 -->
+<div class="streamify-ad streamify-medium-ad" aria-label="Advertisement">
+    <script>
+        atOptions = {
+            'key' : '05640c5548ff6e2662f9769bcbbeb043',
+            'format' : 'iframe',
+            'height' : 250,
+            'width' : 300,
+            'params' : {}
+        };
+    </script>
+    <script src="https://www.highperformanceformat.com/05640c5548ff6e2662f9769bcbbeb043/invoke.js"></script>
+</div>
+
 
         <section class="content-section" aria-label="Free romance movies and love stories online">
             <div class="section-header"><h2><i class="fas fa-heart" aria-hidden="true"></i> Romance</h2><button class="see-all-btn" data-cat="romance" aria-label="See all free romance movies">See All <i class="fas fa-chevron-right"></i></button></div>
@@ -753,6 +873,21 @@
             <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="thrillerMovies" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
 
+<!-- Streamify Medium Banner Ad — 300x250 -->
+<div class="streamify-ad streamify-medium-ad" aria-label="Advertisement">
+    <script>
+        atOptions = {
+            'key' : '05640c5548ff6e2662f9769bcbbeb043',
+            'format' : 'iframe',
+            'height' : 250,
+            'width' : 300,
+            'params' : {}
+        };
+    </script>
+    <script src="https://www.highperformanceformat.com/05640c5548ff6e2662f9769bcbbeb043/invoke.js"></script>
+</div>
+
+
         <section class="content-section" aria-label="Free science fiction and sci-fi movies online">
             <div class="section-header"><h2><i class="fas fa-rocket" aria-hidden="true"></i> Science Fiction</h2><button class="see-all-btn" data-cat="scifi" aria-label="See all free sci-fi movies">See All <i class="fas fa-chevron-right"></i></button></div>
             <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="scifiMovies" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
@@ -762,6 +897,21 @@
             <div class="section-header"><h2><i class="fas fa-dragon" aria-hidden="true"></i> Fantasy</h2><button class="see-all-btn" data-cat="fantasy" aria-label="See all free fantasy movies">See All <i class="fas fa-chevron-right"></i></button></div>
             <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="fantasyContent" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
+
+<!-- Streamify Medium Banner Ad — 300x250 -->
+<div class="streamify-ad streamify-medium-ad" aria-label="Advertisement">
+    <script>
+        atOptions = {
+            'key' : '05640c5548ff6e2662f9769bcbbeb043',
+            'format' : 'iframe',
+            'height' : 250,
+            'width' : 300,
+            'params' : {}
+        };
+    </script>
+    <script src="https://www.highperformanceformat.com/05640c5548ff6e2662f9769bcbbeb043/invoke.js"></script>
+</div>
+
 
         <section class="content-section" aria-label="Free mystery movies and detective shows">
             <div class="section-header"><h2><i class="fas fa-magnifying-glass" aria-hidden="true"></i> Mystery</h2><button class="see-all-btn" data-cat="mystery" aria-label="See all free mystery movies">See All <i class="fas fa-chevron-right"></i></button></div>
@@ -773,6 +923,21 @@
             <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="dramaMovies" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
 
+<!-- Streamify Medium Banner Ad — 300x250 -->
+<div class="streamify-ad streamify-medium-ad" aria-label="Advertisement">
+    <script>
+        atOptions = {
+            'key' : '05640c5548ff6e2662f9769bcbbeb043',
+            'format' : 'iframe',
+            'height' : 250,
+            'width' : 300,
+            'params' : {}
+        };
+    </script>
+    <script src="https://www.highperformanceformat.com/05640c5548ff6e2662f9769bcbbeb043/invoke.js"></script>
+</div>
+
+
         <section class="content-section" aria-label="Free animated movies and cartoon films">
             <div class="section-header"><h2><i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i> Animation</h2><button class="see-all-btn" data-cat="animation" aria-label="See all free animated movies">See All <i class="fas fa-chevron-right"></i></button></div>
             <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="animationMovies" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
@@ -782,6 +947,21 @@
             <div class="section-header"><h2><i class="fas fa-video" aria-hidden="true"></i> Documentary</h2><button class="see-all-btn" data-cat="documentary" aria-label="See all free documentaries">See All <i class="fas fa-chevron-right"></i></button></div>
             <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="documentaryContent" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
         </section>
+
+<!-- Streamify Medium Banner Ad — 300x250 -->
+<div class="streamify-ad streamify-medium-ad" aria-label="Advertisement">
+    <script>
+        atOptions = {
+            'key' : '05640c5548ff6e2662f9769bcbbeb043',
+            'format' : 'iframe',
+            'height' : 250,
+            'width' : 300,
+            'params' : {}
+        };
+    </script>
+    <script src="https://www.highperformanceformat.com/05640c5548ff6e2662f9769bcbbeb043/invoke.js"></script>
+</div>
+
 
         <section class="content-section" aria-label="Free family movies and kids entertainment">
             <div class="section-header"><h2><i class="fas fa-users" aria-hidden="true"></i> Family</h2><button class="see-all-btn" data-cat="family" aria-label="See all free family movies">See All <i class="fas fa-chevron-right"></i></button></div>
