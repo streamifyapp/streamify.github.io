@@ -621,6 +621,234 @@
     }
 </style>
 
+
+    /* ══════════════════════════════════════════════════════════
+       STREAMIFY SHARE EXPERIENCE
+    ══════════════════════════════════════════════════════════ */
+    .btn-share {
+        position: relative;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        min-width: 118px;
+        padding: 12px 18px;
+        border: 1px solid rgba(255,255,255,0.16);
+        border-radius: 7px;
+        background: rgba(255,255,255,0.09);
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        transition: transform .25s ease, background .25s ease, border-color .25s ease, box-shadow .25s ease;
+    }
+    .btn-share:hover {
+        transform: translateY(-2px);
+        background: rgba(255,255,255,0.15);
+        border-color: rgba(229,9,20,0.55);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.28), 0 0 20px rgba(229,9,20,0.12);
+    }
+    .btn-share i { color: #ff6b6b; font-size: 15px; }
+
+    .share-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 100000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(0,0,0,.72);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity .28s ease, visibility .28s ease;
+    }
+    .share-overlay.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+    .share-modal {
+        position: relative;
+        width: min(460px, 100%);
+        max-height: min(720px, calc(100vh - 40px));
+        overflow: auto;
+        padding: 30px;
+        border: 1px solid rgba(255,255,255,.11);
+        border-radius: 26px;
+        background:
+            radial-gradient(circle at 50% -10%, rgba(229,9,20,.22), transparent 42%),
+            linear-gradient(145deg, rgba(24,24,31,.98), rgba(10,10,15,.98));
+        box-shadow: 0 30px 90px rgba(0,0,0,.65), 0 0 50px rgba(229,9,20,.10);
+        transform: translateY(18px) scale(.97);
+        transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+        scrollbar-width: thin;
+    }
+    .share-overlay.active .share-modal { transform: translateY(0) scale(1); }
+    .share-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        width: 38px;
+        height: 38px;
+        border: 1px solid rgba(255,255,255,.09);
+        border-radius: 50%;
+        background: rgba(255,255,255,.06);
+        color: rgba(255,255,255,.72);
+        cursor: pointer;
+        transition: .2s ease;
+    }
+    .share-close:hover { background: rgba(229,9,20,.18); color: #fff; transform: rotate(90deg); }
+    .share-hero {
+        text-align: center;
+        padding: 4px 20px 20px;
+    }
+    .share-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 20px;
+        background: linear-gradient(145deg, #e50914, #a9000b);
+        box-shadow: 0 12px 35px rgba(229,9,20,.32);
+        transform: rotate(-3deg);
+    }
+    .share-icon i { font-size: 27px; color: #fff; transform: rotate(3deg); }
+    .share-title {
+        margin: 0;
+        color: #fff;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 31px;
+        letter-spacing: 1.8px;
+    }
+    .share-subtitle {
+        margin: 7px auto 0;
+        max-width: 340px;
+        color: rgba(255,255,255,.52);
+        font-size: 13px;
+        line-height: 1.6;
+    }
+    .share-message {
+        position: relative;
+        margin: 2px 0 18px;
+        padding: 16px 18px;
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 16px;
+        background: rgba(255,255,255,.045);
+    }
+    .share-message-label {
+        display: block;
+        margin-bottom: 7px;
+        color: rgba(255,255,255,.34);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+    }
+    .share-message-text {
+        margin: 0;
+        color: rgba(255,255,255,.86);
+        font-size: 13px;
+        line-height: 1.65;
+    }
+    .share-link-box {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-top: 11px;
+        padding: 10px 11px;
+        border-radius: 10px;
+        background: rgba(0,0,0,.22);
+        border: 1px solid rgba(255,255,255,.06);
+    }
+    .share-link-box i { color: #e50914; font-size: 12px; }
+    .share-link {
+        flex: 1;
+        min-width: 0;
+        color: rgba(255,255,255,.62);
+        font-size: 11px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .share-copy-small {
+        border: 0;
+        background: none;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 4px;
+    }
+    .share-copy-small:hover { color: #ff6b6b; }
+    .share-options-title {
+        margin: 0 0 11px;
+        color: rgba(255,255,255,.4);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+    }
+    .share-options {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    .share-option {
+        min-height: 78px;
+        padding: 11px 7px 9px;
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 15px;
+        background: rgba(255,255,255,.035);
+        color: rgba(255,255,255,.78);
+        font-family: 'Inter', sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        transition: transform .2s ease, background .2s ease, border-color .2s ease;
+    }
+    .share-option:hover {
+        transform: translateY(-3px);
+        background: rgba(255,255,255,.075);
+        border-color: rgba(229,9,20,.32);
+        color: #fff;
+    }
+    .share-option i { font-size: 22px; }
+    .share-option.whatsapp i { color: #25d366; }
+    .share-option.telegram i { color: #2aabee; }
+    .share-option.facebook i { color: #1877f2; }
+    .share-option.twitter i { color: #fff; }
+    .share-option.native i { color: #ff6b6b; }
+    .share-option.copy i { color: #f59e0b; }
+    .share-note {
+        margin: 17px 0 0;
+        text-align: center;
+        color: rgba(255,255,255,.28);
+        font-size: 10px;
+        line-height: 1.5;
+    }
+    @media (max-width: 430px) {
+        .share-modal { padding: 24px 18px 20px; border-radius: 22px; }
+        .share-options { gap: 8px; }
+        .share-option { min-height: 73px; }
+        .share-title { font-size: 28px; }
+        .share-icon { width: 58px; height: 58px; }
+    }
+
 <!-- Streamify automatic version check + cache busting -->
 <script src="version-check.js"></script>
 </head>
@@ -708,6 +936,7 @@
             <div class="hero-btns">
                 <button class="btn-play" id="heroPlay" aria-label="Play featured movie or show"><i class="fas fa-play" aria-hidden="true"></i> Play</button>
                 <button class="btn-info" id="heroInfo" aria-label="More information about featured content"><i class="fas fa-info-circle" aria-hidden="true"></i> More Info</button>
+                <button class="btn-share" id="heroShare" aria-label="Share Streamify with friends"><i class="fas fa-share-nodes" aria-hidden="true"></i> Share</button>
             </div>
         </div>
     </section>
@@ -1199,6 +1428,46 @@
         </div>
     </div>
 
+
+    <!-- ══════════════════════════════════════════════════════════
+         STREAMIFY SHARE MODAL
+    ══════════════════════════════════════════════════════════ -->
+    <div class="share-overlay" id="shareOverlay" role="dialog" aria-modal="true" aria-labelledby="shareTitle">
+        <div class="share-modal">
+            <button class="share-close" id="shareClose" aria-label="Close share dialog">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="share-hero">
+                <div class="share-icon"><i class="fas fa-share-nodes"></i></div>
+                <h2 class="share-title" id="shareTitle">Share the Streamify vibe</h2>
+                <p class="share-subtitle">Found something worth watching? Send Streamify to a friend and turn “what should we watch?” into “press play.”</p>
+            </div>
+
+            <div class="share-message">
+                <span class="share-message-label">Your message</span>
+                <p class="share-message-text" id="shareMessageText">🎬 Found a streaming spot you’ll actually want to keep! Check out Streamify — movies, TV shows, anime, K-dramas and more, all in one place. 🍿<br><br>Grab some snacks, pick a title and let’s watch something. 👀🔥</p>
+                <div class="share-link-box">
+                    <i class="fas fa-link"></i>
+                    <span class="share-link" id="shareLinkText">https://streamify.website/</span>
+                    <button class="share-copy-small" id="shareCopySmall" type="button">Copy</button>
+                </div>
+            </div>
+
+            <p class="share-options-title">Share with friends</p>
+            <div class="share-options">
+                <button class="share-option whatsapp" data-share="whatsapp" type="button"><i class="fab fa-whatsapp"></i><span>WhatsApp</span></button>
+                <button class="share-option telegram" data-share="telegram" type="button"><i class="fab fa-telegram"></i><span>Telegram</span></button>
+                <button class="share-option facebook" data-share="facebook" type="button"><i class="fab fa-facebook"></i><span>Facebook</span></button>
+                <button class="share-option twitter" data-share="twitter" type="button"><i class="fab fa-x-twitter"></i><span>X</span></button>
+                <button class="share-option native" data-share="native" type="button"><i class="fas fa-arrow-up-from-bracket"></i><span>More</span></button>
+                <button class="share-option copy" data-share="copy" type="button"><i class="fas fa-copy"></i><span>Copy Link</span></button>
+            </div>
+
+            <p class="share-note">Sharing Streamify with a friend takes one tap. No account or signup is needed just to share.</p>
+        </div>
+    </div>
+
     <!-- ══════════════════════════════════════
          BOTTOM NAVIGATION BAR
     ══════════════════════════════════════ -->
@@ -1310,6 +1579,125 @@
             }, 60000);
             window.addEventListener('beforeunload', function () {
                 userRef.update({ isActive : false, lastSeen : Date.now() });
+            });
+        });
+    })();
+    </script>
+
+
+    <!-- Streamify Share Script -->
+    <script>
+    (function () {
+        var overlay = document.getElementById('shareOverlay');
+        var openBtn = document.getElementById('heroShare');
+        var closeBtn = document.getElementById('shareClose');
+        var copyBtn = document.getElementById('shareCopySmall');
+        var linkEl = document.getElementById('shareLinkText');
+        var messageEl = document.getElementById('shareMessageText');
+
+        if (!overlay || !openBtn) return;
+
+        var shareUrl = 'https://streamify.website/';
+        var shareText = '🎬 Found a streaming spot you’ll actually want to keep! Check out Streamify — movies, TV shows, anime, K-dramas and more, all in one place. 🍿\\n\\nGrab some snacks, pick a title and let’s watch something. 👀🔥';
+
+        function openShare() {
+            var currentUrl = window.location.href.split('#')[0];
+            shareUrl = currentUrl || 'https://streamify.website/';
+            linkEl.textContent = shareUrl;
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            setTimeout(function () { closeBtn.focus(); }, 100);
+        }
+
+        function closeShare() {
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+            openBtn.focus();
+        }
+
+        function copyText(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                return navigator.clipboard.writeText(text);
+            }
+            var area = document.createElement('textarea');
+            area.value = text;
+            area.style.position = 'fixed';
+            area.style.opacity = '0';
+            document.body.appendChild(area);
+            area.focus();
+            area.select();
+            document.execCommand('copy');
+            area.remove();
+            return Promise.resolve();
+        }
+
+        function showCopied(label) {
+            var old = copyBtn.textContent;
+            copyBtn.textContent = label || 'Copied!';
+            setTimeout(function () { copyBtn.textContent = old; }, 1400);
+        }
+
+        openBtn.addEventListener('click', openShare);
+        closeBtn.addEventListener('click', closeShare);
+
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) closeShare();
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && overlay.classList.contains('active')) closeShare();
+        });
+
+        copyBtn.addEventListener('click', function () {
+            copyText(shareUrl).then(function () { showCopied('Copied!'); });
+        });
+
+        overlay.querySelectorAll('[data-share]').forEach(function (button) {
+            button.addEventListener('click', async function () {
+                var type = button.getAttribute('data-share');
+                var fullText = shareText + '\\n\\n' + shareUrl;
+
+                if (type === 'native') {
+                    if (navigator.share) {
+                        try {
+                            await navigator.share({
+                                title: 'Streamify — Watch Something Great',
+                                text: shareText,
+                                url: shareUrl
+                            });
+                        } catch (err) {
+                            if (err && err.name !== 'AbortError') {
+                                copyText(fullText).then(function () { showCopied('Copied!'); });
+                            }
+                        }
+                    } else {
+                        copyText(fullText).then(function () { showCopied('Copied!'); });
+                    }
+                    return;
+                }
+
+                if (type === 'copy') {
+                    copyText(fullText).then(function () { showCopied('Copied!'); });
+                    return;
+                }
+
+                var encodedText = encodeURIComponent(shareText + '\\n\\n' + shareUrl);
+                var encodedUrl = encodeURIComponent(shareUrl);
+                var target = '';
+
+                if (type === 'whatsapp') {
+                    target = 'https://wa.me/?text=' + encodedText;
+                } else if (type === 'telegram') {
+                    target = 'https://t.me/share/url?url=' + encodedUrl + '&text=' + encodeURIComponent(shareText);
+                } else if (type === 'facebook') {
+                    target = 'https://www.facebook.com/sharer/sharer.php?u=' + encodedUrl;
+                } else if (type === 'twitter') {
+                    target = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodedUrl;
+                }
+
+                if (target) {
+                    window.open(target, '_blank', 'noopener,noreferrer');
+                }
             });
         });
     })();
