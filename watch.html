@@ -45,6 +45,45 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
+
+        /* ══════════════════════════════════════
+           WATCH PAGE ADS
+        ══════════════════════════════════════ */
+        .watch-ad {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .watch-ad-small {
+            min-height: 50px;
+            margin: 18px auto 22px;
+        }
+
+        .watch-ad-medium {
+            min-height: 250px;
+            margin: 28px auto 34px;
+        }
+
+        .watch-ad iframe {
+            max-width: 100%;
+            border: 0;
+        }
+
+        @media (max-width: 480px) {
+            .watch-ad-small {
+                margin: 16px auto 20px;
+            }
+
+            .watch-ad-medium {
+                margin: 24px auto 30px;
+            }
+        }
+
         /* ══════════════════════════════════════
            PRESENCE BADGE — avatar dot
         ══════════════════════════════════════ */
@@ -171,6 +210,20 @@
         <div class="server-buttons" id="serverButtons"></div>
     </div>
 
+    <!-- Small 320x50 Banner Ad — below server selection -->
+    <div class="watch-ad watch-ad-small" aria-label="Advertisement">
+        <script>
+          atOptions = {
+            'key' : 'a0d5b5f1326c126f650c482f872fb82c',
+            'format' : 'iframe',
+            'height' : 50,
+            'width' : 320,
+            'params' : {}
+          };
+        </script>
+        <script src="https://www.highperformanceformat.com/a0d5b5f1326c126f650c482f872fb82c/invoke.js"></script>
+    </div>
+
     <!-- Content -->
     <div class="watch-main">
 
@@ -217,6 +270,21 @@
                 <p><strong>Genres:</strong> <span id="watchGenres">-</span></p>
                 <p><strong>Cast:</strong> <span id="watchCast">-</span></p>
             </div>
+        </div>
+
+
+        <!-- Medium 300x250 Banner Ad — above More Like This -->
+        <div class="watch-ad watch-ad-medium" aria-label="Advertisement">
+            <script>
+              atOptions = {
+                'key' : '05640c5548ff6e2662f9769bcbbeb043',
+                'format' : 'iframe',
+                'height' : 250,
+                'width' : 300,
+                'params' : {}
+              };
+            </script>
+            <script src="https://www.highperformanceformat.com/05640c5548ff6e2662f9769bcbbeb043/invoke.js"></script>
         </div>
 
         <!-- Similar -->
