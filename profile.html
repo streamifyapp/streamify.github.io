@@ -231,6 +231,45 @@
         .loading .btn-text { display: none; }
         @keyframes spinAnim { to { transform: rotate(360deg); } }
 
+
+        /* ── PROFILE PAGE ADS ── */
+        .profile-ad {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .profile-ad-small {
+            min-height: 50px;
+            margin: 22px auto 8px;
+        }
+
+        .profile-ad-medium {
+            min-height: 250px;
+            margin: 34px auto 110px;
+        }
+
+        .profile-ad iframe {
+            max-width: 100%;
+            border: 0;
+        }
+
+        @media (max-width: 480px) {
+            .profile-ad-small {
+                margin: 18px auto 6px;
+            }
+
+            .profile-ad-medium {
+                margin: 28px auto 105px;
+            }
+        }
+
         /* ── RESPONSIVE ── */
         @media (max-width: 768px) {
             .navbar { padding: 0 20px; }
@@ -347,6 +386,20 @@
         </div>
     </div>
 
+    <!-- Small 320x50 Banner Ad — below Continue Watching -->
+    <div class="profile-ad profile-ad-small" aria-label="Advertisement">
+        <script>
+          atOptions = {
+            'key' : 'a0d5b5f1326c126f650c482f872fb82c',
+            'format' : 'iframe',
+            'height' : 50,
+            'width' : 320,
+            'params' : {}
+          };
+        </script>
+        <script src="https://www.highperformanceformat.com/a0d5b5f1326c126f650c482f872fb82c/invoke.js"></script>
+    </div>
+
     <!-- STATS -->
     <div class="stats-grid">
         <div class="stat-card">
@@ -418,6 +471,20 @@
                 <button class="danger-btn" onclick="confirmSignout()"><i class="fas fa-right-from-bracket"></i> Sign Out</button>
             </div>
         </div>
+    </div>
+
+    <!-- Medium 300x250 Banner Ad — at the bottom of the page -->
+    <div class="profile-ad profile-ad-medium" aria-label="Advertisement">
+        <script>
+          atOptions = {
+            'key' : '05640c5548ff6e2662f9769bcbbeb043',
+            'format' : 'iframe',
+            'height' : 250,
+            'width' : 300,
+            'params' : {}
+          };
+        </script>
+        <script src="https://www.highperformanceformat.com/05640c5548ff6e2662f9769bcbbeb043/invoke.js"></script>
     </div>
 
 </div><!-- /authContent -->
