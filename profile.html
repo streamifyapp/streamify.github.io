@@ -1,1203 +1,741 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" prefix="og: https://ogp.me/ns#">
+<html lang="en">
 <head>
 
-<script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
 
-<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streamify — Profile</title>
 
-<!-- Firebase SDKs -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --red:        #e50914;
+            --red-dim:    rgba(229, 9, 20, 0.15);
+            --red-glow:   rgba(229, 9, 20, 0.35);
+            --gold:       #f5a623;
+            --silver:     #c0c0c0;
+            --bronze:     #cd7f32;
+            --bg:         #070709;
+            --surface:    rgba(255,255,255,0.038);
+            --border:     rgba(255,255,255,0.07);
+            --text:       #ffffff;
+            --muted:      rgba(255,255,255,0.45);
+            --font-display: 'Bebas Neue', sans-serif;
+            --font-body:    'DM Sans', sans-serif;
+            --font-mono:    'DM Mono', monospace;
+        }
+
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; padding-bottom: 100px; -webkit-font-smoothing: antialiased; }
+
+        /* ── LOADER ── */
+        #pageLoader { position: fixed; inset: 0; background: var(--bg); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; transition: opacity 0.6s ease, visibility 0.6s ease; }
+        #pageLoader.gone { opacity: 0; visibility: hidden; }
+        .loader-brand { font-family: var(--font-display); font-size: 52px; letter-spacing: 5px; background: linear-gradient(135deg, #e50914, #ff6b6b, #e50914); background-size: 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: brandPulse 1.8s ease infinite; }
+        @keyframes brandPulse { 0%,100% { background-position: 0%; } 50% { background-position: 100%; } }
+        .loader-track { width: 180px; height: 2px; background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden; }
+        .loader-fill { height: 100%; width: 40%; background: linear-gradient(90deg, #e50914, #ff6b6b); border-radius: 99px; animation: trackSlide 1s ease-in-out infinite; }
+        @keyframes trackSlide { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }
+
+        body::before { content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; background: radial-gradient(ellipse 60% 40% at 80% -10%, rgba(229,9,20,0.07) 0%, transparent 60%), radial-gradient(ellipse 40% 60% at -10% 80%, rgba(229,9,20,0.05) 0%, transparent 60%); }
+
+        /* ── NAVBAR ── */
+        .navbar { position: sticky; top: 0; z-index: 500; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 64px; background: rgba(7,7,9,0.88); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+        .nav-logo { font-family: var(--font-display); font-size: 28px; letter-spacing: 3px; color: var(--red); text-decoration: none; text-shadow: 0 0 30px var(--red-glow); }
+        .nav-actions { display: flex; align-items: center; gap: 12px; }
+        .nav-icon-btn { width: 38px; height: 38px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); color: var(--muted); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; text-decoration: none; transition: all 0.2s ease; }
+        .nav-icon-btn:hover { color: #fff; background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.14); }
+
+        /* ── HERO ── */
+        .profile-hero { position: relative; z-index: 1; padding: 48px 40px 0; display: flex; align-items: flex-end; gap: 36px; }
+        .avatar-ring { position: relative; flex-shrink: 0; width: 110px; height: 110px; }
+        .avatar-ring::before { content: ''; position: absolute; inset: -3px; border-radius: 50%; background: conic-gradient(#e50914 0deg, #ff6b6b 90deg, #e50914 180deg, transparent 250deg); animation: ringRotate 3s linear infinite; z-index: -1; }
+        @keyframes ringRotate { to { transform: rotate(360deg); } }
+        .avatar-ring::after { content: ''; position: absolute; inset: 2px; border-radius: 50%; background: var(--bg); z-index: -1; }
+        .avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+        .avatar-placeholder { width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg, #1a1a2e, #16213e); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 40px; color: var(--red); }
+        .hero-info { padding-bottom: 4px; }
+        .hero-greeting { font-size: 12px; font-weight: 600; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+        .hero-name { font-family: var(--font-display); font-size: 42px; letter-spacing: 2px; line-height: 1; margin-bottom: 8px; }
+        .hero-email { font-size: 13px; color: var(--muted); font-family: var(--font-mono); }
+        .hero-badges { display: flex; align-items: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+        .medal-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+        .medal-bronze { background: rgba(205,127,50,0.12); border: 1px solid rgba(205,127,50,0.3); color: var(--bronze); }
+        .medal-silver { background: rgba(192,192,192,0.12); border: 1px solid rgba(192,192,192,0.3); color: var(--silver); }
+        .medal-gold   { background: rgba(245,166,35,0.12);  border: 1px solid rgba(245,166,35,0.3);  color: var(--gold); }
+        .joined-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; background: var(--surface); border: 1px solid var(--border); color: var(--muted); }
+
+        .section-divider { position: relative; z-index: 1; margin: 40px 40px 0; height: 1px; background: linear-gradient(90deg, transparent, var(--border), var(--border), transparent); }
+
+        /* ── STATS ── */
+        .stats-grid { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; padding: 32px 40px 0; }
+        .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px 20px; position: relative; overflow: hidden; transition: border-color 0.3s ease, transform 0.3s ease; animation: fadeUp 0.5s ease both; }
+        .stat-card:hover { border-color: rgba(229,9,20,0.3); transform: translateY(-2px); }
+        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(229,9,20,0.4), transparent); opacity: 0; transition: opacity 0.3s; }
+        .stat-card:hover::before { opacity: 1; }
+        .stat-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--red-dim); display: flex; align-items: center; justify-content: center; color: var(--red); font-size: 14px; margin-bottom: 14px; }
+        .stat-value { font-family: var(--font-display); font-size: 32px; letter-spacing: 1px; line-height: 1; margin-bottom: 4px; }
+        .stat-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+        .stat-card:nth-child(1) { animation-delay: 0.05s; }
+        .stat-card:nth-child(2) { animation-delay: 0.10s; }
+        .stat-card:nth-child(3) { animation-delay: 0.15s; }
+        .stat-card:nth-child(4) { animation-delay: 0.20s; }
+
+        /* ── SECTION ── */
+        .section-wrap { position: relative; z-index: 1; padding: 36px 40px 0; }
+        .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .section-title { font-family: var(--font-display); font-size: 22px; letter-spacing: 2px; display: flex; align-items: center; gap: 10px; }
+        .section-title i { color: var(--red); font-size: 16px; }
+        .section-count { font-size: 12px; font-weight: 600; letter-spacing: 1px; color: var(--muted); background: var(--surface); border: 1px solid var(--border); padding: 3px 10px; border-radius: 20px; }
+
+        /* ══════════════════════════════════════
+           CONTINUE WATCHING
+        ══════════════════════════════════════ */
+        .cw-wrap { position: relative; }
+        .cw-row { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; scroll-behavior: smooth; -ms-overflow-style: none; scrollbar-width: none; }
+        .cw-row::-webkit-scrollbar { display: none; }
+
+        .cw-card {
+            flex-shrink: 0; width: 150px;
+            border-radius: 12px; overflow: hidden;
+            background: var(--surface); border: 1px solid var(--border);
+            text-decoration: none; display: block; position: relative;
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        .cw-card:hover { transform: scale(1.05) translateY(-3px); border-color: rgba(229,9,20,0.45); box-shadow: 0 14px 40px rgba(0,0,0,0.6), 0 0 20px rgba(229,9,20,0.15); }
+
+        .cw-poster-wrap { position: relative; width: 100%; aspect-ratio: 2/3; }
+        .cw-poster { width: 100%; height: 100%; object-fit: cover; display: block; background: #111; }
+        .cw-poster-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg,#1a1a2e,#16213e); color: var(--red); font-size: 36px; }
+
+        .cw-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0); display: flex; align-items: center; justify-content: center; transition: background 0.25s; }
+        .cw-card:hover .cw-overlay { background: rgba(0,0,0,0.45); }
+        .cw-play { width: 46px; height: 46px; border-radius: 50%; background: var(--red); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 17px; opacity: 0; transform: scale(0.6); transition: opacity 0.25s, transform 0.25s; box-shadow: 0 4px 20px rgba(229,9,20,0.6); }
+        .cw-card:hover .cw-play { opacity: 1; transform: scale(1); }
+
+        .cw-badge { position: absolute; top: 7px; left: 7px; background: rgba(229,9,20,0.88); backdrop-filter: blur(4px); color: #fff; font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 7px; border-radius: 5px; }
+
+        .cw-remove-btn { position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; border-radius: 50%; background: rgba(0,0,0,0.75); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; font-size: 9px; cursor: pointer; opacity: 0; transition: opacity 0.2s, background 0.2s; z-index: 10; }
+        .cw-card:hover .cw-remove-btn { opacity: 1; }
+        .cw-remove-btn:hover { background: rgba(229,9,20,0.85); color: #fff; }
+
+        .cw-info { padding: 9px 10px 11px; }
+        .cw-title { font-size: 12px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
+        .cw-meta { font-size: 10px; color: var(--muted); font-weight: 500; }
+
+        .cw-arrow { position: absolute; top: 50%; transform: translateY(-55%); width: 32px; height: 32px; border-radius: 50%; background: rgba(10,10,15,0.92); border: 1px solid var(--border); color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 5; font-size: 12px; transition: background 0.2s, border-color 0.2s; box-shadow: 0 4px 16px rgba(0,0,0,0.5); }
+        .cw-arrow:hover { background: var(--red); border-color: var(--red); }
+        .cw-arrow.left { left: -13px; }
+        .cw-arrow.right { right: -13px; }
+
+        .cw-empty { text-align: center; padding: 30px 20px; color: var(--muted); font-size: 13px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; }
+        .cw-empty i { font-size: 26px; margin-bottom: 8px; display: block; opacity: 0.3; }
+
+        .cw-skeleton { flex-shrink: 0; width: 150px; border-radius: 12px; overflow: hidden; background: var(--surface); border: 1px solid var(--border); }
+        .cw-skeleton .sk-poster { width: 100%; aspect-ratio: 2/3; background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+        .cw-skeleton .sk-line { height: 10px; margin: 9px 10px 5px; border-radius: 4px; background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+        .cw-skeleton .sk-line.short { width: 60%; height: 8px; margin-top: 0; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        /* ── POINTS CARD ── */
+        .points-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 28px; }
+        .points-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .points-current { font-family: var(--font-display); font-size: 48px; letter-spacing: 2px; background: linear-gradient(135deg, #e50914, #ff6b6b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .points-next { font-size: 12px; color: var(--muted); text-align: right; }
+        .points-next strong { color: var(--text); display: block; font-size: 20px; font-weight: 700; }
+        .progress-track { height: 6px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #e50914, #ff6b6b); border-radius: 99px; transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 0 12px rgba(229,9,20,0.5); }
+        .progress-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); font-weight: 600; }
+
+        /* ── EDIT PANEL ── */
+        .edit-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        .edit-panel .full { grid-column: 1 / -1; }
+        .field-group label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+        .field-wrap { position: relative; display: flex; align-items: center; }
+        .field-wrap i { position: absolute; left: 14px; color: var(--muted); font-size: 13px; pointer-events: none; transition: color 0.2s; }
+        .field-group:focus-within .field-wrap i { color: var(--red); }
+        .field-wrap input { width: 100%; padding: 13px 14px 13px 40px; background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.08); border-radius: 12px; color: var(--text); font-family: var(--font-body); font-size: 14px; outline: none; transition: all 0.25s ease; }
+        .field-wrap input:focus { border-color: var(--red); background: rgba(229,9,20,0.05); box-shadow: 0 0 0 3px rgba(229,9,20,0.1); }
+        .field-wrap input:disabled { opacity: 0.4; cursor: not-allowed; }
+        .field-wrap input::placeholder { color: rgba(255,255,255,0.18); }
+        .save-btn { padding: 13px 28px; background: linear-gradient(135deg, #e50914, #c1000e); border: none; border-radius: 12px; color: #fff; font-family: var(--font-body); font-size: 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s ease; box-shadow: 0 4px 20px rgba(229,9,20,0.25); }
+        .save-btn:hover { box-shadow: 0 6px 30px rgba(229,9,20,0.45); transform: translateY(-1px); }
+        .save-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .ghost-btn { padding: 13px 22px; background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; color: var(--muted); font-family: var(--font-body); font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s ease; }
+        .ghost-btn:hover { color: #fff; border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); }
+        .danger-btn { padding: 13px 22px; background: rgba(229,9,20,0.08); border: 1.5px solid rgba(229,9,20,0.25); border-radius: 12px; color: #ff6b6b; font-family: var(--font-body); font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s ease; }
+        .danger-btn:hover { background: rgba(229,9,20,0.15); border-color: rgba(229,9,20,0.5); }
+        .panel-actions { grid-column: 1 / -1; display: flex; gap: 12px; flex-wrap: wrap; padding-top: 6px; }
+
+        /* ── GUEST STATE ── */
+        #guestState { display: none; position: relative; z-index: 1; padding: 60px 40px; }
+        .guest-card { max-width: 480px; margin: 0 auto; background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 52px 40px; text-align: center; position: relative; overflow: hidden; }
+        .guest-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(229,9,20,0.5), transparent); }
+        .guest-icon-wrap { width: 80px; height: 80px; border-radius: 50%; background: rgba(229,9,20,0.1); border: 1px solid rgba(229,9,20,0.2); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; }
+        .guest-icon-wrap i { font-size: 30px; color: var(--red); }
+        .guest-title { font-family: var(--font-display); font-size: 32px; letter-spacing: 2px; margin-bottom: 12px; }
+        .guest-desc { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 32px; }
+        .guest-perks { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; text-align: left; }
+        .guest-perk { display: flex; align-items: center; gap: 12px; font-size: 13px; color: rgba(255,255,255,0.7); }
+        .guest-perk i { width: 18px; color: var(--red); font-size: 12px; flex-shrink: 0; }
+        .guest-signin-btn { display: block; width: 100%; padding: 15px; background: linear-gradient(135deg, #e50914, #c1000e); border: none; border-radius: 12px; color: #fff; font-family: var(--font-body); font-size: 15px; font-weight: 700; cursor: pointer; text-decoration: none; transition: all 0.25s ease; box-shadow: 0 4px 24px rgba(229,9,20,0.3); margin-bottom: 14px; letter-spacing: 0.3px; }
+        .guest-signin-btn:hover { box-shadow: 0 8px 32px rgba(229,9,20,0.5); transform: translateY(-2px); }
+        .guest-register-link { font-size: 13px; color: var(--muted); }
+        .guest-register-link a { color: var(--red); text-decoration: none; font-weight: 600; }
+        .guest-register-link a:hover { text-decoration: underline; }
+
+        /* ── TOAST ── */
+        .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px); background: rgba(10,10,12,0.95); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; color: #fff; z-index: 9999; opacity: 0; transition: all 0.35s cubic-bezier(0.16,1,0.3,1); white-space: nowrap; box-shadow: 0 8px 32px rgba(0,0,0,0.6); backdrop-filter: blur(20px); pointer-events: none; }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.success i { color: #6bcb77; }
+        .toast.error   i { color: #ff7b7b; }
+        .toast.info    i { color: #74b9e7; }
+
+        /* ── BOTTOM NAV ── */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 900; height: 68px; display: flex; align-items: stretch; background: rgba(7,7,9,0.85); backdrop-filter: blur(24px); border-top: 1px solid rgba(255,255,255,0.07); box-shadow: 0 -4px 30px rgba(0,0,0,0.6); padding-bottom: env(safe-area-inset-bottom, 0); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+        .bottom-nav::before { content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px; background: linear-gradient(90deg, transparent, rgba(229,9,20,0.5) 40%, rgba(255,107,107,0.6) 50%, rgba(229,9,20,0.5) 60%, transparent); }
+        .bnav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: rgba(255,255,255,0.38); font-size: 9.5px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; cursor: pointer; background: none; border: none; padding: 0; -webkit-tap-highlight-color: transparent; transition: color 0.25s; position: relative; }
+        .bnav-item.active { color: #fff; }
+        .bnav-dot { position: absolute; top: -1px; left: 50%; transform: translateX(-50%) scaleX(0); width: 22px; height: 3px; border-radius: 0 0 3px 3px; background: linear-gradient(90deg, #e50914, #ff6b6b); box-shadow: 0 2px 8px rgba(229,9,20,0.6); transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+        .bnav-item.active .bnav-dot { transform: translateX(-50%) scaleX(1); }
+        .bnav-icon { width: 40px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-size: 17px; transition: background 0.3s, transform 0.2s; }
+        .bnav-item.active .bnav-icon { background: rgba(229,9,20,0.16); color: var(--red); filter: drop-shadow(0 0 6px rgba(229,9,20,0.6)); transform: translateY(-1px); }
+        .bnav-avatar { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.15); transition: border-color 0.25s, transform 0.25s; }
+        .bnav-item.active .bnav-avatar { border-color: var(--red); box-shadow: 0 0 10px rgba(229,9,20,0.5); transform: scale(1.08) translateY(-1px); }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ── MODAL ── */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 8000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+        .modal-box { background: rgba(12,12,16,0.98); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 36px; width: 100%; max-width: 360px; transform: scale(0.92) translateY(16px); transition: all 0.35s cubic-bezier(0.16,1,0.3,1); text-align: center; }
+        .modal-overlay.open .modal-box { transform: scale(1) translateY(0); }
+        .modal-icon { width: 60px; height: 60px; border-radius: 50%; background: rgba(229,9,20,0.1); border: 1px solid rgba(229,9,20,0.25); display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--red); margin: 0 auto 16px; }
+        .modal-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+        .modal-desc { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
+        .modal-btns { display: flex; gap: 10px; }
+        .modal-cancel { flex: 1; padding: 13px; background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; color: var(--muted); font-family: var(--font-body); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .modal-cancel:hover { color: #fff; background: rgba(255,255,255,0.07); }
+        .modal-confirm { flex: 1; padding: 13px; background: var(--red); border: none; border-radius: 12px; color: #fff; font-family: var(--font-body); font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .modal-confirm:hover { background: #f40612; box-shadow: 0 4px 20px rgba(229,9,20,0.4); }
+
+        .spin { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.25); border-top-color: #fff; border-radius: 50%; animation: spinAnim 0.7s linear infinite; display: none; }
+        .loading .spin { display: inline-block; }
+        .loading .btn-text { display: none; }
+        @keyframes spinAnim { to { transform: rotate(360deg); } }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .navbar { padding: 0 20px; }
+            .profile-hero { padding: 32px 20px 0; flex-direction: column; align-items: flex-start; gap: 20px; }
+            .avatar-ring { width: 80px; height: 80px; }
+            .hero-name { font-size: 32px; }
+            .section-divider { margin: 30px 20px 0; }
+            .stats-grid { grid-template-columns: 1fr 1fr; padding: 24px 20px 0; gap: 10px; }
+            .section-wrap { padding: 28px 20px 0; }
+            .edit-panel { grid-template-columns: 1fr; padding: 20px; }
+            .edit-panel .full { grid-column: auto; }
+            #guestState { padding: 40px 20px; }
+            .guest-card { padding: 36px 24px; }
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .hero-name { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="pageLoader">
+    <div class="loader-brand">STREAMIFY</div>
+    <div class="loader-track"><div class="loader-fill"></div></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="fas fa-circle-check"></i> <span id="toastMsg">Saved!</span></div>
+
+<!-- SIGN OUT MODAL -->
+<div class="modal-overlay" id="signoutModal">
+    <div class="modal-box">
+        <div class="modal-icon"><i class="fas fa-right-from-bracket"></i></div>
+        <div class="modal-title">Sign Out?</div>
+        <div class="modal-desc">You'll need to sign in again to access your profile and watchlist.</div>
+        <div class="modal-btns">
+            <button class="modal-cancel" onclick="closeSignout()">Cancel</button>
+            <button class="modal-confirm" onclick="doSignout()">Sign Out</button>
+        </div>
+    </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <a href="index.html" class="nav-logo">STREAMIFY</a>
+    <div class="nav-actions">
+        <a href="index.html" class="nav-icon-btn" title="Home"><i class="fas fa-home"></i></a>
+        <button class="nav-icon-btn" id="navSignoutBtn" onclick="confirmSignout()" title="Sign out" style="display:none;"><i class="fas fa-right-from-bracket"></i></button>
+    </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     GUEST STATE (shown when not logged in)
+══════════════════════════════════════ -->
+<div id="guestState">
+    <div class="guest-card">
+        <div class="guest-icon-wrap">
+            <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="guest-title">Your Profile Awaits</div>
+        <div class="guest-desc">Sign in to unlock your personal Streamify experience — track progress, earn rewards, and pick up right where you left off.</div>
+        <div class="guest-perks">
+            <div class="guest-perk"><i class="fas fa-play-circle"></i> Continue watching from any device</div>
+            <div class="guest-perk"><i class="fas fa-trophy"></i> Earn points and climb medal ranks</div>
+            <div class="guest-perk"><i class="fas fa-bookmark"></i> Save titles to your personal watchlist</div>
+            <div class="guest-perk"><i class="fas fa-clock"></i> Track your total watch time</div>
+        </div>
+        <a href="login.html" class="guest-signin-btn"><i class="fas fa-right-to-bracket"></i> &nbsp;Sign In to Your Account</a>
+        <div class="guest-register-link">New here? <a href="register.html">Create a free account</a></div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     AUTHENTICATED CONTENT
+══════════════════════════════════════ -->
+<div id="authContent" style="display:none;">
+
+    <!-- PROFILE HERO -->
+    <div class="profile-hero">
+        <div class="avatar-ring">
+            <div class="avatar-placeholder" id="avatarPlaceholder">?</div>
+            <img class="avatar-img" id="avatarImg" src="" alt="Avatar" style="display:none;">
+        </div>
+        <div class="hero-info">
+            <div class="hero-greeting">Your Profile</div>
+            <div class="hero-name" id="profileName">Loading...</div>
+            <div class="hero-email" id="profileEmail">—</div>
+            <div class="hero-badges">
+                <span class="medal-badge medal-bronze" id="medalBadge"><i class="fas fa-medal"></i> Bronze</span>
+                <span class="joined-badge" id="joinedBadge"><i class="fas fa-calendar-alt"></i> Joined —</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- CONTINUE WATCHING -->
+    <div class="section-wrap" id="cwSection">
+        <div class="section-head">
+            <div class="section-title"><i class="fas fa-play-circle"></i> Continue Watching</div>
+            <span class="section-count" id="cwCount">0 titles</span>
+        </div>
+        <div class="cw-wrap" id="cwWrap">
+            <div class="cw-row" id="cwRow">
+                <div class="cw-skeleton"><div class="sk-poster"></div><div class="sk-line"></div><div class="sk-line short"></div></div>
+                <div class="cw-skeleton"><div class="sk-poster"></div><div class="sk-line"></div><div class="sk-line short"></div></div>
+                <div class="cw-skeleton"><div class="sk-poster"></div><div class="sk-line"></div><div class="sk-line short"></div></div>
+                <div class="cw-skeleton"><div class="sk-poster"></div><div class="sk-line"></div><div class="sk-line short"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-star"></i></div>
+            <div class="stat-value" id="statPoints">0</div>
+            <div class="stat-label">Total Points</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-bookmark"></i></div>
+            <div class="stat-value" id="statList">0</div>
+            <div class="stat-label">My List</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+            <div class="stat-value" id="statTime">0h</div>
+            <div class="stat-label">Watch Time</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-medal"></i></div>
+            <div class="stat-value" id="statMedal">—</div>
+            <div class="stat-label">Medal Rank</div>
+        </div>
+    </div>
+
+    <!-- POINTS PROGRESS -->
+    <div class="section-wrap">
+        <div class="section-head">
+            <div class="section-title"><i class="fas fa-trophy"></i> Points Progress</div>
+        </div>
+        <div class="points-card">
+            <div class="points-top">
+                <div>
+                    <div style="font-size:12px;color:var(--muted);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Current Points</div>
+                    <div class="points-current" id="pointsDisplay">0</div>
+                </div>
+                <div class="points-next">
+                    <span>Next rank at</span>
+                    <strong id="nextRankPts">500</strong>
+                </div>
+            </div>
+            <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+            <div class="progress-labels">
+                <span id="curMedalLabel">Bronze (0)</span>
+                <span id="nxtMedalLabel">Silver (500)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT PROFILE -->
+    <div class="section-wrap">
+        <div class="section-head">
+            <div class="section-title"><i class="fas fa-pen"></i> Edit Profile</div>
+        </div>
+        <div class="edit-panel">
+            <div class="field-group">
+                <label>Username</label>
+                <div class="field-wrap"><i class="fas fa-at"></i><input type="text" id="editUsername" placeholder="username" maxlength="20"></div>
+            </div>
+            <div class="field-group">
+                <label>Email</label>
+                <div class="field-wrap"><i class="fas fa-envelope"></i><input type="email" id="editEmail" disabled></div>
+            </div>
+            <div class="panel-actions">
+                <button class="save-btn" onclick="saveProfile()" id="saveBtn">
+                    <div class="spin"></div>
+                    <span class="btn-text"><i class="fas fa-check"></i> Save Changes</span>
+                </button>
+                <button class="ghost-btn" onclick="sendPasswordReset()"><i class="fas fa-key"></i> Reset Password</button>
+                <button class="danger-btn" onclick="confirmSignout()"><i class="fas fa-right-from-bracket"></i> Sign Out</button>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /authContent -->
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav" id="bottomNav">
+    <a href="index.html" class="bnav-item" id="bnav-home">
+        <div class="bnav-dot"></div>
+        <div class="bnav-icon"><i class="fas fa-house"></i></div>
+        <span>Home</span>
+    </a>
+    <button class="bnav-item" id="bnav-search" onclick="window.location.href='index.html'">
+        <div class="bnav-dot"></div>
+        <div class="bnav-icon"><i class="fas fa-magnifying-glass"></i></div>
+        <span>Search</span>
+    </button>
+    <a href="mylist.html" class="bnav-item" id="bnav-mylist">
+        <div class="bnav-dot"></div>
+        <div class="bnav-icon"><i class="fas fa-bookmark"></i></div>
+        <span>My List</span>
+    </a>
+    <a href="profile.html" class="bnav-item active" id="bnav-profile">
+        <div class="bnav-dot"></div>
+        <div class="bnav-icon">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" alt="Profile" class="bnav-avatar" id="bnavAvatar">
+        </div>
+        <span>Profile</span>
+    </a>
+</nav>
+
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
 
-<!-- Firebase Config — inline so presence fires immediately -->
 <script>
-    const firebaseConfig = {
-        apiKey:            "AIzaSyBGE29YUks6sp4jZS4MzE2JIMF-RMLwVLg",
-        authDomain:        "moddy-store.firebaseapp.com",
-        databaseURL:       "https://moddy-store-default-rtdb.firebaseio.com",
-        projectId:         "moddy-store",
-        storageBucket:     "moddy-store.appspot.com",
-        messagingSenderId: "37854973622",
-        appId:             "1:37854973622:web:8f927e0a1d267d099ca017"
-    };
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db   = firebase.database();
-</script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBGE29YUks6sp4jZS4MzE2JIMF-RMLwVLg",
+    authDomain: "moddy-store.firebaseapp.com",
+    databaseURL: "https://moddy-store-default-rtdb.firebaseio.com",
+    projectId: "moddy-store",
+    storageBucket: "moddy-store.appspot.com",
+    messagingSenderId: "37854973622",
+    appId: "1:37854873622:web:8f927e0a1d267d099ca017"
+};
 
-<!-- ══════════════════════════════════════════════════════════
-     PRIMARY SEO META TAGS
-══════════════════════════════════════════════════════════ -->
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta http-equiv="Content-Language" content="en">
-<meta name="ca0c749dbe92ba6b379f7bc797edfdc575386360" content="ca0c749dbe92ba6b379f7bc797edfdc575386360" />
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth     = firebase.auth();
+const database = firebase.database();
 
-<!-- ══ PRIMARY TITLE — Keyword-rich, under 60 chars visible ══ -->
-<title>Streamify – Watch Free Movies & TV Shows Online | Stream HD Films, Series & Originals</title>
+const TMDB_IMG = 'https://image.tmdb.org/t/p/w300';
 
-<meta name="monetag" content="f8bda81148e97275706150c01854e491">
-
-<!-- ══ META DESCRIPTION — Compelling CTA, under 160 chars ══ -->
-<meta name="description" content="Watch free movies and TV shows online in HD on Streamify. Stream the latest Bollywood, Hollywood, Korean dramas, anime, web series, and trending films — no signup, no download required. Your free Netflix alternative.">
-
-<!-- ══ EXPANDED KEYWORDS — covering every movie/series search query ══ -->
-<meta name="keywords" content="free movies, watch movies online, free movies online, stream movies free, free TV shows, watch TV series online, free streaming site, HD movies free, watch films online, movie streaming, free movie streaming, watch free movies no sign up, free movies no download, online movies free, latest movies online, new movies 2025, new movies 2026, bollywood movies online, hollywood movies free, korean drama online, watch kdrama free, anime streaming, watch anime free, web series online, free web series, thriller movies free, horror movies online, action movies free, comedy movies free, romance movies online, sci-fi movies free, documentary streaming, family movies online, adventure movies free, crime shows online, mystery series free, drama movies free, fantasy films, animation movies free, netflix alternative, netflix free alternative, watch movies like netflix, free netflix, movies without subscription, stream free, free streaming service, movie site, watch online, free online movies, full movies online, streaming website, best free movie sites, top free movie sites, watch movies 2025, watch series free, binge watch free, popcorn movies, filmyzilla alternative, movierulz alternative, 123movies alternative, putlocker alternative, soap2day alternative, fmovies alternative, yesmovies alternative, gomovies alternative, primewire alternative, solarmovie alternative, movie4k alternative, cineb alternative, flixhq alternative, myflixer alternative, hurawatch alternative, 0123movies alternative, bmovies alternative, cmovies alternative, watch movies without ads, ad-free movie streaming, top 10 movies, trending movies, popular movies, best movies, blockbuster movies online, award winning movies free, oscar movies free, imdb top movies free, critically acclaimed movies, best TV shows free, popular TV series, trending TV shows, binge worthy shows, must watch movies, must watch series, top rated movies free, top rated TV shows, most watched movies, viral movies, box office movies online, superhero movies free, marvel movies free, DC movies online, disney movies free, pixar movies free, studio ghibli free, classic movies free, old movies online, retro movies free, 90s movies free, 80s movies free, cult classic movies, foreign movies free, international movies, world cinema free, french movies online, spanish movies free, japanese movies free, chinese movies online, tamil movies free, telugu movies online, hindi movies free, punjabi movies online, malayalam movies free, bengali movies free, south indian movies, dubbed movies free, english subtitles movies, subtitle movies online, 4K movies free, 1080p movies free, 720p movies online, dual audio movies, multi audio movies, watch anywhere, stream on mobile, stream on tablet, stream on laptop, cross platform streaming, unlimited streaming free, no registration movies, no account streaming, instant watch movies, one click streaming, buffer-free streaming, fast streaming, safe movie site, best free streaming 2025, best free streaming 2026, new releases free, upcoming movies, cinema online, digital cinema free, watch premieres free, stream originals, exclusive content free, uncut movies online, directors cut free, extended edition movies, behind the scenes, movie trailers, watch trailers online, free entertainment, online entertainment, binge watching, movie marathon, TV show marathon, weekend movies, night movies, date night movies, kids movies free, children movies online, cartoon movies free, animated series free, reality TV free, talk shows online, comedy specials free, standup comedy streaming, music documentaries, true crime series, war movies free, historical movies online, biography movies free, sports movies online, musical movies free, western movies free, noir movies free, psychological thriller free, legal drama free, medical drama free, police procedural free, spy movies free, heist movies free, zombie movies free, vampire movies free, werewolf movies free, ghost movies free, slasher movies free, found footage movies, mockumentary free, dark comedy movies, satire movies free, parody movies free, anthology series free, miniseries free, limited series online, TV movie free, made for TV movies, straight to streaming, direct to digital, streaming premiere, watch now free, play movies free, streamify, streamify movies, streamify TV, streamify app, streamify website">
-
-<!-- ══ ROBOTS — Maximum indexing directives ══ -->
-<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-<meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-<meta name="bingbot" content="index, follow">
-
-<!-- ══ CANONICAL URL — Prevent duplicate content ══ -->
-<link rel="canonical" href="https://streamify.website/">
-
-<!-- ══ LANGUAGE & LOCALE ALTERNATES ══ -->
-<link rel="alternate" hreflang="en" href="https://streamify.website/">
-<link rel="alternate" hreflang="x-default" href="https://streamify.website/">
-
-<!-- ══ AUTHOR & PUBLISHER ══ -->
-<meta name="author" content="Streamify">
-<meta name="publisher" content="Streamify">
-<meta name="copyright" content="© 2025 Streamify. All rights reserved.">
-<meta name="application-name" content="Streamify">
-<meta name="theme-color" content="#0a0a0f">
-<meta name="color-scheme" content="dark">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Streamify">
-<meta name="format-detection" content="telephone=no">
-<meta name="msapplication-TileColor" content="#e50914">
-
-<!-- ══════════════════════════════════════════════════════════
-     OPEN GRAPH (Facebook, LinkedIn, WhatsApp, Discord, etc.)
-══════════════════════════════════════════════════════════ -->
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Streamify">
-<meta property="og:title" content="Streamify – Watch Free Movies & TV Shows Online in HD">
-<meta property="og:description" content="Stream unlimited movies, TV shows, web series, K-dramas, Bollywood & Hollywood films free in HD. No signup required. The best free Netflix alternative.">
-<meta property="og:url" content="https://streamify.website/">
-<meta property="og:image" content="https://streamify.website/images/og-banner.jpg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Streamify — Free Movies and TV Shows Streaming Platform">
-<meta property="og:image:type" content="image/jpeg">
-<meta property="og:locale" content="en_US">
-
-<!-- ══════════════════════════════════════════════════════════
-     TWITTER CARD
-══════════════════════════════════════════════════════════ -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:site" content="@streamify">
-<meta name="twitter:creator" content="@streamify">
-<meta name="twitter:title" content="Streamify – Watch Free Movies & TV Shows Online in HD">
-<meta name="twitter:description" content="Stream unlimited movies, TV shows, K-dramas, anime, Bollywood & Hollywood films free. No signup, no download. Best free Netflix alternative in 2025.">
-<meta name="twitter:image" content="https://streamify.website/images/twitter-card.jpg">
-<meta name="twitter:image:alt" content="Streamify — Free HD Movie & TV Show Streaming">
-
-<!-- ══════════════════════════════════════════════════════════
-     STRUCTURED DATA — JSON-LD (Google Rich Results)
-══════════════════════════════════════════════════════════ -->
-
-<!-- 1. WebSite Schema with SearchAction (enables Google Sitelinks Search Box) -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "Streamify",
-  "alternateName": ["Streamify Movies", "Streamify TV", "Streamify Streaming"],
-  "url": "https://streamify.website/",
-  "description": "Watch free movies and TV shows online in HD. Stream Bollywood, Hollywood, Korean dramas, anime, web series, and trending films — no signup required.",
-  "inLanguage": "en",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": {
-      "@type": "EntryPoint",
-      "urlTemplate": "https://streamify.website/search?q={search_term_string}"
-    },
-    "query-input": "required name=search_term_string"
-  }
+function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
+    t.querySelector('i').className = `fas ${icons[type]}`;
+    t.className = `toast ${type}`;
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3200);
 }
-</script>
 
-<!-- 2. Organization Schema -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Streamify",
-  "url": "https://streamify.website/",
-  "logo": "https://streamify.website/images/logo.png",
-  "description": "Streamify is a free movie and TV show streaming platform offering HD quality content across all genres including Bollywood, Hollywood, Korean dramas, anime, and more.",
-  "foundingDate": "2025",
-  "sameAs": [
-    "https://twitter.com/streamify",
-    "https://facebook.com/streamify",
-    "https://instagram.com/streamify",
-    "https://youtube.com/@streamify",
-    "https://tiktok.com/@streamify"
-  ],
-  "contactPoint": {
-    "@type": "ContactPoint",
-    "contactType": "customer support",
-    "availableLanguage": ["English", "Hindi"]
-  }
+function getMedalFromPoints(pts) {
+    if (pts >= 2000) return { name: 'Gold',   cls: 'medal-gold',   next: null,     nextPts: 2000, cur: 2000 };
+    if (pts >= 500)  return { name: 'Silver', cls: 'medal-silver', next: 'Gold',   nextPts: 2000, cur: 500  };
+    return               { name: 'Bronze', cls: 'medal-bronze', next: 'Silver', nextPts: 500,  cur: 0    };
 }
-</script>
 
-<!-- 3. BreadcrumbList Schema -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://streamify.website/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Movies",
-      "item": "https://streamify.website/movies.html"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "TV Shows",
-      "item": "https://streamify.website/series.html"
-    },
-    {
-      "@type": "ListItem",
-      "position": 4,
-      "name": "My List",
-      "item": "https://streamify.website/mylist.html"
-    }
-  ]
+function getInitials(name) {
+    if (!name) return '?';
+    return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
 }
-</script>
-
-<!-- 4. ItemList Schema — Category Collections (Google Carousels) -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  "name": "Free Movie and TV Show Categories on Streamify",
-  "description": "Browse free movies and TV shows by genre on Streamify — action, comedy, horror, thriller, romance, sci-fi, drama, animation, and more.",
-  "numberOfItems": 20,
-  "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Trending Movies & TV Shows", "url": "https://streamify.website/#trendingNow" },
-    { "@type": "ListItem", "position": 2, "name": "Top 5 Today", "url": "https://streamify.website/#top5Today" },
-    { "@type": "ListItem", "position": 3, "name": "Bollywood Movies", "url": "https://streamify.website/#bollywoodContent" },
-    { "@type": "ListItem", "position": 4, "name": "New Releases", "url": "https://streamify.website/#newReleases" },
-    { "@type": "ListItem", "position": 5, "name": "Top Rated Movies", "url": "https://streamify.website/#topRated" },
-    { "@type": "ListItem", "position": 6, "name": "Korean Drama", "url": "https://streamify.website/#koreanContent" },
-    { "@type": "ListItem", "position": 7, "name": "Action Movies", "url": "https://streamify.website/#actionMovies" },
-    { "@type": "ListItem", "position": 8, "name": "Adventure Movies", "url": "https://streamify.website/#adventureContent" },
-    { "@type": "ListItem", "position": 9, "name": "Comedy Movies", "url": "https://streamify.website/#comedyMovies" },
-    { "@type": "ListItem", "position": 10, "name": "Crime Movies & Shows", "url": "https://streamify.website/#crimeContent" },
-    { "@type": "ListItem", "position": 11, "name": "Horror Movies", "url": "https://streamify.website/#horrorMovies" },
-    { "@type": "ListItem", "position": 12, "name": "Romance Movies", "url": "https://streamify.website/#romanceMovies" },
-    { "@type": "ListItem", "position": 13, "name": "Thriller Movies", "url": "https://streamify.website/#thrillerMovies" },
-    { "@type": "ListItem", "position": 14, "name": "Science Fiction Movies", "url": "https://streamify.website/#scifiMovies" },
-    { "@type": "ListItem", "position": 15, "name": "Fantasy Movies", "url": "https://streamify.website/#fantasyContent" },
-    { "@type": "ListItem", "position": 16, "name": "Mystery Movies", "url": "https://streamify.website/#mysteryContent" },
-    { "@type": "ListItem", "position": 17, "name": "Drama Movies", "url": "https://streamify.website/#dramaMovies" },
-    { "@type": "ListItem", "position": 18, "name": "Animation & Cartoon Movies", "url": "https://streamify.website/#animationMovies" },
-    { "@type": "ListItem", "position": 19, "name": "Documentaries", "url": "https://streamify.website/#documentaryContent" },
-    { "@type": "ListItem", "position": 20, "name": "Family Movies", "url": "https://streamify.website/#familyContent" }
-  ]
+function fmtTime(s) {
+    if (!s || s < 60) return '0h';
+    const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60);
+    return h > 0 ? `${h}h` : `${m}m`;
 }
-</script>
-
-<!-- 5. FAQPage Schema — Captures long-tail "People Also Ask" queries -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "Where can I watch free movies online without signing up?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Streamify lets you watch thousands of movies and TV shows for free in HD quality without any signup, registration, or download. Simply visit the site, pick a title, and start streaming instantly."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Is Streamify a good free alternative to Netflix?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes! Streamify offers a Netflix-like experience completely free. You get HD quality streaming, curated genre collections, trending titles, Korean dramas, Bollywood movies, Hollywood blockbusters, anime, and more — all without a subscription."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What genres of movies and TV shows can I watch on Streamify?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Streamify offers a huge library spanning Action, Comedy, Horror, Thriller, Romance, Science Fiction, Fantasy, Drama, Animation, Documentary, Adventure, Crime, Mystery, Family, Korean Drama, Bollywood, and many more genres."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Can I watch Bollywood and Korean drama for free online?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Absolutely! Streamify has dedicated sections for Bollywood movies and Korean dramas (K-dramas). Browse the latest Hindi films, classic Bollywood hits, trending K-dramas, and popular Asian content — all free in HD."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Does Streamify work on mobile phones and tablets?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes, Streamify is fully responsive and works perfectly on all devices including smartphones, tablets, laptops, and desktop computers. No app download needed — just open your browser and start watching."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How do I watch the latest 2025 and 2026 movie releases for free?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Streamify updates its library regularly with the latest movie and TV show releases. Check our 'New Releases' and 'Trending Now' sections to find the newest 2025 and 2026 titles available for free streaming in HD."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Can I create a watchlist on Streamify?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes! Streamify offers a 'My List' feature where you can save movies and TV shows to watch later. You can also track your viewing progress with the 'Continue Watching' feature."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What is the best free movie streaming site in 2025?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Streamify is one of the best free movie streaming sites in 2025. It offers HD quality, a massive library of movies and TV shows across all genres, no signup requirement, and a premium streaming experience — all completely free."
-      }
-    }
-  ]
+function fmtDate(ts) {
+    if (!ts) return 'Unknown';
+    return new Date(ts).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 }
-</script>
-
-<!-- 6. SiteNavigationElement Schema -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SiteNavigationElement",
-  "name": ["Home", "Movies", "TV Shows", "My List", "Search", "Profile"],
-  "url": [
-    "https://streamify.website/",
-    "https://streamify.website/movies.html",
-    "https://streamify.website/series.html",
-    "https://streamify.website/mylist.html",
-    "https://streamify.website/search",
-    "https://streamify.website/profile.html"
-  ]
+function timeAgo(ts) {
+    const diff = Date.now() - ts;
+    const m = Math.floor(diff / 60000);
+    if (m < 1)  return 'Just now';
+    if (m < 60) return `${m}m ago`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `${h}h ago`;
+    return `${Math.floor(h / 24)}d ago`;
 }
-</script>
 
-<!-- ══════════════════════════════════════════════════════════
-     PERFORMANCE & PRELOADING
-══════════════════════════════════════════════════════════ -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://api.themoviedb.org" crossorigin>
-<link rel="preconnect" href="https://image.tmdb.org" crossorigin>
-<link rel="dns-prefetch" href="https://api.themoviedb.org">
-<link rel="dns-prefetch" href="https://image.tmdb.org">
-<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-<link rel="dns-prefetch" href="https://www.gstatic.com">
+let _cwUid = null;
 
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link rel="stylesheet" href="css/style.css">
-
-<!-- ══ FAVICONS (replace paths with your actual files) ══ -->
-<link rel="icon" type="image/x-icon" href="/favicon.ico">
-<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-<link rel="manifest" href="/manifest.json">
-
-<style>
-    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-    @keyframes glowPulse { 0%,100%{box-shadow:0 0 20px rgba(229,9,20,0.3)} 50%{box-shadow:0 0 40px rgba(229,9,20,0.6)} }
-    @keyframes textGradient { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-    .btn-play,.btn-info,.popup-btn{position:relative;overflow:hidden}
-    .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,0.4);transform:scale(0);animation:ripple 0.6s linear;pointer-events:none}
-    @keyframes ripple{to{transform:scale(4);opacity:0}}
-    body{animation:pageLoad 0.8s ease-out}
-    @keyframes pageLoad{from{opacity:0}to{opacity:1}}
-    .card{position:relative;overflow:hidden}
-    .card .shine{position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);transition:0.5s;z-index:4;pointer-events:none}
-    .card:hover .shine{left:100%}
-    .popup-dont-ask{display:flex;align-items:center;justify-content:center;gap:12px;margin:18px 0 8px 0;cursor:pointer;user-select:none}
-    .popup-dont-ask input[type="checkbox"]{display:none}
-    .popup-dont-ask .custom-checkbox{width:22px;height:22px;border:2px solid rgba(255,255,255,0.3);border-radius:6px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.3s cubic-bezier(0.4,0,0.2,1)}
-    .popup-dont-ask input[type="checkbox"]:checked+.custom-checkbox{background:linear-gradient(135deg,#e50914 0%,#b20710 100%);border-color:#e50914;box-shadow:0 0 15px rgba(229,9,20,0.4)}
-    .popup-dont-ask input[type="checkbox"]:checked+.custom-checkbox::after{content:'';display:block;width:6px;height:10px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translate(-1px,-1px)}
-    .popup-dont-ask .checkbox-label{font-size:14px;color:rgba(255,255,255,0.6);transition:color 0.3s}
-    .popup-dont-ask:hover .checkbox-label{color:#fff}
-    .popup-dont-ask:hover .custom-checkbox{border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.1)}
-    .page-loader{position:fixed;inset:0;background:#0a0a0f;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;transition:opacity 0.5s,visibility 0.5s}
-    .page-loader.hidden{opacity:0;visibility:hidden}
-    .loader-logo{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:4px;background:linear-gradient(135deg,#e50914 0%,#ff6b6b 50%,#e50914 100%);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:gradientShift 2s ease infinite}
-    .loader-bar{width:200px;height:3px;background:rgba(255,255,255,0.1);border-radius:10px;overflow:hidden}
-    .loader-bar::after{content:'';display:block;width:50%;height:100%;background:linear-gradient(90deg,#e50914,#ff6b6b,#e50914);border-radius:10px;animation:loading 1s ease-in-out infinite}
-    @keyframes loading{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}
-    @keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-    .particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1;overflow:hidden}
-    .particle{position:absolute;width:4px;height:4px;background:rgba(229,9,20,0.3);border-radius:50%;animation:floatParticle 15s infinite}
-    .particle:nth-child(1){left:10%;animation-delay:0s;animation-duration:20s}
-    .particle:nth-child(2){left:20%;animation-delay:2s;animation-duration:18s}
-    .particle:nth-child(3){left:30%;animation-delay:4s;animation-duration:22s}
-    .particle:nth-child(4){left:40%;animation-delay:1s;animation-duration:19s}
-    .particle:nth-child(5){left:50%;animation-delay:3s;animation-duration:21s}
-    .particle:nth-child(6){left:60%;animation-delay:5s;animation-duration:17s}
-    .particle:nth-child(7){left:70%;animation-delay:2s;animation-duration:23s}
-    .particle:nth-child(8){left:80%;animation-delay:4s;animation-duration:20s}
-    .particle:nth-child(9){left:90%;animation-delay:1s;animation-duration:18s}
-    .particle:nth-child(10){left:95%;animation-delay:3s;animation-duration:22s}
-    @keyframes floatParticle{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-100vh) scale(1);opacity:0}}
-    [data-tooltip]{position:relative}
-    [data-tooltip]::after{content:attr(data-tooltip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%) translateY(-5px);background:rgba(0,0,0,0.9);color:#fff;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:500;white-space:nowrap;opacity:0;visibility:hidden;transition:all 0.3s;pointer-events:none;z-index:100;border:1px solid rgba(255,255,255,0.1)}
-    [data-tooltip]:hover::after{opacity:1;visibility:visible;transform:translateX(-50%) translateY(-10px)}
-    button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #e50914;outline-offset:2px}
-    html{scroll-behavior:smooth}
-    body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;padding-bottom:80px}
-
-    /* ══════════════════════════════════════
-       BOTTOM NAV
-    ══════════════════════════════════════ */
-    .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:9000;height:70px;display:flex;align-items:stretch;background:rgba(10,10,15,0.82);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-top:1px solid rgba(255,255,255,0.07);box-shadow:0 -4px 30px rgba(0,0,0,0.6),0 -1px 0 rgba(229,9,20,0.15) inset;padding-bottom:env(safe-area-inset-bottom,0px)}
-    .bottom-nav::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(229,9,20,0.5) 30%,rgba(255,107,107,0.6) 50%,rgba(229,9,20,0.5) 70%,transparent);filter:blur(0.5px)}
-    .bottom-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-decoration:none;color:rgba(255,255,255,0.45);font-size:10px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;cursor:pointer;background:none;border:none;padding:0;transition:color 0.25s ease;position:relative;-webkit-tap-highlight-color:transparent}
-    .bottom-nav-item:hover{color:rgba(255,255,255,0.75)}
-    .bottom-nav-item.active{color:#fff}
-    .bnav-icon-wrap{position:relative;width:44px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:14px;transition:background 0.3s ease,transform 0.2s ease}
-    .bottom-nav-item.active .bnav-icon-wrap{background:rgba(229,9,20,0.18);transform:translateY(-1px)}
-    .bottom-nav-item:active .bnav-icon-wrap{transform:scale(0.88) translateY(-1px)}
-    .bnav-icon-wrap i{font-size:18px;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),color 0.25s ease}
-    .bottom-nav-item.active .bnav-icon-wrap i{color:#e50914;filter:drop-shadow(0 0 8px rgba(229,9,20,0.7));transform:scale(1.15)}
-    .bnav-label{font-family:'Inter',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;transition:color 0.25s ease,opacity 0.25s ease;opacity:0.7}
-    .bottom-nav-item.active .bnav-label{opacity:1;color:#fff}
-    .bnav-dot{position:absolute;top:-8px;left:50%;transform:translateX(-50%) scaleX(0);width:20px;height:3px;border-radius:0 0 3px 3px;background:linear-gradient(90deg,#e50914,#ff6b6b);box-shadow:0 2px 8px rgba(229,9,20,0.6);transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1)}
-    .bottom-nav-item.active .bnav-dot{transform:translateX(-50%) scaleX(1)}
-    .bnav-avatar{width:26px;height:26px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.2);transition:border-color 0.25s ease,transform 0.25s ease}
-    .bottom-nav-item.active .bnav-avatar{border-color:#e50914;box-shadow:0 0 10px rgba(229,9,20,0.5);transform:scale(1.08) translateY(-1px)}
-    .bnav-ripple{position:absolute;border-radius:50%;background:rgba(229,9,20,0.25);transform:scale(0);animation:bnavRipple 0.5s ease-out forwards;pointer-events:none}
-    @keyframes bnavRipple{to{transform:scale(3.5);opacity:0}}
-    @media(min-width:1024px){body{padding-bottom:80px}}
-    .bottom-nav-item[data-action="search"]{cursor:pointer}
-
-    /* ══════════════════════════════════════
-       PRESENCE BADGE on profile avatar
-    ══════════════════════════════════════ */
-    .bnav-avatar-wrap {
-        position: relative;
-        width: auto;
-        display: inline-flex;
+async function loadContinueWatching(uid) {
+    _cwUid = uid;
+    const row = document.getElementById('cwRow');
+    try {
+        const snap = await database.ref('ContinueWatching/' + uid).once('value');
+        const data = snap.val();
+        if (!data) { renderCWEmpty(); return; }
+        const items = Object.entries(data)
+            .map(([key, val]) => ({ key, ...val }))
+            .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+        if (items.length === 0) { renderCWEmpty(); return; }
+        document.getElementById('cwCount').textContent = `${items.length} title${items.length !== 1 ? 's' : ''}`;
+        row.innerHTML = '';
+        items.forEach(item => row.appendChild(buildCWCard(item)));
+        setupCWArrows();
+    } catch (e) {
+        console.error('CW load error:', e);
+        renderCWEmpty();
     }
-    .presence-dot {
-        position: absolute;
-        bottom: 0px;
-        right: -1px;
-        width: 9px;
-        height: 9px;
-        border-radius: 50%;
-        border: 2px solid #0a0a0f;
-        background: #555;
-        transition: background 0.4s ease;
-        z-index: 2;
+}
+
+function buildCWCard(item) {
+    const isMovie = item.isMovie;
+    const title   = item.title || 'Unknown';
+    const poster  = item.posterPath && item.posterPath !== 'null' ? TMDB_IMG + item.posterPath : null;
+    let watchUrl;
+    if (isMovie) {
+        watchUrl = `https://streamify.website/watch?id=${item.id}&type=movie`;
+    } else {
+        const season = item.season || 1, episode = item.episode || 1;
+        watchUrl = `https://streamify.website/watch?type=tv&id=${item.id}&season=${season}&episode=${episode}`;
     }
-    .presence-dot.online  { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.8); }
-    .presence-dot.offline { background: #555; box-shadow: none; }
-    .presence-dot.online::after {
-        content: '';
-        position: absolute;
-        inset: -3px;
-        border-radius: 50%;
-        border: 2px solid rgba(34,197,94,0.5);
-        animation: presencePulse 2s ease-out infinite;
-    }
-    @keyframes presencePulse {
-        0%   { transform: scale(1);   opacity: 0.8; }
-        100% { transform: scale(2.2); opacity: 0; }
-    }
-    #bnav-profile .presence-label {
-        font-size: 8px;
-        font-weight: 700;
-        letter-spacing: 0.4px;
-        text-transform: uppercase;
-        color: rgba(255,255,255,0.4);
-        margin-top: -2px;
-        transition: color 0.3s;
-    }
-    #bnav-profile.has-user .presence-label { display: block; }
-    #bnav-profile .presence-label { display: none; }
-    #bnav-profile.online-now .presence-label { color: #22c55e; }
-
-    /* ══════════════════════════════════════
-       SEO CONTENT SECTIONS
-    ══════════════════════════════════════ */
-    .seo-content-section {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 40px 24px 20px;
-    }
-    .seo-content-section h2 {
-        font-family: 'Inter', sans-serif;
-        font-size: 22px;
-        font-weight: 700;
-        color: rgba(255,255,255,0.9);
-        margin-bottom: 16px;
-    }
-    .seo-content-section p {
-        font-family: 'Inter', sans-serif;
-        font-size: 14px;
-        line-height: 1.8;
-        color: rgba(255,255,255,0.5);
-        margin-bottom: 14px;
-    }
-    .seo-content-section h3 {
-        font-family: 'Inter', sans-serif;
-        font-size: 17px;
-        font-weight: 600;
-        color: rgba(255,255,255,0.75);
-        margin: 24px 0 10px;
-    }
-    .seo-faq {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px 24px 40px;
-    }
-    .seo-faq h2 {
-        font-family: 'Inter', sans-serif;
-        font-size: 22px;
-        font-weight: 700;
-        color: rgba(255,255,255,0.9);
-        margin-bottom: 20px;
-    }
-    .faq-item {
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 12px;
-        margin-bottom: 10px;
-        overflow: hidden;
-        background: rgba(255,255,255,0.02);
-        transition: border-color 0.3s;
-    }
-    .faq-item:hover {
-        border-color: rgba(229,9,20,0.3);
-    }
-    .faq-question {
-        width: 100%;
-        background: none;
-        border: none;
-        color: rgba(255,255,255,0.85);
-        font-family: 'Inter', sans-serif;
-        font-size: 15px;
-        font-weight: 600;
-        padding: 18px 20px;
-        text-align: left;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        transition: color 0.3s;
-    }
-    .faq-question:hover { color: #fff; }
-    .faq-question i {
-        font-size: 12px;
-        color: #e50914;
-        transition: transform 0.3s;
-        flex-shrink: 0;
-    }
-    .faq-item.open .faq-question i { transform: rotate(180deg); }
-    .faq-answer {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.4s ease, padding 0.3s ease;
-    }
-    .faq-item.open .faq-answer {
-        max-height: 300px;
-        padding: 0 20px 18px;
-    }
-    .faq-answer p {
-        font-family: 'Inter', sans-serif;
-        font-size: 14px;
-        line-height: 1.7;
-        color: rgba(255,255,255,0.5);
-        margin: 0;
-    }
-
-    /* ══════════════════════════════════════
-       SEO FOOTER — Rich internal links
-    ══════════════════════════════════════ */
-    .footer-seo {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 40px 24px 10px;
-        border-top: 1px solid rgba(255,255,255,0.06);
-    }
-    .footer-seo-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 30px;
-        margin-bottom: 30px;
-    }
-    .footer-seo-col h4 {
-        font-family: 'Inter', sans-serif;
-        font-size: 13px;
-        font-weight: 700;
-        color: rgba(255,255,255,0.8);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 14px;
-    }
-    .footer-seo-col ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-    .footer-seo-col li {
-        margin-bottom: 8px;
-    }
-    .footer-seo-col a {
-        font-family: 'Inter', sans-serif;
-        font-size: 13px;
-        color: rgba(255,255,255,0.4);
-        text-decoration: none;
-        transition: color 0.3s;
-    }
-    .footer-seo-col a:hover {
-        color: #e50914;
-    }
-</style>
-
-<!-- Streamify automatic version check + cache busting -->
-<script src="version-check.js"></script>
-</head>
-<body itemscope itemtype="https://schema.org/WebPage">
-
-    <!-- Page Loader -->
-    <div class="page-loader" id="pageLoader" aria-hidden="true">
-        <div class="loader-logo">STREAMIFY</div>
-        <div class="loader-bar"></div>
-    </div>
-
-    <!-- Floating Particles -->
-    <div class="particles" aria-hidden="true">
-        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
-        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
-        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
-        <div class="particle"></div>
-    </div>
-
-    <!-- ══════════════════════════════════════════════════════════
-         HEADER & NAVIGATION — Semantic <header> wrapper
-    ══════════════════════════════════════════════════════════ -->
-    <header role="banner">
-        <nav class="navbar" id="navbar" role="navigation" aria-label="Primary navigation" itemscope itemtype="https://schema.org/SiteNavigationElement">
-            <div class="nav-left">
-                <a href="index.html" class="logo" data-tooltip="Home" itemprop="url" title="Streamify - Free Movies & TV Shows Streaming">
-                    <span itemprop="name">STREAMIFY</span>
-                </a>
-                <ul class="nav-links">
-                    <li><a href="index.html" class="active" title="Home - Watch Free Movies & TV Shows">Home</a></li>
-                    <li><a href="movies.html" title="Browse Free Movies Online - All Genres">Movies</a></li>
-                    <li><a href="series.html" title="Watch Free TV Shows & Web Series Online">TV Shows</a></li>
-                    <li><a href="mylist.html" title="My Watchlist - Saved Movies & Shows">My List</a></li>
-                </ul>
-            </div>
-            <div class="nav-right">
-                <button class="nav-btn" id="searchBtn" data-tooltip="Search" aria-label="Search movies and TV shows"><i class="fas fa-search"></i></button>
-                <button class="nav-btn menu-toggle" id="menuBtn" data-tooltip="Menu" aria-label="Open navigation menu"><i class="fas fa-bars"></i></button>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" alt="User Profile - Streamify Account" class="profile-img" data-tooltip="Profile" loading="lazy" width="36" height="36">
-            </div>
-        </nav>
-    </header>
-
-    <!-- Mobile Menu -->
-    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation menu">
-        <div class="mobile-menu-top">
-            <span class="logo">STREAMIFY</span>
-            <button id="closeMenu" aria-label="Close menu"><i class="fas fa-times"></i></button>
-        </div>
-        <ul>
-            <li><a href="index.html" class="active" title="Home - Free Movie Streaming"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="movies.html" title="Browse All Free Movies"><i class="fas fa-film"></i> Movies</a></li>
-            <li><a href="series.html" title="Watch Free TV Shows Online"><i class="fas fa-tv"></i> TV Shows</a></li>
-            <li><a href="mylist.html" title="My Saved Watchlist"><i class="fas fa-bookmark"></i> My List</a></li>
-            <li class="menu-divider"></li>
-        </ul>
-    </div>
-    <div class="overlay" id="overlay"></div>
-
-    <!-- Search Modal — with accessible search role -->
-    <div class="search-modal" id="searchModal" role="search" aria-label="Search movies, TV shows, and series">
-        <div class="search-wrapper">
-            <i class="fas fa-search" aria-hidden="true"></i>
-            <input type="search" id="searchInput" placeholder="Search movies, TV shows, series, actors..." autocomplete="off" aria-label="Search for free movies, TV shows, web series, Korean dramas, Bollywood, Hollywood content" title="Search free movies and TV shows on Streamify">
-            <button id="searchClose" aria-label="Close search"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="search-results" id="searchResults" role="region" aria-label="Search results" aria-live="polite"></div>
-    </div>
-
-    <!-- ══════════════════════════════════════════════════════════
-         HERO SECTION — SEO-optimized featured content
-    ══════════════════════════════════════════════════════════ -->
-    <section class="hero" id="hero" aria-label="Featured movie or TV show">
-        <div class="hero-bg" id="heroBg" role="img" aria-label="Featured content background"></div>
-        <div class="hero-overlay"></div>
-        <div class="hero-content" id="heroContent">
-            <span class="hero-badge"><i class="fas fa-play-circle" aria-hidden="true"></i> <span id="heroType">MOVIE</span></span>
-            <h1 id="heroTitle" itemprop="name">Watch Free Movies & TV Shows Online — Streamify</h1>
-            <div class="hero-meta">
-                <span class="green"><i class="fas fa-star" aria-hidden="true"></i> <span id="heroRating">0.0</span></span>
-                <span id="heroYear">----</span>
-                <span class="badge">HD</span>
-            </div>
-            <p class="hero-desc" id="heroDesc" itemprop="description"></p>
-            <div class="hero-btns">
-                <button class="btn-play" id="heroPlay" aria-label="Play featured movie or show"><i class="fas fa-play" aria-hidden="true"></i> Play</button>
-                <button class="btn-info" id="heroInfo" aria-label="More information about featured content"><i class="fas fa-info-circle" aria-hidden="true"></i> More Info</button>
-            </div>
-        </div>
-    </section>
-
-    <div data-banner-id="1485855"></div>
-
-    <!-- ══════════════════════════════════════════════════════════
-         MAIN CONTENT — Semantic <main> with aria-labels on every section
-    ══════════════════════════════════════════════════════════ -->
-    <main class="main-content" id="mainContent" role="main" itemprop="mainEntity" itemscope itemtype="https://schema.org/ItemList">
-        <meta itemprop="name" content="Free Movies and TV Shows on Streamify">
-        <meta itemprop="description" content="Browse and watch free movies, TV shows, web series, Korean dramas, Bollywood, Hollywood films, and more in HD quality on Streamify.">
-
-        <section class="content-section" id="continueSection" aria-label="Continue watching your movies and shows">
-            <div class="section-header"><h2><i class="fas fa-history" aria-hidden="true"></i> Continue Watching</h2></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="continueWatching" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-
-        <section class="content-section" aria-label="Top 5 trending movies and shows today">
-            <div class="section-header"><h2><i class="fas fa-ranking-star" aria-hidden="true"></i> Top 5 Today</h2><button class="see-all-btn" data-cat="trending" aria-label="See all trending movies and TV shows">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row top-5-row" id="top5Today" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-
-        <section class="content-section" aria-label="Trending free movies and TV shows">
-            <div class="section-header"><h2><i class="fas fa-fire" aria-hidden="true"></i> Trending Now</h2><button class="see-all-btn" data-cat="trending" aria-label="See all trending content">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="trendingNow" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-
-        <section class="content-section" aria-label="Free Bollywood movies online">
-            <div class="section-header"><h2><i class="fas fa-film" aria-hidden="true"></i> Bollywood</h2><button class="see-all-btn" data-cat="bollywood" aria-label="See all free Bollywood movies">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="bollywoodContent" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-
-        <section class="content-section" aria-label="Newest movie and TV show releases free">
-            <div class="section-header"><h2><i class="fas fa-sparkles" aria-hidden="true"></i> New Releases</h2><button class="see-all-btn" data-cat="new" aria-label="See all new releases">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="newReleases" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-
-        <section class="content-section" aria-label="Top rated movies and TV shows free">
-            <div class="section-header"><h2><i class="fas fa-trophy" aria-hidden="true"></i> Top Rated</h2><button class="see-all-btn" data-cat="toprated" aria-label="See all top rated free movies">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="topRated" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-
-        <section class="content-section" aria-label="Free Korean drama K-drama streaming">
-            <div class="section-header"><h2><i class="fas fa-masks-theater" aria-hidden="true"></i> Korean Drama</h2><button class="see-all-btn" data-cat="korean" aria-label="See all free Korean dramas">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="koreanContent" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-
-        <section class="content-section" aria-label="Free action movies and shows to stream">
-            <div class="section-header"><h2><i class="fas fa-burst" aria-hidden="true"></i> Action</h2><button class="see-all-btn" data-cat="action" aria-label="See all free action movies">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="actionMovies" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-
-        <section class="content-section" aria-label="Free adventure movies online">
-            <div class="section-header"><h2><i class="fas fa-compass" aria-hidden="true"></i> Adventure</h2><button class="see-all-btn" data-cat="adventure" aria-label="See all free adventure movies">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="adventureContent" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-
-        <section class="content-section" aria-label="Free comedy movies to watch online">
-            <div class="section-header"><h2><i class="fas fa-face-laugh-squint" aria-hidden="true"></i> Comedy</h2><button class="see-all-btn" data-cat="comedy" aria-label="See all free comedy movies">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="comedyMovies" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-
-        <section class="content-section" aria-label="Free crime movies and TV series">
-            <div class="section-header"><h2><i class="fas fa-user-secret" aria-hidden="true"></i> Crime</h2><button class="see-all-btn" data-cat="crime" aria-label="See all free crime shows">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="crimeContent" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-
-        <section class="content-section" aria-label="Free horror movies to stream online">
-            <div class="section-header"><h2><i class="fas fa-ghost" aria-hidden="true"></i> Horror</h2><button class="see-all-btn" data-cat="horror" aria-label="See all free horror movies">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="horrorMovies" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-
-        <section class="content-section" aria-label="Free romance movies and love stories online">
-            <div class="section-header"><h2><i class="fas fa-heart" aria-hidden="true"></i> Romance</h2><button class="see-all-btn" data-cat="romance" aria-label="See all free romance movies">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="romanceMovies" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-
-        <section class="content-section" aria-label="Free thriller movies and suspense films">
-            <div class="section-header"><h2><i class="fas fa-mask" aria-hidden="true"></i> Thriller</h2><button class="see-all-btn" data-cat="thriller" aria-label="See all free thriller movies">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="thrillerMovies" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-
-        <section class="content-section" aria-label="Free science fiction and sci-fi movies online">
-            <div class="section-header"><h2><i class="fas fa-rocket" aria-hidden="true"></i> Science Fiction</h2><button class="see-all-btn" data-cat="scifi" aria-label="See all free sci-fi movies">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="scifiMovies" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-
-        <section class="content-section" aria-label="Free fantasy movies and epic films">
-            <div class="section-header"><h2><i class="fas fa-dragon" aria-hidden="true"></i> Fantasy</h2><button class="see-all-btn" data-cat="fantasy" aria-label="See all free fantasy movies">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="fantasyContent" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-
-        <section class="content-section" aria-label="Free mystery movies and detective shows">
-            <div class="section-header"><h2><i class="fas fa-magnifying-glass" aria-hidden="true"></i> Mystery</h2><button class="see-all-btn" data-cat="mystery" aria-label="See all free mystery movies">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="mysteryContent" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-
-        <section class="content-section" aria-label="Free drama movies and emotional films">
-            <div class="section-header"><h2><i class="fas fa-masks-theater" aria-hidden="true"></i> Drama</h2><button class="see-all-btn" data-cat="drama" aria-label="See all free drama movies">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="dramaMovies" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-
-        <section class="content-section" aria-label="Free animated movies and cartoon films">
-            <div class="section-header"><h2><i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i> Animation</h2><button class="see-all-btn" data-cat="animation" aria-label="See all free animated movies">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="animationMovies" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-
-        <section class="content-section" aria-label="Free documentaries to stream online">
-            <div class="section-header"><h2><i class="fas fa-video" aria-hidden="true"></i> Documentary</h2><button class="see-all-btn" data-cat="documentary" aria-label="See all free documentaries">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="documentaryContent" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-
-        <section class="content-section" aria-label="Free family movies and kids entertainment">
-            <div class="section-header"><h2><i class="fas fa-users" aria-hidden="true"></i> Family</h2><button class="see-all-btn" data-cat="family" aria-label="See all free family movies">See All <i class="fas fa-chevron-right"></i></button></div>
-            <div class="row-wrapper"><button class="scroll-arrow left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button><div class="content-row" id="familyContent" role="list"></div><button class="scroll-arrow right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button></div>
-        </section>
-    </main>
-
-    <!-- ══════════════════════════════════════════════════════════
-         SEO CONTENT SECTION — Keyword-rich crawlable text
-         (Visible to users AND search engines — drives long-tail queries)
-    ══════════════════════════════════════════════════════════ -->
-    <article class="seo-content-section" itemscope itemtype="https://schema.org/Article">
-        <meta itemprop="author" content="Streamify">
-        <meta itemprop="datePublished" content="2025-01-01">
-        <meta itemprop="dateModified" content="2025-12-01">
-
-        <h2 itemprop="headline">Watch Free Movies & TV Shows Online — Stream Unlimited HD Content on Streamify</h2>
-
-        <p itemprop="articleBody">Welcome to <strong>Streamify</strong> — your ultimate destination to <strong>watch free movies online</strong> and <strong>stream TV shows</strong> in HD quality without signup, downloads, or subscriptions. Whether you're looking for the latest <strong>Hollywood blockbusters</strong>, trending <strong>Bollywood movies</strong>, binge-worthy <strong>Korean dramas (K-dramas)</strong>, popular <strong>anime series</strong>, or award-winning <strong>documentaries</strong>, Streamify has it all — completely free.</p>
-
-        <h3>Your Free Netflix Alternative — No Subscription Needed</h3>
-        <p>Tired of paying for multiple streaming subscriptions? Streamify is the best <strong>free alternative to Netflix</strong>, Hulu, Amazon Prime, Disney+, and HBO Max. Get access to a massive library of <strong>movies and TV series</strong> across every genre — action, comedy, horror, thriller, romance, sci-fi, fantasy, drama, mystery, crime, animation, adventure, documentary, family, and more. All in <strong>HD and 4K quality</strong>, all free, all the time.</p>
-
-        <h3>Massive Library of Movies and TV Shows — Every Genre, Every Language</h3>
-        <p>Our streaming library is constantly updated with <strong>new releases in 2025 and 2026</strong>. Watch <strong>trending movies</strong> that just hit theaters, catch up on the <strong>most popular TV series</strong>, or rediscover <strong>classic films</strong> and <strong>cult favorites</strong>. We feature content in English, Hindi, Korean, Japanese, Spanish, French, Tamil, Telugu, Malayalam, Bengali, Punjabi, and many more languages with subtitles available.</p>
-
-        <h3>Stream on Any Device — Anytime, Anywhere</h3>
-        <p><strong>Streamify works on all devices</strong> — smartphones, tablets, laptops, desktop computers, and smart TVs. No app download needed. Just open your browser, pick a movie or TV show, and start watching instantly. Our fast, buffer-free streaming ensures you get the best viewing experience whether you're on Wi-Fi or mobile data.</p>
-
-        <h3>Popular Categories You'll Love</h3>
-        <p>Browse our curated collections: <strong>Top 5 Today</strong> for what's trending right now, <strong>New Releases</strong> for the freshest content, <strong>Top Rated</strong> for critically acclaimed masterpieces, <strong>Bollywood</strong> for the best Hindi cinema, <strong>Korean Drama</strong> for captivating K-dramas, and genre sections for <strong>action movies, comedy films, horror flicks, romantic movies, sci-fi adventures, thriller suspense, fantasy epics, animated features, crime dramas, mystery shows, documentaries, and family entertainment</strong>.</p>
-    </article>
-
-    <!-- ══════════════════════════════════════════════════════════
-         FAQ SECTION — Drives "People Also Ask" and long-tail queries
-    ══════════════════════════════════════════════════════════ -->
-    <section class="seo-faq" aria-label="Frequently asked questions about Streamify">
-        2. Is Streamify a good free alternative to Netflix, Hulu, and Disney+?
-        3. What genres of movies and TV shows can I watch for free on Streamify?
-        4. Can I watch Bollywood movies and Korean dramas for free online?
-        5. Does Streamify work on mobile phones, tablets, and smart TVs?
-        6. How do I watch the latest 2025 and 2026 movie releases for free?
-        7. Can I save movies to a watchlist and continue watching later?
-        8. What is the best free movie streaming site in 2025?
-        <h2>Frequently Asked Questions About Free Movie Streaming</h2>
-
-        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <button class="faq-question" aria-expanded="false" onclick="this.parentElement.classList.toggle('open');this.setAttribute('aria-expanded',this.parentElement.classList.contains('open'))">
-                <span itemprop="name">Where can I watch free movies online without signing up?</span>
-                <i class="fas fa-chevron-down" aria-hidden="true"></i>
-            </button>
-            <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                <p itemprop="text">Streamify lets you watch thousands of movies and TV shows for free in HD quality without any signup, registration, or download. Simply visit the site, pick a title, and start streaming instantly. No credit card or personal information needed.</p>
-            </div>
-        </div>
-
-        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <button class="faq-question" aria-expanded="false" onclick="this.parentElement.classList.toggle('open');this.setAttribute('aria-expanded',this.parentElement.classList.contains('open'))">
-                <span itemprop="name">Is Streamify a good free alternative to Netflix, Hulu, and Disney+?</span>
-                <i class="fas fa-chevron-down" aria-hidden="true"></i>
-            </button>
-            <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                <p itemprop="text">Yes! Streamify offers a premium Netflix-like experience completely free. You get HD quality streaming, curated genre collections, trending titles, Korean dramas, Bollywood movies, Hollywood blockbusters, anime, web series, and more — all without paying for a subscription. It's the best free alternative to paid streaming services like Netflix, Hulu, Amazon Prime Video, Disney+, and HBO Max.</p>
-            </div>
-        </div>
-
-        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <button class="faq-question" aria-expanded="false" onclick="this.parentElement.classList.toggle('open');this.setAttribute('aria-expanded',this.parentElement.classList.contains('open'))">
-                <span itemprop="name">What genres of movies and TV shows can I watch for free on Streamify?</span>
-                <i class="fas fa-chevron-down" aria-hidden="true"></i>
-            </button>
-            <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                <p itemprop="text">Streamify offers an extensive library spanning every major genre: Action, Comedy, Horror, Thriller, Romance, Science Fiction, Fantasy, Drama, Animation, Documentary, Adventure, Crime, Mystery, Family, Korean Drama, Bollywood, and many more. We also feature specialized collections like Top Rated, Trending Now, and New Releases so you always find something great to watch.</p>
-            </div>
-        </div>
-
-        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <button class="faq-question" aria-expanded="false" onclick="this.parentElement.classList.toggle('open');this.setAttribute('aria-expanded',this.parentElement.classList.contains('open'))">
-                <span itemprop="name">Can I watch Bollywood movies and Korean dramas for free online?</span>
-                <i class="fas fa-chevron-down" aria-hidden="true"></i>
-            </button>
-            <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                <p itemprop="text">Absolutely! Streamify has dedicated sections for Bollywood movies and Korean dramas (K-dramas). Browse the latest Hindi films, classic Bollywood hits, trending K-dramas, and popular Asian content — all free in HD. We also feature Tamil, Telugu, Malayalam, and other regional Indian cinema.</p>
-            </div>
-        </div>
-
-        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <button class="faq-question" aria-expanded="false" onclick="this.parentElement.classList.toggle('open');this.setAttribute('aria-expanded',this.parentElement.classList.contains('open'))">
-                <span itemprop="name">Does Streamify work on mobile phones, tablets, and smart TVs?</span>
-                <i class="fas fa-chevron-down" aria-hidden="true"></i>
-            </button>
-            <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                <p itemprop="text">Yes, Streamify is fully responsive and works perfectly on all devices including iPhones, Android phones, iPads, tablets, laptops, desktop computers, and smart TVs. No app download needed — just open your browser and start watching free movies and TV shows instantly.</p>
-            </div>
-        </div>
-
-        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <button class="faq-question" aria-expanded="false" onclick="this.parentElement.classList.toggle('open');this.setAttribute('aria-expanded',this.parentElement.classList.contains('open'))">
-                <span itemprop="name">How do I watch the latest 2025 and 2026 movie releases for free?</span>
-                <i class="fas fa-chevron-down" aria-hidden="true"></i>
-            </button>
-            <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                <p itemprop="text">Streamify updates its library regularly with the latest movie and TV show releases. Check our 'New Releases' and 'Trending Now' sections to find the newest 2025 and 2026 titles available for free streaming in HD. We add new content daily so you never run out of things to watch.</p>
-            </div>
-        </div>
-
-        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <button class="faq-question" aria-expanded="false" onclick="this.parentElement.classList.toggle('open');this.setAttribute('aria-expanded',this.parentElement.classList.contains('open'))">
-                <span itemprop="name">Can I save movies to a watchlist and continue watching later?</span>
-                <i class="fas fa-chevron-down" aria-hidden="true"></i>
-            </button>
-            <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                <p itemprop="text">Yes! Streamify offers a 'My List' feature where you can save movies and TV shows to watch later. You can also track your viewing progress with the 'Continue Watching' feature that remembers where you left off, making it easy to resume your favorite films and series anytime.</p>
-            </div>
-        </div>
-
-        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <button class="faq-question" aria-expanded="false" onclick="this.parentElement.classList.toggle('open');this.setAttribute('aria-expanded',this.parentElement.classList.contains('open'))">
-                <span itemprop="name">What is the best free movie streaming site in 2025?</span>
-                <i class="fas fa-chevron-down" aria-hidden="true"></i>
-            </button>
-            <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                <p itemprop="text">Streamify is one of the best free movie streaming sites in 2025 and 2026. It offers HD and 4K quality, a massive library of movies and TV shows across all genres and languages, no signup requirement, fast buffer-free streaming, and a premium Netflix-like experience — all completely free. Users worldwide choose Streamify as their go-to destination for free online entertainment.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ══════════════════════════════════════════════════════════
-         RICH SEO FOOTER — Internal links, genre pages, keyword anchors
-    ══════════════════════════════════════════════════════════ -->
-    <div class="footer-seo" role="navigation" aria-label="Footer navigation links">
-        <div class="footer-seo-grid">
-            <div class="footer-seo-col">
-                <h4>Browse by Genre</h4>
-                <ul>
-                    <li><a href="movies.html?genre=action" title="Watch Free Action Movies Online">Action Movies</a></li>
-                    <li><a href="movies.html?genre=comedy" title="Watch Free Comedy Movies Online">Comedy Movies</a></li>
-                    <li><a href="movies.html?genre=horror" title="Watch Free Horror Movies Online">Horror Movies</a></li>
-                    <li><a href="movies.html?genre=thriller" title="Watch Free Thriller Movies Online">Thriller Movies</a></li>
-                    <li><a href="movies.html?genre=romance" title="Watch Free Romance Movies Online">Romance Movies</a></li>
-                    <li><a href="movies.html?genre=scifi" title="Watch Free Sci-Fi Movies Online">Sci-Fi Movies</a></li>
-                    <li><a href="movies.html?genre=drama" title="Watch Free Drama Movies Online">Drama Movies</a></li>
-                    <li><a href="movies.html?genre=fantasy" title="Watch Free Fantasy Movies Online">Fantasy Movies</a></li>
-                </ul>
-            </div>
-            <div class="footer-seo-col">
-                <h4>More Genres</h4>
-                <ul>
-                    <li><a href="movies.html?genre=animation" title="Watch Free Animated Movies Online">Animation Movies</a></li>
-                    <li><a href="movies.html?genre=adventure" title="Watch Free Adventure Movies Online">Adventure Movies</a></li>
-                    <li><a href="movies.html?genre=crime" title="Watch Free Crime Movies Online">Crime Movies</a></li>
-                    <li><a href="movies.html?genre=mystery" title="Watch Free Mystery Movies Online">Mystery Movies</a></li>
-                    <li><a href="movies.html?genre=documentary" title="Watch Free Documentaries Online">Documentaries</a></li>
-                    <li><a href="movies.html?genre=family" title="Watch Free Family Movies Online">Family Movies</a></li>
-                    <li><a href="movies.html?genre=war" title="Watch Free War Movies Online">War Movies</a></li>
-                    <li><a href="movies.html?genre=western" title="Watch Free Western Movies Online">Western Movies</a></li>
-                </ul>
-            </div>
-            <div class="footer-seo-col">
-                <h4>TV Shows & Series</h4>
-                <ul>
-                    <li><a href="series.html" title="Watch Free TV Shows Online">All TV Shows</a></li>
-                    <li><a href="series.html?genre=korean" title="Watch Free Korean Drama Online">Korean Drama</a></li>
-                    <li><a href="series.html?genre=anime" title="Watch Free Anime Online">Anime Series</a></li>
-                    <li><a href="series.html?genre=webseries" title="Watch Free Web Series Online">Web Series</a></li>
-                    <li><a href="series.html?genre=crime" title="Watch Free Crime TV Shows">Crime Shows</a></li>
-                    <li><a href="series.html?genre=thriller" title="Watch Free Thriller Series">Thriller Series</a></li>
-                    <li><a href="series.html?genre=comedy" title="Watch Free Comedy Shows">Comedy Shows</a></li>
-                    <li><a href="series.html?genre=drama" title="Watch Free Drama Series">Drama Series</a></li>
-                </ul>
-            </div>
-            <div class="footer-seo-col">
-                <h4>By Language</h4>
-                <ul>
-                    <li><a href="movies.html?lang=en" title="Watch Free Hollywood English Movies">Hollywood / English</a></li>
-                    <li><a href="movies.html?lang=hi" title="Watch Free Bollywood Hindi Movies">Bollywood / Hindi</a></li>
-                    <li><a href="movies.html?lang=ko" title="Watch Free Korean Movies & K-Drama">Korean</a></li>
-                    <li><a href="movies.html?lang=ja" title="Watch Free Japanese Movies & Anime">Japanese</a></li>
-                    <li><a href="movies.html?lang=es" title="Watch Free Spanish Movies Online">Spanish</a></li>
-                    <li><a href="movies.html?lang=ta" title="Watch Free Tamil Movies Online">Tamil</a></li>
-                    <li><a href="movies.html?lang=te" title="Watch Free Telugu Movies Online">Telugu</a></li>
-                    <li><a href="movies.html?lang=fr" title="Watch Free French Movies Online">French</a></li>
-                </ul>
-            </div>
-            <div class="footer-seo-col">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="index.html" title="Streamify Home - Free Movie Streaming">Home</a></li>
-                    <li><a href="movies.html" title="Browse All Free Movies">All Movies</a></li>
-                    <li><a href="series.html" title="Browse All Free TV Shows">All TV Shows</a></li>
-                    <li><a href="mylist.html" title="My Saved Watchlist">My List</a></li>
-                    <li><a href="profile.html" title="My Profile">Profile</a></li>
-                    <li><a href="#top5Today" title="Most Popular Movies Today">Top 5 Today</a></li>
-                    <li><a href="#trendingNow" title="Trending Movies and Shows">Trending Now</a></li>
-                    <li><a href="#newReleases" title="Newest Movie Releases Free">New Releases</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <footer class="footer" role="contentinfo">
-        <div class="footer-logo">STREAMIFY</div>
-        <p>Stream free movies, TV shows, web series, Korean dramas, Bollywood & Hollywood films online in HD. The best free Netflix alternative — no signup required.</p>
-        <p>© 2025 Streamify. All rights reserved. | <a href="index.html" title="Free Movie Streaming Site">Free Movies</a> | <a href="movies.html" title="Watch Movies Online Free">Watch Online</a> | <a href="series.html" title="Free TV Shows Streaming">TV Shows</a></p>
-    </footer>
-
-    <!-- See All Modal -->
-    <div class="see-all-modal" id="seeAllModal" role="dialog" aria-label="Browse all movies and shows in this category">
-        <div class="see-all-header"><h2 id="seeAllTitle">Category</h2><button id="seeAllClose" aria-label="Close"><i class="fas fa-times"></i></button></div>
-        <div class="see-all-grid" id="seeAllGrid" role="list"></div>
-    </div>
-
-    <!-- Detail Modal -->
-    <div class="detail-modal" id="detailModal" role="dialog" aria-label="Movie or show details">
-        <div class="detail-box" itemscope itemtype="https://schema.org/Movie">
-            <button class="detail-close" id="detailClose" aria-label="Close details"><i class="fas fa-times"></i></button>
-            <div class="detail-banner" id="detailBanner" role="img" aria-label="Movie banner image"></div>
-            <div class="detail-info">
-                <h1 id="detailTitle" itemprop="name">Title</h1>
-                <div class="detail-meta">
-                    <span class="green">
-                        <i class="fas fa-star" aria-hidden="true"></i> <span id="detailRating">0.0</span>
-                    </span>
-                    <span id="detailYear" itemprop="datePublished">----</span>
-                    <span id="detailDuration" itemprop="duration">--</span>
-                    <span class="badge">HD</span>
-                </div>
-                <p id="detailDesc" itemprop="description">Loading...</p>
-                <p class="detail-genres"><strong>Genres:</strong> <span id="detailGenres" itemprop="genre">--</span></p>
-                <div class="detail-btns">
-                    <button class="btn-play" id="detailPlay" aria-label="Play this movie or show"><i class="fas fa-play" aria-hidden="true"></i> Play</button>
-                    <button class="btn-info" id="detailList" aria-label="Add to my watchlist"><i class="fas fa-plus" aria-hidden="true"></i> My List</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ══════════════════════════════════════
-         BOTTOM NAVIGATION BAR
-    ══════════════════════════════════════ -->
-    <nav class="bottom-nav" id="bottomNav" role="navigation" aria-label="Main navigation">
-        <a href="index.html" class="bottom-nav-item active" id="bnav-home" aria-label="Home - Free Movies & TV Shows">
-            <div class="bnav-dot"></div>
-            <div class="bnav-icon-wrap"><i class="fas fa-house"></i></div>
-            <span class="bnav-label">Home</span>
-        </a>
-        <button class="bottom-nav-item" id="bnav-search" data-action="search" aria-label="Search free movies and TV shows">
-            <div class="bnav-dot"></div>
-            <div class="bnav-icon-wrap"><i class="fas fa-magnifying-glass"></i></div>
-            <span class="bnav-label">Search</span>
-        </button>
-        <a href="mylist.html" class="bottom-nav-item" id="bnav-mylist" aria-label="My Watchlist - Saved Movies & Shows">
-            <div class="bnav-dot"></div>
-            <div class="bnav-icon-wrap"><i class="fas fa-bookmark"></i></div>
-            <span class="bnav-label">My List</span>
-        </a>
-        <a href="profile.html" class="bottom-nav-item" id="bnav-profile" aria-label="User Profile">
-            <div class="bnav-dot"></div>
-            <div class="bnav-icon-wrap" style="width:auto;background:transparent !important;">
-                <div class="bnav-avatar-wrap">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" alt="User Profile Avatar" class="bnav-avatar" id="bnavAvatar" loading="lazy" width="26" height="26">
-                    <span class="presence-dot offline" id="presenceDot"></span>
-                </div>
-            </div>
-            <span class="bnav-label presence-label" id="presenceLabel">Profile</span>
-        </a>
-    </nav>
-
-    <!-- ═══ SCRIPTS ═══ -->
-    <script src="js/config.js"></script>
-    <script src="js/api.js"></script>
-    <script src="js/home.js"></script>
-
-    <!-- Page Loader -->
-    <script>
-    window.addEventListener('load',function(){setTimeout(function(){document.getElementById('pageLoader').classList.add('hidden');},800);});
-    setTimeout(function(){var l=document.getElementById('pageLoader');if(l&&!l.classList.contains('hidden'))l.classList.add('hidden');},3000);
-    </script>
-
-    <!-- Premium Effects -->
-    <script>
-    document.addEventListener('click',function(e){var t=e.target.closest('.btn-play,.btn-info,.popup-btn,.action-btn');if(!t)return;var r=document.createElement('span');r.classList.add('ripple');var b=t.getBoundingClientRect(),s=Math.max(b.width,b.height);r.style.width=r.style.height=s+'px';r.style.left=e.clientX-b.left-s/2+'px';r.style.top=e.clientY-b.top-s/2+'px';t.appendChild(r);r.addEventListener('animationend',function(){r.remove();});});
-    var obs=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}});},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
-    setTimeout(function(){document.querySelectorAll('.content-section').forEach(function(s){obs.observe(s);});},100);
-    var ticking=false;window.addEventListener('scroll',function(){if(!ticking){window.requestAnimationFrame(function(){var h=document.querySelector('.hero-bg');if(h){var s=window.pageYOffset;if(s<window.innerHeight)h.style.transform='translateY('+s*0.3+'px) scale('+(1+s*0.0002)+')';}ticking=false;});ticking=true;}});
-    document.addEventListener('DOMContentLoaded',function(){var a=function(){document.querySelectorAll('.card:not(.shine-added)').forEach(function(c){var s=document.createElement('div');s.classList.add('shine');c.appendChild(s);c.classList.add('shine-added');});};setTimeout(a,1000);var m=new MutationObserver(a),mc=document.querySelector('.main-content');if(mc)m.observe(mc,{childList:true,subtree:true});});
-    document.addEventListener('keydown',function(e){if(e.key==='Escape'){['searchModal','seeAllModal','detailModal','mobileMenu','overlay'].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove('active');});document.body.style.overflow='';}if(e.key==='/'&&!e.ctrlKey&&!e.metaKey){var a=document.activeElement;if(a.tagName!=='INPUT'&&a.tagName!=='TEXTAREA'){e.preventDefault();var b=document.getElementById('searchBtn');if(b)b.click();}}});
-    </script>
-
-    <!-- ══════════════════════════════════════════════════════════
-         REALTIME PRESENCE SYSTEM
-    ══════════════════════════════════════════════════════════ -->
-    <script>
-    (function () {
-        var presenceDot   = document.getElementById('presenceDot');
-        var presenceLabel = document.getElementById('presenceLabel');
-        var bnavProfile   = document.getElementById('bnav-profile');
-        var lastSeenRef   = null;
-
-        function setOnline() {
-            presenceDot.className   = 'presence-dot online';
-            presenceLabel.textContent = 'Active';
-            bnavProfile.classList.add('online-now', 'has-user');
-        }
-        function setOffline(lastSeen) {
-            presenceDot.className   = 'presence-dot offline';
-            bnavProfile.classList.remove('online-now');
-            bnavProfile.classList.add('has-user');
-            if (lastSeen) {
-                presenceLabel.textContent = formatLastSeen(lastSeen);
-            } else {
-                presenceLabel.textContent = 'Offline';
+    const card = document.createElement('a');
+    card.href = watchUrl;
+    card.className = 'cw-card';
+    const metaText = isMovie ? timeAgo(item.timestamp) : `S${item.season || 1}E${item.episode || 1} · ${timeAgo(item.timestamp)}`;
+    card.innerHTML = `
+        <div class="cw-poster-wrap">
+            ${poster
+                ? `<img class="cw-poster" src="${poster}" alt="${title}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                   <div class="cw-poster-placeholder" style="display:none;position:absolute;inset:0;"><i class="fas fa-film"></i></div>`
+                : `<div class="cw-poster-placeholder"><i class="fas fa-film"></i></div>`
             }
-        }
-        function setNoUser() {
-            presenceDot.className     = 'presence-dot offline';
-            presenceLabel.textContent = 'Profile';
-            bnavProfile.classList.remove('online-now', 'has-user');
-        }
-        function formatLastSeen(ts) {
-            var diff = Date.now() - ts;
-            var m    = Math.floor(diff / 60000);
-            var h    = Math.floor(diff / 3600000);
-            var d    = Math.floor(diff / 86400000);
-            if (diff < 60000)  return 'Just now';
-            if (diff < 3600000) return m + 'm ago';
-            if (diff < 86400000) return h + 'h ago';
-            return d + 'd ago';
-        }
+            <div class="cw-overlay"><div class="cw-play"><i class="fas fa-play"></i></div></div>
+            <span class="cw-badge">${isMovie ? 'Movie' : 'Series'}</span>
+            <button class="cw-remove-btn" title="Remove" onclick="removeCWItem(event, '${item.key}', this)"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cw-info">
+            <div class="cw-title">${title}</div>
+            <div class="cw-meta">${metaText}</div>
+        </div>`;
+    return card;
+}
 
-        auth.onAuthStateChanged(function (user) {
-            if (lastSeenRef) { lastSeenRef.off(); lastSeenRef = null; }
-            if (!user) { setNoUser(); return; }
-            var userRef = db.ref('Users/' + user.uid);
-            userRef.update({ isActive : true, lastSeen : Date.now() });
-            userRef.onDisconnect().update({ isActive : false, lastSeen : Date.now() });
-            lastSeenRef = userRef;
-            userRef.on('value', function (snap) {
-                if (!snap.exists()) { setNoUser(); return; }
-                var isActive = snap.child('isActive').val();
-                var lastSeen = snap.child('lastSeen').val();
-                if (isActive === true) { setOnline(); } else { setOffline(lastSeen); }
-            });
-            var heartbeat = setInterval(function () {
-                if (auth.currentUser) { userRef.update({ lastSeen: Date.now() }); } else { clearInterval(heartbeat); }
-            }, 60000);
-            window.addEventListener('beforeunload', function () {
-                userRef.update({ isActive : false, lastSeen : Date.now() });
-            });
-        });
-    })();
-    </script>
+function renderCWEmpty() {
+    const row = document.getElementById('cwRow');
+    document.getElementById('cwCount').textContent = '0 titles';
+    row.innerHTML = `<div class="cw-empty" style="width:100%;"><i class="fas fa-play-circle"></i><div>Nothing here yet</div><div style="margin-top:4px;font-size:12px;">Start watching movies or shows and they'll appear here</div></div>`;
+}
 
-    <!-- Bottom Nav Script -->
-    <script>
-    (function () {
-        var path     = window.location.pathname.split('/').pop() || 'index.html';
-        var map = {'index.html':'bnav-home','':'bnav-home','mylist.html':'bnav-mylist','profile.html':'bnav-profile'};
-        var activeId = map[path];
-        if (activeId) {
-            document.querySelectorAll('.bottom-nav-item').forEach(function(el){ el.classList.remove('active'); });
-            var activeEl = document.getElementById(activeId);
-            if (activeEl) activeEl.classList.add('active');
+async function removeCWItem(e, key, btn) {
+    e.preventDefault(); e.stopPropagation();
+    if (!_cwUid) return;
+    const card = btn.closest('.cw-card');
+    if (card) { card.style.opacity = '0'; card.style.transform = 'scale(0.85)'; card.style.transition = '0.25s'; }
+    try {
+        await database.ref('ContinueWatching/' + _cwUid + '/' + key).remove();
+        setTimeout(() => {
+            if (card) card.remove();
+            const row = document.getElementById('cwRow');
+            if (!row.querySelector('.cw-card')) renderCWEmpty();
+            const remaining = row.querySelectorAll('.cw-card').length;
+            document.getElementById('cwCount').textContent = `${remaining} title${remaining !== 1 ? 's' : ''}`;
+        }, 260);
+    } catch (e) {
+        console.error('Remove CW item failed:', e);
+        if (card) { card.style.opacity = '1'; card.style.transform = ''; }
+    }
+}
+
+function setupCWArrows() {
+    const wrap = document.getElementById('cwWrap');
+    const row  = document.getElementById('cwRow');
+    wrap.querySelectorAll('.cw-arrow').forEach(a => a.remove());
+    if (row.scrollWidth <= row.clientWidth) return;
+    const leftArr = document.createElement('button');
+    leftArr.className = 'cw-arrow left';
+    leftArr.innerHTML = '<i class="fas fa-chevron-left"></i>';
+    leftArr.onclick = () => row.scrollBy({ left: -320, behavior: 'smooth' });
+    const rightArr = document.createElement('button');
+    rightArr.className = 'cw-arrow right';
+    rightArr.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    rightArr.onclick = () => row.scrollBy({ left: 320, behavior: 'smooth' });
+    wrap.appendChild(leftArr);
+    wrap.appendChild(rightArr);
+}
+
+function renderUser(userData, authUser) {
+    const name   = userData.displayName || userData.username || authUser.displayName || 'User';
+    const email  = authUser.email || '';
+    const pts    = userData.totalPoints || 0;
+    const time   = userData.totalActiveTime || 0;
+    const joined = userData.createdAt || Date.now();
+
+    document.getElementById('profileName').textContent  = name;
+    document.getElementById('profileEmail').textContent = email;
+
+    const photoURL = authUser.photoURL;
+    if (photoURL) {
+        document.getElementById('avatarImg').src = photoURL;
+        document.getElementById('avatarImg').style.display = 'block';
+        document.getElementById('avatarPlaceholder').style.display = 'none';
+        document.getElementById('bnavAvatar').src = photoURL;
+    } else {
+        document.getElementById('avatarPlaceholder').textContent = getInitials(name);
+    }
+
+    const medal = getMedalFromPoints(pts);
+    const mb = document.getElementById('medalBadge');
+    mb.className = `medal-badge ${medal.cls}`;
+    mb.innerHTML = `<i class="fas fa-medal"></i> ${medal.name}`;
+    document.getElementById('joinedBadge').innerHTML = `<i class="fas fa-calendar-alt"></i> Joined ${fmtDate(joined)}`;
+
+    document.getElementById('statPoints').textContent = pts.toLocaleString();
+    document.getElementById('statTime').textContent   = fmtTime(time);
+    document.getElementById('statMedal').textContent  = medal.name;
+
+    const myList = JSON.parse(localStorage.getItem('streamify_mylist') || '[]');
+    document.getElementById('statList').textContent = myList.length;
+
+    document.getElementById('pointsDisplay').textContent = pts.toLocaleString();
+    const prevMilestone = medal.cur, nextMilestone = medal.nextPts;
+    const pct = medal.next ? Math.min(100, ((pts - prevMilestone) / (nextMilestone - prevMilestone)) * 100) : 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('nextRankPts').textContent   = medal.next ? nextMilestone.toLocaleString() : '✓ Max';
+    document.getElementById('curMedalLabel').textContent = `${medal.name} (${prevMilestone})`;
+    document.getElementById('nxtMedalLabel').textContent = medal.next ? `${medal.next} (${nextMilestone})` : 'Gold ✓';
+
+    document.getElementById('editUsername').value = userData.username || '';
+    document.getElementById('editEmail').value    = email;
+}
+
+// ── Auth state — show guest UI instead of redirecting ──
+auth.onAuthStateChanged(async user => {
+    if (!user) {
+        // Not logged in — show guest state, hide authenticated content
+        document.getElementById('guestState').style.display = 'block';
+        document.getElementById('authContent').style.display = 'none';
+        document.getElementById('pageLoader').classList.add('gone');
+        return;
+    }
+
+    // Logged in — show authenticated content
+    document.getElementById('guestState').style.display = 'none';
+    document.getElementById('authContent').style.display = 'block';
+    document.getElementById('navSignoutBtn').style.display = 'flex';
+
+    try {
+        const snap = await database.ref('Users/' + user.uid).once('value');
+        const data = snap.val() || {};
+        renderUser(data, user);
+        await loadContinueWatching(user.uid);
+    } catch (e) {
+        console.error(e);
+        renderUser({}, user);
+        renderCWEmpty();
+    }
+
+    setTimeout(() => document.getElementById('pageLoader').classList.add('gone'), 600);
+});
+
+async function saveProfile() {
+    const user = auth.currentUser;
+    if (!user) return;
+    const btn = document.getElementById('saveBtn');
+    const username = document.getElementById('editUsername').value.trim().toLowerCase();
+    if (!username) { showToast('Username cannot be empty.', 'error'); return; }
+    if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) { showToast('Username: 3-20 chars, letters/numbers/underscores only.', 'error'); return; }
+    btn.classList.add('loading'); btn.disabled = true;
+    try {
+        const snap = await database.ref('Users/' + user.uid).once('value');
+        const old  = snap.val() || {};
+        if (old.username !== username) {
+            const taken = await database.ref('Usernames/' + username).once('value');
+            if (taken.exists() && taken.val() !== user.uid) { showToast('Username already taken.', 'error'); btn.classList.remove('loading'); btn.disabled = false; return; }
+            if (old.username) await database.ref('Usernames/' + old.username).remove();
+            await database.ref('Usernames/' + username).set(user.uid);
         }
-        var bnavSearch = document.getElementById('bnav-search');
-        if (bnavSearch) {
-            bnavSearch.addEventListener('click', function (e) {
-                var searchBtn = document.getElementById('searchBtn');
-                if (searchBtn) { searchBtn.click(); }
-                else {
-                    var modal = document.getElementById('searchModal');
-                    var input = document.getElementById('searchInput');
-                    if (modal) { modal.classList.add('active'); if (input) setTimeout(function(){ input.focus(); }, 150); }
-                }
-                document.querySelectorAll('.bottom-nav-item').forEach(function(el){ el.classList.remove('active'); });
-                bnavSearch.classList.add('active');
-                var closeBtn = document.getElementById('searchClose');
-                if (closeBtn) {
-                    closeBtn.addEventListener('click', function(){
-                        bnavSearch.classList.remove('active');
-                        var home = document.getElementById('bnav-home');
-                        if (home && (path==='index.html'||path==='')) home.classList.add('active');
-                    }, { once: true });
-                }
-            });
-        }
-        document.querySelectorAll('.bottom-nav-item').forEach(function (item) {
-            item.addEventListener('click', function (e) {
-                var wrap = item.querySelector('.bnav-icon-wrap'); if (!wrap) return;
-                var rip = document.createElement('span'); rip.className = 'bnav-ripple';
-                var rect = wrap.getBoundingClientRect(), size = Math.max(rect.width, rect.height);
-                rip.style.cssText = 'width:'+size+'px;height:'+size+'px;top:'+(e.clientY-rect.top-size/2)+'px;left:'+(e.clientX-rect.left-size/2)+'px';
-                wrap.style.position = 'relative'; wrap.style.overflow = 'hidden';
-                wrap.appendChild(rip); rip.addEventListener('animationend', function(){ rip.remove(); });
-            });
-        });
-        var nav = document.getElementById('bottomNav');
-        nav.style.transform = 'translateY(0)';
-        var lastScroll = window.pageYOffset, scrollEnabled = false;
-        setTimeout(function(){ lastScroll = window.pageYOffset; scrollEnabled = true; }, 600);
-        window.addEventListener('scroll', function(){
-            if (!scrollEnabled) return;
-            var cur = window.pageYOffset;
-            if (cur <= 80) { nav.style.transform = 'translateY(0)'; lastScroll = cur; return; }
-            if (cur > lastScroll + 6)      nav.style.transform = 'translateY(110%)';
-            else if (cur < lastScroll - 6) nav.style.transform = 'translateY(0)';
-            lastScroll = cur;
-        }, { passive: true });
-    })();
-    </script>
+        await database.ref('Users/' + user.uid).update({ username, lastSeen: Date.now() });
+        await user.updateProfile({ displayName: username });
+        document.getElementById('profileName').textContent = username;
+        showToast('Profile updated!', 'success');
+    } catch (e) { showToast('Failed to save. Try again.', 'error'); }
+    btn.classList.remove('loading'); btn.disabled = false;
+}
+
+async function sendPasswordReset() {
+    const user = auth.currentUser;
+    if (!user || !user.email) { showToast('No email on account.', 'error'); return; }
+    try { await auth.sendPasswordResetEmail(user.email); showToast('Reset email sent to ' + user.email, 'info'); }
+    catch (e) { showToast('Failed to send reset email.', 'error'); }
+}
+
+function confirmSignout() { document.getElementById('signoutModal').classList.add('open'); }
+function closeSignout()   { document.getElementById('signoutModal').classList.remove('open'); }
+async function doSignout() {
+    const user = auth.currentUser;
+    if (user) await database.ref('Users/' + user.uid).update({ isActive: false, lastSeen: Date.now() });
+    await auth.signOut();
+    window.location.href = 'login.html';
+}
+
+(function(){
+    var nav = document.getElementById('bottomNav');
+    nav.style.transform = 'translateY(0)';
+    var last = 0, enabled = false;
+    setTimeout(function(){ last = window.pageYOffset; enabled = true; }, 600);
+    window.addEventListener('scroll', function(){
+        if (!enabled) return;
+        var cur = window.pageYOffset;
+        if (cur <= 80) { nav.style.transform = 'translateY(0)'; last = cur; return; }
+        if (cur > last + 6)      nav.style.transform = 'translateY(110%)';
+        else if (cur < last - 6) nav.style.transform = 'translateY(0)';
+        last = cur;
+    }, { passive: true });
+})();
+</script>
 
 </body>
 </html>
