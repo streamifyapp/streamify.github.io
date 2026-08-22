@@ -611,6 +611,169 @@
         max-width: 100%;
         border: 0;
     }
+
+    /* ============================================================
+       STREAMIFY ANTI-ADBLOCK GATE
+       ============================================================ */
+    #streamifyAdblockOverlay {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483647;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background:
+            radial-gradient(circle at 50% 0%, rgba(229,9,20,.18), transparent 42%),
+            rgba(5,5,8,.97);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+    }
+
+    #streamifyAdblockOverlay.active {
+        display: flex;
+    }
+
+    .streamify-adblock-card {
+        width: min(520px, 100%);
+        padding: 34px 28px 28px;
+        border-radius: 24px;
+        text-align: center;
+        background: linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.025));
+        border: 1px solid rgba(255,255,255,.12);
+        box-shadow: 0 30px 100px rgba(0,0,0,.65), 0 0 50px rgba(229,9,20,.12);
+        animation: streamifyAdblockIn .45s cubic-bezier(.2,.8,.2,1);
+    }
+
+    @keyframes streamifyAdblockIn {
+        from { opacity: 0; transform: translateY(20px) scale(.97); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .streamify-adblock-icon {
+        width: 76px;
+        height: 76px;
+        margin: 0 auto 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(229,9,20,.12);
+        border: 1px solid rgba(229,9,20,.35);
+        box-shadow: 0 0 35px rgba(229,9,20,.18);
+    }
+
+    .streamify-adblock-icon i {
+        color: #e50914;
+        font-size: 30px;
+    }
+
+    .streamify-adblock-card h2 {
+        margin: 0 0 12px;
+        color: #fff;
+        font-family: Inter, sans-serif;
+        font-size: clamp(24px, 5vw, 32px);
+        font-weight: 800;
+        letter-spacing: -.5px;
+    }
+
+    .streamify-adblock-card p {
+        margin: 0 auto 20px;
+        max-width: 430px;
+        color: rgba(255,255,255,.62);
+        font-family: Inter, sans-serif;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .streamify-adblock-card strong {
+        color: #fff;
+    }
+
+    .streamify-adblock-reason {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 18px 0 22px;
+        padding: 14px 16px;
+        text-align: left;
+        border-radius: 14px;
+        background: rgba(255,255,255,.04);
+        border: 1px solid rgba(255,255,255,.07);
+    }
+
+    .streamify-adblock-reason i {
+        color: #e50914;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .streamify-adblock-reason span {
+        color: rgba(255,255,255,.68);
+        font-family: Inter, sans-serif;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .streamify-adblock-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #streamifyAdblockRetry {
+        width: 100%;
+        border: 0;
+        border-radius: 13px;
+        padding: 14px 18px;
+        background: linear-gradient(135deg,#e50914,#b20710);
+        color: #fff;
+        font-family: Inter, sans-serif;
+        font-size: 14px;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 8px 25px rgba(229,9,20,.25);
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    #streamifyAdblockRetry:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 30px rgba(229,9,20,.35);
+    }
+
+    #streamifyAdblockRetry:active {
+        transform: scale(.98);
+    }
+
+    .streamify-adblock-help {
+        color: rgba(255,255,255,.38);
+        font-family: Inter, sans-serif;
+        font-size: 11px;
+        line-height: 1.5;
+        margin-top: 15px;
+    }
+
+    @media (max-width: 480px) {
+        #streamifyAdblockOverlay {
+            padding: 16px;
+        }
+
+        .streamify-adblock-card {
+            padding: 28px 20px 22px;
+            border-radius: 20px;
+        }
+
+        .streamify-adblock-icon {
+            width: 66px;
+            height: 66px;
+            margin-bottom: 16px;
+        }
+
+        .streamify-adblock-card h2 {
+            font-size: 25px;
+        }
+    }
+
     @media (max-width: 360px) {
         .streamify-small-ad {
             padding: 0 10px;
@@ -625,6 +788,52 @@
 <script src="version-check.js"></script>
 </head>
 <body itemscope itemtype="https://schema.org/WebPage">
+
+    <!-- ============================================================
+         STREAMIFY ANTI-ADBLOCK GATE
+         ============================================================ -->
+    <div id="streamifyAdblockOverlay"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="streamifyAdblockTitle">
+
+        <div class="streamify-adblock-card">
+
+            <div class="streamify-adblock-icon">
+                <i class="fas fa-shield-halved"></i>
+            </div>
+
+            <h2 id="streamifyAdblockTitle">Please Support Streamify</h2>
+
+            <p>
+                It looks like an ad blocker is active in your browser.
+                <strong>Streamify is free to use</strong> and advertising
+                helps us keep the service running.
+            </p>
+
+            <div class="streamify-adblock-reason">
+                <i class="fas fa-heart"></i>
+                <span>
+                    Please disable your ad blocker or allow ads for
+                    <strong>streamify.website</strong>, then try again.
+                </span>
+            </div>
+
+            <div class="streamify-adblock-actions">
+                <button id="streamifyAdblockRetry" type="button">
+                    <i class="fas fa-rotate-right"></i>
+                    &nbsp; I've Disabled It — Continue
+                </button>
+            </div>
+
+            <div class="streamify-adblock-help">
+                Using Brave? Open the Shields icon in the address bar
+                and turn Shields off for this site.
+            </div>
+
+        </div>
+    </div>
+
 
     <!-- Page Loader -->
     <div class="page-loader" id="pageLoader" aria-hidden="true">
@@ -1370,6 +1579,383 @@
             else if (cur < lastScroll - 6) nav.style.transform = 'translateY(0)';
             lastScroll = cur;
         }, { passive: true });
+    })();
+    </script>
+
+
+    <!-- ============================================================
+         STREAMIFY — ADVANCED AD-BLOCK DETECTION
+         ============================================================ -->
+    <script>
+    (function () {
+        'use strict';
+
+        /*
+         * This is intentionally a layered detector.
+         * No browser-side anti-adblock system can be 100% impossible
+         * to bypass because the visitor controls their browser.
+         *
+         * The detector avoids relying on a single signal so normal
+         * network failures are less likely to cause false positives.
+         */
+        var CONFIG = {
+            initialDelay: 1800,
+            retryDelay: 1200,
+            periodicCheck: 12000,
+            minimumSignals: 2,
+            adHosts: [
+                'acscdn.com',
+                'highperformanceformat.com'
+            ]
+        };
+
+        var overlay = null;
+        var retryButton = null;
+        var blocked = false;
+        var checking = false;
+        var lastBlockTime = 0;
+
+        function getElements() {
+            overlay = document.getElementById('streamifyAdblockOverlay');
+            retryButton = document.getElementById('streamifyAdblockRetry');
+        }
+
+        function lockPage() {
+            if (!overlay) return;
+
+            overlay.classList.add('active');
+
+            document.documentElement.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden';
+
+            blocked = true;
+            lastBlockTime = Date.now();
+        }
+
+        function unlockPage() {
+            if (!overlay) return;
+
+            overlay.classList.remove('active');
+
+            document.documentElement.style.overflow = '';
+            document.body.style.overflow = '';
+
+            blocked = false;
+        }
+
+        /*
+         * Classic ad-block bait test.
+         * Extensions commonly hide elements containing ad-related
+         * class names even when the page's own ads use other names.
+         */
+        function baitTest() {
+            return new Promise(function (resolve) {
+                var bait = document.createElement('div');
+
+                bait.className =
+                    'adsbox ad ads advertisement advert ' +
+                    'ad-banner ad-container ad-unit ' +
+                    'adsbygoogle pub_300x250';
+
+                bait.setAttribute('aria-hidden', 'true');
+
+                bait.style.cssText =
+                    'position:absolute!important;' +
+                    'left:-10000px!important;' +
+                    'top:-10000px!important;' +
+                    'width:300px!important;' +
+                    'height:250px!important;' +
+                    'display:block!important;' +
+                    'visibility:visible!important;' +
+                    'opacity:1!important;' +
+                    'pointer-events:none!important;';
+
+                document.body.appendChild(bait);
+
+                setTimeout(function () {
+                    var style = window.getComputedStyle(bait);
+                    var rect = bait.getBoundingClientRect();
+
+                    var hidden =
+                        bait.offsetWidth === 0 ||
+                        bait.offsetHeight === 0 ||
+                        rect.width === 0 ||
+                        rect.height === 0 ||
+                        style.display === 'none' ||
+                        style.visibility === 'hidden' ||
+                        parseFloat(style.opacity || '1') === 0;
+
+                    if (bait.parentNode) {
+                        bait.parentNode.removeChild(bait);
+                    }
+
+                    resolve(hidden);
+                }, 180);
+            });
+        }
+
+        /*
+         * Checks the real Streamify ad slots.
+         * We don't require every ad to render because an ad network
+         * may legitimately return an empty ad.
+         */
+        function existingAdSlotsTest() {
+            var slots = document.querySelectorAll('.streamify-ad');
+
+            if (!slots.length) {
+                return false;
+            }
+
+            var affected = 0;
+
+            slots.forEach(function (slot) {
+                var style = window.getComputedStyle(slot);
+                var rect = slot.getBoundingClientRect();
+
+                var hidden =
+                    style.display === 'none' ||
+                    style.visibility === 'hidden' ||
+                    rect.width === 0 ||
+                    rect.height === 0;
+
+                if (hidden) {
+                    affected++;
+                }
+            });
+
+            /*
+             * Only treat this as a signal when at least half the
+             * existing ad containers have been collapsed.
+             */
+            return affected >= Math.max(1, Math.ceil(slots.length * 0.5));
+        }
+
+        /*
+         * Detects whether the ad-provider script elements themselves
+         * were removed before execution.
+         */
+        function providerScriptTest() {
+            var scripts = Array.prototype.slice.call(
+                document.scripts || []
+            );
+
+            var found = scripts.some(function (script) {
+                var src = (script.src || '').toLowerCase();
+
+                return CONFIG.adHosts.some(function (host) {
+                    return src.indexOf(host) !== -1;
+                });
+            });
+
+            return !found;
+        }
+
+        /*
+         * Network test.
+         *
+         * no-cors responses are opaque when the request is allowed,
+         * while a browser extension blocking the request generally
+         * causes the request to reject. We use this only as a signal,
+         * not as the sole reason to block access.
+         */
+        function networkTest() {
+            if (!window.fetch) {
+                return Promise.resolve(false);
+            }
+
+            var tests = [
+                'https://acscdn.com/favicon.ico',
+                'https://www.highperformanceformat.com/favicon.ico'
+            ];
+
+            return Promise.all(
+                tests.map(function (url) {
+                    return fetch(
+                        url + '?streamify_check=' + Date.now(),
+                        {
+                            method: 'GET',
+                            mode: 'no-cors',
+                            cache: 'no-store',
+                            credentials: 'omit'
+                        }
+                    ).then(function () {
+                        return false;
+                    }).catch(function () {
+                        return true;
+                    });
+                })
+            ).then(function (results) {
+                return results.some(Boolean);
+            }).catch(function () {
+                return false;
+            });
+        }
+
+        /*
+         * A failed provider script plus a bait failure is much stronger
+         * evidence than either signal by itself.
+         */
+        function runDetection() {
+            if (checking || !document.body) {
+                return Promise.resolve(false);
+            }
+
+            checking = true;
+
+            return Promise.all([
+                baitTest(),
+                Promise.resolve(existingAdSlotsTest()),
+                Promise.resolve(providerScriptTest()),
+                networkTest()
+            ]).then(function (results) {
+
+                var signals = 0;
+
+                /*
+                 * Bait hidden.
+                 */
+                if (results[0] === true) {
+                    signals++;
+                }
+
+                /*
+                 * Real ad slots collapsed.
+                 */
+                if (results[1] === true) {
+                    signals++;
+                }
+
+                /*
+                 * Provider script missing.
+                 */
+                if (results[2] === true) {
+                    signals++;
+                }
+
+                /*
+                 * Network request blocked.
+                 */
+                if (results[3] === true) {
+                    signals++;
+                }
+
+                /*
+                 * Require multiple signals to reduce false positives.
+                 */
+                if (signals >= CONFIG.minimumSignals) {
+                    lockPage();
+                    return true;
+                }
+
+                /*
+                 * If the blocker has been disabled since the last
+                 * check, allow the page again.
+                 */
+                if (blocked) {
+                    unlockPage();
+                }
+
+                return false;
+
+            }).catch(function (error) {
+
+                /*
+                 * Detection errors must never break Streamify.
+                 */
+                try {
+                    console.debug(
+                        '[Streamify] Anti-adblock check failed:',
+                        error
+                    );
+                } catch (_) {}
+
+                return false;
+
+            }).finally(function () {
+                checking = false;
+            });
+        }
+
+        function retryDetection() {
+            if (!retryButton) return;
+
+            retryButton.disabled = true;
+            retryButton.innerHTML =
+                '<i class="fas fa-spinner fa-spin"></i>' +
+                '&nbsp; Checking…';
+
+            setTimeout(function () {
+
+                runDetection().then(function (isBlocked) {
+
+                    if (isBlocked) {
+                        retryButton.disabled = false;
+                        retryButton.innerHTML =
+                            '<i class="fas fa-rotate-right"></i>' +
+                            '&nbsp; I\'ve Disabled It — Continue';
+                    } else {
+                        /*
+                         * Reload so blocked ad scripts can be requested
+                         * again after the user changes their blocker setting.
+                         */
+                        window.location.reload();
+                    }
+
+                }).catch(function () {
+
+                    retryButton.disabled = false;
+                    retryButton.innerHTML =
+                        '<i class="fas fa-rotate-right"></i>' +
+                        '&nbsp; I\'ve Disabled It — Continue';
+
+                });
+
+            }, CONFIG.retryDelay);
+        }
+
+        function initialize() {
+            getElements();
+
+            if (!overlay || !retryButton) {
+                return;
+            }
+
+            retryButton.addEventListener('click', retryDetection);
+
+            /*
+             * Wait for Streamify's ad scripts/iframes to have a chance
+             * to initialize before making the first decision.
+             */
+            setTimeout(function () {
+                runDetection();
+            }, CONFIG.initialDelay);
+
+            /*
+             * Periodically re-check. This catches a blocker that
+             * becomes active after the page initially loads.
+             */
+            setInterval(function () {
+                if (!blocked) {
+                    runDetection();
+                }
+            }, CONFIG.periodicCheck);
+
+            /*
+             * Also re-check when the tab becomes visible again.
+             */
+            document.addEventListener('visibilitychange', function () {
+                if (!document.hidden && !blocked) {
+                    setTimeout(runDetection, 500);
+                }
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialize);
+        } else {
+            initialize();
+        }
+
     })();
     </script>
 
