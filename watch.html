@@ -84,6 +84,169 @@
             }
         }
 
+
+        /* ══════════════════════════════════════
+           STREAMIFY — MULTI-LAYER ANTI-ADBLOCK GATE
+        ══════════════════════════════════════ */
+        #streamifyAdblockOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2147483647;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background:
+                radial-gradient(circle at 50% 0%, rgba(229,9,20,.20), transparent 42%),
+                rgba(5,5,8,.985);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        #streamifyAdblockOverlay.active {
+            display: flex;
+        }
+
+        .streamify-adblock-card {
+            width: min(540px, 100%);
+            padding: 34px 28px 28px;
+            border-radius: 24px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.025));
+            border: 1px solid rgba(255,255,255,.12);
+            box-shadow: 0 30px 110px rgba(0,0,0,.72), 0 0 60px rgba(229,9,20,.14);
+            animation: streamifyAdblockIn .45s cubic-bezier(.2,.8,.2,1);
+        }
+
+        @keyframes streamifyAdblockIn {
+            from { opacity: 0; transform: translateY(20px) scale(.97); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .streamify-adblock-icon {
+            width: 78px;
+            height: 78px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(229,9,20,.12);
+            border: 1px solid rgba(229,9,20,.35);
+            box-shadow: 0 0 36px rgba(229,9,20,.2);
+        }
+
+        .streamify-adblock-icon i {
+            color: #e50914;
+            font-size: 31px;
+        }
+
+        .streamify-adblock-card h2 {
+            margin: 0 0 12px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(24px, 5vw, 32px);
+            font-weight: 800;
+            letter-spacing: -.5px;
+        }
+
+        .streamify-adblock-card p {
+            margin: 0 auto 18px;
+            max-width: 440px;
+            color: rgba(255,255,255,.64);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            line-height: 1.75;
+        }
+
+        .streamify-adblock-card strong { color: #fff; }
+
+        .streamify-adblock-reason {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin: 18px 0 22px;
+            padding: 15px 16px;
+            text-align: left;
+            border-radius: 14px;
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.075);
+        }
+
+        .streamify-adblock-reason i {
+            color: #e50914;
+            font-size: 18px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .streamify-adblock-reason span {
+            color: rgba(255,255,255,.7);
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        #streamifyAdblockRetry {
+            width: 100%;
+            border: 0;
+            border-radius: 13px;
+            padding: 14px 18px;
+            background: linear-gradient(135deg,#e50914,#b20710);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(229,9,20,.25);
+            transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+        }
+
+        #streamifyAdblockRetry:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 30px rgba(229,9,20,.35);
+        }
+
+        #streamifyAdblockRetry:disabled {
+            cursor: wait;
+            opacity: .75;
+            transform: none;
+        }
+
+        .streamify-adblock-status {
+            display: none;
+            margin-top: 12px;
+            color: rgba(255,255,255,.46);
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .streamify-adblock-help {
+            color: rgba(255,255,255,.38);
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            line-height: 1.55;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 480px) {
+            #streamifyAdblockOverlay { padding: 15px; }
+
+            .streamify-adblock-card {
+                padding: 28px 20px 22px;
+                border-radius: 20px;
+            }
+
+            .streamify-adblock-icon {
+                width: 66px;
+                height: 66px;
+                margin-bottom: 16px;
+            }
+
+            .streamify-adblock-card h2 { font-size: 25px; }
+        }
+
         /* ══════════════════════════════════════
            PRESENCE BADGE — avatar dot
         ══════════════════════════════════════ */
@@ -187,6 +350,53 @@
 <script src="version-check.js"></script>
 </head>
 <body class="watch-body">
+
+    <!-- ============================================================
+         STREAMIFY — ANTI-ADBLOCK ACCESS GATE
+         ============================================================ -->
+    <div id="streamifyAdblockOverlay"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="streamifyAdblockTitle">
+
+        <div class="streamify-adblock-card">
+
+            <div class="streamify-adblock-icon">
+                <i class="fas fa-shield-halved"></i>
+            </div>
+
+            <h2 id="streamifyAdblockTitle">Please Support Streamify</h2>
+
+            <p>
+                It looks like advertising is being blocked in your
+                browser or network. <strong>Streamify is free to use</strong>
+                and advertising helps us keep the service running.
+            </p>
+
+            <div class="streamify-adblock-reason">
+                <i class="fas fa-heart"></i>
+                <span>
+                    Please disable your browser ad blocker, Brave Shields,
+                    DNS ad filtering, or privacy filter for
+                    <strong>streamify.website</strong>, then try again.
+                </span>
+            </div>
+
+            <button id="streamifyAdblockRetry" type="button">
+                <i class="fas fa-rotate-right"></i>
+                &nbsp; I've Disabled It — Continue
+            </button>
+
+            <div id="streamifyAdblockStatus" class="streamify-adblock-status"></div>
+
+            <div class="streamify-adblock-help">
+                Brave: turn off Shields for this site.<br>
+                DNS/ad filtering: allow Streamify's advertising domains.
+            </div>
+
+        </div>
+    </div>
+
 
     <!-- Back Button -->
     <a href="index.html" class="back-btn">
@@ -492,6 +702,702 @@
             else if (cur < lastScroll - 6) { nav.style.transform = 'translateY(0)'; }
             lastScroll = cur;
         }, { passive: true });
+    })();
+    </script>
+
+
+    <!-- ============================================================
+         STREAMIFY — MULTI-SIGNAL ANTI-ADBLOCK DETECTOR
+         ============================================================ -->
+    <script>
+    (function () {
+        'use strict';
+
+        /*
+         * This is the same layered strategy used on the rebuilt index:
+         * DOM bait + real ad-slot inspection + script presence +
+         * dynamic script/image/iframe probes + fetch network probes +
+         * Resource Timing + MutationObserver + periodic rechecks.
+         *
+         * No client-side system can distinguish every DNS outage from
+         * an ad filter with mathematical certainty, so several signals
+         * are combined before locking the page.
+         */
+
+        var CONFIG = {
+            initialDelay: 2200,
+            checkTimeout: 4000,
+            retryDelay: 1200,
+            periodicCheck: 15000,
+            visibilityRecheckDelay: 600,
+            minimumScoreDesktop: 4,
+            minimumScoreMobile: 4,
+
+            /*
+             * These are the actual ad hosts used on this watch page.
+             */
+            adHosts: [
+                'highperformanceformat.com',
+                'acscdn.com'
+            ],
+
+            /*
+             * Dedicated resource probes. Different resource types help
+             * expose DNS/privacy filters that treat scripts, images and
+             * frames differently.
+             */
+            testUrls: [
+                'https://www.highperformanceformat.com/favicon.ico',
+                'https://acscdn.com/favicon.ico'
+            ]
+        };
+
+        var overlay = null;
+        var retryButton = null;
+        var statusText = null;
+
+        var blocked = false;
+        var checking = false;
+        var observer = null;
+        var mutationTimer = null;
+
+        function initElements() {
+            overlay = document.getElementById('streamifyAdblockOverlay');
+            retryButton = document.getElementById('streamifyAdblockRetry');
+            statusText = document.getElementById('streamifyAdblockStatus');
+        }
+
+        function setStatus(message) {
+            if (!statusText) return;
+            statusText.textContent = message || '';
+            statusText.style.display = message ? 'block' : 'none';
+        }
+
+        function lockPage(message) {
+            if (!overlay) return;
+
+            overlay.classList.add('active');
+
+            document.documentElement.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden';
+
+            blocked = true;
+            setStatus(message || 'Advertising appears to be blocked.');
+        }
+
+        function unlockPage() {
+            if (!overlay) return;
+
+            overlay.classList.remove('active');
+
+            document.documentElement.style.overflow = '';
+            document.body.style.overflow = '';
+
+            blocked = false;
+            setStatus('');
+        }
+
+        /* ============================================================
+           SIGNAL 1 — Browser extension / CSS ad-bait detection
+           ============================================================ */
+        function baitTest() {
+            return new Promise(function (resolve) {
+
+                var bait = document.createElement('div');
+
+                bait.className =
+                    'adsbox ad ads advertisement advert ' +
+                    'ad-banner ad-container ad-unit ad-slot ' +
+                    'adsbygoogle text-ad native-ad sponsored-content';
+
+                bait.setAttribute('aria-hidden', 'true');
+
+                bait.style.cssText =
+                    'position:absolute!important;' +
+                    'left:-10000px!important;' +
+                    'top:-10000px!important;' +
+                    'width:300px!important;' +
+                    'height:250px!important;' +
+                    'display:block!important;' +
+                    'visibility:visible!important;' +
+                    'opacity:1!important;' +
+                    'pointer-events:none!important;';
+
+                document.body.appendChild(bait);
+
+                setTimeout(function () {
+
+                    var style = window.getComputedStyle(bait);
+                    var rect = bait.getBoundingClientRect();
+
+                    var hidden =
+                        bait.offsetWidth === 0 ||
+                        bait.offsetHeight === 0 ||
+                        rect.width === 0 ||
+                        rect.height === 0 ||
+                        style.display === 'none' ||
+                        style.visibility === 'hidden' ||
+                        parseFloat(style.opacity || '1') === 0;
+
+                    if (bait.parentNode) {
+                        bait.parentNode.removeChild(bait);
+                    }
+
+                    resolve(hidden);
+
+                }, 180);
+            });
+        }
+
+        /* ============================================================
+           SIGNAL 2 — Actual watch-page ad slots
+           ============================================================ */
+        function realAdSlotTest() {
+
+            var slots = document.querySelectorAll('.watch-ad');
+
+            if (!slots.length) {
+                return {
+                    count: 0,
+                    affected: 0
+                };
+            }
+
+            var affected = 0;
+
+            slots.forEach(function (slot) {
+
+                var style = window.getComputedStyle(slot);
+                var rect = slot.getBoundingClientRect();
+
+                var hidden =
+                    style.display === 'none' ||
+                    style.visibility === 'hidden' ||
+                    rect.width === 0 ||
+                    rect.height === 0 ||
+                    parseFloat(style.opacity || '1') === 0;
+
+                if (hidden) {
+                    affected++;
+                }
+            });
+
+            return {
+                count: slots.length,
+                affected: affected
+            };
+        }
+
+        /* ============================================================
+           SIGNAL 3 — Provider script presence
+           ============================================================ */
+        function providerScriptTest() {
+
+            var scripts = Array.prototype.slice.call(
+                document.scripts || []
+            );
+
+            var matched = scripts.filter(function (script) {
+
+                var src = (script.src || '').toLowerCase();
+
+                return CONFIG.adHosts.some(function (host) {
+                    return src.indexOf(host) !== -1;
+                });
+
+            });
+
+            return {
+                missing: matched.length === 0,
+                count: matched.length
+            };
+        }
+
+        /* ============================================================
+           SIGNALS 4/5/6 — Dynamic script/image/iframe probes
+           ============================================================ */
+        function resourceProbe(url, type, timeoutMs) {
+
+            return new Promise(function (resolve) {
+
+                var finished = false;
+                var timer = null;
+                var element = null;
+
+                function finish(result) {
+
+                    if (finished) return;
+                    finished = true;
+
+                    if (timer) {
+                        clearTimeout(timer);
+                    }
+
+                    if (element && element.parentNode) {
+                        element.parentNode.removeChild(element);
+                    }
+
+                    resolve(result);
+                }
+
+                var probeUrl =
+                    url +
+                    (url.indexOf('?') === -1 ? '?' : '&') +
+                    'streamify_probe=' +
+                    Date.now() +
+                    '_' +
+                    Math.random().toString(36).slice(2);
+
+                if (type === 'script') {
+
+                    element = document.createElement('script');
+                    element.async = true;
+                    element.src = probeUrl;
+
+                    element.onload = function () {
+                        finish({ ok: true, type: type });
+                    };
+
+                    element.onerror = function () {
+                        finish({ ok: false, type: type, error: true });
+                    };
+
+                    element.style.display = 'none';
+                    document.head.appendChild(element);
+
+                } else if (type === 'image') {
+
+                    element = new Image();
+
+                    element.onload = function () {
+                        finish({ ok: true, type: type });
+                    };
+
+                    element.onerror = function () {
+                        finish({ ok: false, type: type, error: true });
+                    };
+
+                    element.src = probeUrl;
+
+                } else if (type === 'iframe') {
+
+                    element = document.createElement('iframe');
+
+                    element.width = '1';
+                    element.height = '1';
+                    element.setAttribute('aria-hidden', 'true');
+
+                    element.style.cssText =
+                        'position:absolute;' +
+                        'left:-9999px;' +
+                        'top:-9999px;' +
+                        'width:1px;' +
+                        'height:1px;' +
+                        'border:0;' +
+                        'opacity:.01;' +
+                        'pointer-events:none;';
+
+                    element.onload = function () {
+                        finish({ ok: true, type: type });
+                    };
+
+                    element.onerror = function () {
+                        finish({ ok: false, type: type, error: true });
+                    };
+
+                    element.src = probeUrl;
+                    document.body.appendChild(element);
+                }
+
+                timer = setTimeout(function () {
+                    finish({
+                        ok: false,
+                        type: type,
+                        timeout: true
+                    });
+                }, timeoutMs || CONFIG.checkTimeout);
+
+            });
+        }
+
+        function dynamicAdResourceTest() {
+
+            return Promise.all([
+                resourceProbe(CONFIG.testUrls[0], 'script'),
+                resourceProbe(CONFIG.testUrls[1], 'image'),
+                resourceProbe(CONFIG.testUrls[0], 'iframe')
+            ]).then(function (results) {
+
+                return {
+                    results: results,
+                    failed: results.filter(function (r) {
+                        return r && r.ok === false;
+                    }).length
+                };
+
+            });
+        }
+
+        /* ============================================================
+           SIGNAL 7 — Fetch / DNS / network failure
+           ============================================================ */
+        function fetchNetworkTest() {
+
+            if (!window.fetch) {
+                return Promise.resolve({
+                    failed: 0,
+                    skipped: true
+                });
+            }
+
+            return Promise.all(
+                CONFIG.testUrls.map(function (url) {
+
+                    var probeUrl =
+                        url +
+                        (url.indexOf('?') === -1 ? '?' : '&') +
+                        'streamify_fetch_probe=' +
+                        Date.now() +
+                        '_' +
+                        Math.random().toString(36).slice(2);
+
+                    return fetch(probeUrl, {
+                        method: 'GET',
+                        mode: 'no-cors',
+                        cache: 'no-store',
+                        credentials: 'omit'
+                    }).then(function () {
+                        return { ok: true };
+                    }).catch(function () {
+                        return { ok: false };
+                    });
+
+                })
+            ).then(function (results) {
+
+                return {
+                    failed: results.filter(function (r) {
+                        return !r.ok;
+                    }).length,
+                    results: results
+                };
+
+            });
+        }
+
+        /* ============================================================
+           SIGNAL 8 — Resource Timing
+           ============================================================ */
+        function resourceTimingTest() {
+
+            if (
+                !window.performance ||
+                !performance.getEntriesByType
+            ) {
+                return {
+                    available: false,
+                    failed: false,
+                    matched: 0
+                };
+            }
+
+            var entries =
+                performance.getEntriesByType('resource') || [];
+
+            var matched = entries.filter(function (entry) {
+
+                var name =
+                    String(entry.name || '').toLowerCase();
+
+                return CONFIG.adHosts.some(function (host) {
+                    return name.indexOf(host) !== -1;
+                });
+
+            });
+
+            return {
+                available: true,
+                failed: matched.length === 0,
+                matched: matched.length
+            };
+        }
+
+        /* ============================================================
+           SIGNAL 9 — Watch for ad slots being hidden later
+           ============================================================ */
+        function startMutationMonitor() {
+
+            if (!window.MutationObserver || observer) {
+                return;
+            }
+
+            observer = new MutationObserver(function () {
+
+                clearTimeout(mutationTimer);
+
+                mutationTimer = setTimeout(function () {
+
+                    if (blocked || checking) {
+                        return;
+                    }
+
+                    var slotState = realAdSlotTest();
+
+                    if (slotState.affected >= 1) {
+                        runDetection();
+                    }
+
+                }, 500);
+
+            });
+
+            observer.observe(document.documentElement, {
+                subtree: true,
+                childList: true,
+                attributes: true,
+                attributeFilter: ['style', 'class']
+            });
+        }
+
+        /* ============================================================
+           SCORE ENGINE
+           ============================================================ */
+        function runDetection() {
+
+            if (checking || !document.body) {
+                return Promise.resolve(false);
+            }
+
+            checking = true;
+
+            return Promise.all([
+                baitTest(),
+                Promise.resolve(realAdSlotTest()),
+                Promise.resolve(providerScriptTest()),
+                dynamicAdResourceTest(),
+                fetchNetworkTest(),
+                Promise.resolve(resourceTimingTest())
+            ]).then(function (results) {
+
+                var score = 0;
+
+                var baitBlocked = results[0] === true;
+                var slots = results[1] || { count: 0, affected: 0 };
+                var scripts = results[2] || { missing: false, count: 0 };
+                var dynamic = results[3] || { failed: 0 };
+                var fetchResult = results[4] || { failed: 0 };
+                var timing = results[5] || { available: false };
+
+                var reasons = [];
+
+                if (baitBlocked) {
+                    score += 2;
+                    reasons.push('browser filter');
+                }
+
+                /*
+                 * The page contains two real advertising containers.
+                 * Collapsing one is suspicious but not enough alone.
+                 */
+                if (
+                    slots.count >= 2 &&
+                    slots.affected >= Math.ceil(slots.count * 0.5)
+                ) {
+                    score += 2;
+                    reasons.push('ad slots hidden');
+
+                } else if (
+                    slots.count === 1 &&
+                    slots.affected === 1
+                ) {
+                    score += 1;
+                    reasons.push('ad slot hidden');
+                }
+
+                if (scripts.missing) {
+                    score += 2;
+                    reasons.push('ad script missing');
+                }
+
+                if (dynamic.failed >= 2) {
+                    score += 2;
+                    reasons.push('ad resources blocked');
+
+                } else if (dynamic.failed === 1) {
+                    score += 1;
+                    reasons.push('ad resource failed');
+                }
+
+                if (fetchResult.failed >= 2) {
+                    score += 2;
+                    reasons.push('ad network blocked');
+
+                } else if (fetchResult.failed === 1) {
+                    score += 1;
+                }
+
+                if (
+                    timing.available &&
+                    timing.failed &&
+                    scripts.count > 0
+                ) {
+                    score += 1;
+                    reasons.push('timing missing');
+                }
+
+                var threshold =
+                    window.innerWidth <= 600
+                        ? CONFIG.minimumScoreMobile
+                        : CONFIG.minimumScoreDesktop;
+
+                if (score >= threshold) {
+
+                    lockPage(
+                        'Advertising appears to be blocked. ' +
+                        'Please allow ads for Streamify and try again.'
+                    );
+
+                    return true;
+                }
+
+                if (blocked) {
+                    unlockPage();
+                }
+
+                return false;
+
+            }).catch(function (error) {
+
+                try {
+                    console.debug(
+                        '[Streamify] anti-adblock check failed:',
+                        error
+                    );
+                } catch (_) {}
+
+                return false;
+
+            }).finally(function () {
+                checking = false;
+            });
+        }
+
+        function retryDetection() {
+
+            if (!retryButton) {
+                return;
+            }
+
+            retryButton.disabled = true;
+
+            retryButton.innerHTML =
+                '<i class="fas fa-spinner fa-spin"></i>' +
+                '&nbsp; Checking…';
+
+            setStatus(
+                'Checking your browser and ad connection…'
+            );
+
+            setTimeout(function () {
+
+                runDetection().then(function (isBlocked) {
+
+                    if (isBlocked) {
+
+                        retryButton.disabled = false;
+
+                        retryButton.innerHTML =
+                            '<i class="fas fa-rotate-right"></i>' +
+                            '&nbsp; I\'ve Disabled It — Continue';
+
+                    } else {
+
+                        setStatus('All good. Reloading…');
+
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 350);
+                    }
+
+                }).catch(function () {
+
+                    retryButton.disabled = false;
+
+                    retryButton.innerHTML =
+                        '<i class="fas fa-rotate-right"></i>' +
+                        '&nbsp; I\'ve Disabled It — Continue';
+
+                    setStatus('');
+                });
+
+            }, CONFIG.retryDelay);
+        }
+
+        function initialize() {
+
+            initElements();
+
+            if (!overlay || !retryButton) {
+                return;
+            }
+
+            retryButton.addEventListener(
+                'click',
+                retryDetection
+            );
+
+            startMutationMonitor();
+
+            setTimeout(function () {
+                runDetection();
+            }, CONFIG.initialDelay);
+
+            setInterval(function () {
+
+                if (!blocked) {
+                    runDetection();
+                }
+
+            }, CONFIG.periodicCheck);
+
+            document.addEventListener(
+                'visibilitychange',
+                function () {
+
+                    if (!document.hidden && !blocked) {
+                        setTimeout(
+                            runDetection,
+                            CONFIG.visibilityRecheckDelay
+                        );
+                    }
+
+                }
+            );
+
+            window.addEventListener(
+                'pageshow',
+                function () {
+
+                    if (!blocked) {
+                        setTimeout(
+                            runDetection,
+                            CONFIG.visibilityRecheckDelay
+                        );
+                    }
+
+                }
+            );
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener(
+                'DOMContentLoaded',
+                initialize
+            );
+        } else {
+            initialize();
+        }
+
     })();
     </script>
 
