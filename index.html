@@ -1175,18 +1175,10 @@
             <input type="search" id="searchInput" placeholder="Search movies, TV shows, series, actors..." autocomplete="off" aria-label="Search for free movies, TV shows, web series, Korean dramas, Bollywood, Hollywood content" title="Search free movies and TV shows on Streamify">
             <button id="searchClose" aria-label="Close search"><i class="fas fa-times"></i></button>
         </div>
-        <div class="streamify-search-ad" aria-label="Advertisement" style="display:none; margin:12px auto 8px; justify-content:center; align-items:center; min-height:1px;">
-            <script>
-                (function(s){
-                    s.dataset.zone='10899394';
-                    s.src='https://n6wxm.com/vignette.min.js';
-                })(
-                    [document.documentElement, document.body]
-                        .filter(Boolean)
-                        .pop()
-                        .appendChild(document.createElement('script'))
-                );
-            </script>
+        <div class="streamify-search-ad"
+             id="streamifySearchAd"
+             aria-label="Advertisement"
+             style="display:none; margin:12px auto 8px; justify-content:center; align-items:center; min-height:1px;">
         </div>
 
         <div class="search-results" id="searchResults" role="region" aria-label="Search results" aria-live="polite"></div>
@@ -2828,6 +2820,78 @@
 
     })();
     </script>
+
+
+    <!-- Search-only ad controller -->
+    <script>
+    (function () {
+        'use strict';
+
+        var searchModal = document.getElementById('searchModal');
+        var searchAd = document.getElementById('streamifySearchAd');
+        var adLoaded = false;
+
+        if (!searchModal || !searchAd) return;
+
+        function isSearchVisible() {
+            var style = window.getComputedStyle(searchModal);
+            var rect = searchModal.getBoundingClientRect();
+
+            return (
+                style.display !== 'none' &&
+                style.visibility !== 'hidden' &&
+                parseFloat(style.opacity || '1') > 0 &&
+                rect.width > 0 &&
+                rect.height > 0
+            );
+        }
+
+        function loadSearchAd() {
+            if (adLoaded || !isSearchVisible()) return;
+
+            adLoaded = true;
+            searchAd.style.display = 'flex';
+
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.dataset.zone = '10899394';
+            script.src = 'https://n6wxm.com/vignette.min.js';
+            script.async = true;
+
+            searchAd.appendChild(script);
+        }
+
+        function syncSearchAd() {
+            if (isSearchVisible()) {
+                searchAd.style.display = 'flex';
+                loadSearchAd();
+            } else {
+                searchAd.style.display = 'none';
+            }
+        }
+
+        if (window.MutationObserver) {
+            new MutationObserver(syncSearchAd).observe(searchModal, {
+                attributes: true,
+                attributeFilter: ['class', 'style', 'aria-hidden']
+            });
+        }
+
+        var lastState = false;
+
+        setInterval(function () {
+            var state = isSearchVisible();
+
+            if (state !== lastState) {
+                lastState = state;
+                syncSearchAd();
+            }
+        }, 150);
+
+        syncSearchAd();
+    })();
+    </script>
+
 
 </body>
 </html>
