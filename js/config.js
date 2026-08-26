@@ -20,21 +20,21 @@ const CONFIG = {
     // ============ STREAMING SERVERS ============
    SERVERS: {
     server1: {
-        name: 'Server 1 - Mars',
-        getMovieUrl: function(tmdbId) {
-            return `https://vidrock.ru/movie/${tmdbId}`;
-        },
-        getTVUrl: function(tmdbId, season, episode) {
-            return `https://vidrock.ru/tv/${tmdbId}/${season}/${episode}`;
-        }
-    },
-    server2: {
-        name: 'Server 2 - Earth [Multi Lang]',
+        name: 'Server 1 - Earth [Multi Lang]',
         getMovieUrl: function(tmdbId) {
             return `https://peachify.top/?type=movie&id=${tmdbId}`;
         },
         getTVUrl: function(tmdbId, season, episode) {
             return `https://peachify.top/?type=tv&id=${tmdbId}&s=${season}&e=${episode}`;
+        }
+    },
+    server2: {
+        name: 'Server 2 - Mars',
+        getMovieUrl: function(tmdbId) {
+            return `https://vidrock.ru/movie/${tmdbId}`;
+        },
+        getTVUrl: function(tmdbId, season, episode) {
+            return `https://vidrock.ru/tv/${tmdbId}/${season}/${episode}`;
         }
     }
 },
