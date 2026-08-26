@@ -1175,7 +1175,7 @@
             <input type="search" id="searchInput" placeholder="Search movies, TV shows, series, actors..." autocomplete="off" aria-label="Search for free movies, TV shows, web series, Korean dramas, Bollywood, Hollywood content" title="Search free movies and TV shows on Streamify">
             <button id="searchClose" aria-label="Close search"><i class="fas fa-times"></i></button>
         </div>
-        <div class="streamify-search-ad" aria-label="Advertisement" style="margin:12px auto 8px; display:flex; justify-content:center; align-items:center; min-height:1px;">
+        <div class="streamify-search-ad" aria-label="Advertisement" style="display:none; margin:12px auto 8px; justify-content:center; align-items:center; min-height:1px;">
             <script>
                 (function(s){
                     s.dataset.zone='10899394';
@@ -1191,6 +1191,61 @@
 
         <div class="search-results" id="searchResults" role="region" aria-label="Search results" aria-live="polite"></div>
     </div>
+
+
+    <script>
+    (function () {
+        'use strict';
+
+        var searchModal = document.getElementById('searchModal');
+        var searchAd = document.querySelector('.streamify-search-ad');
+
+        if (!searchModal || !searchAd) return;
+
+        function isSearchVisible() {
+            var style = window.getComputedStyle(searchModal);
+            var rect = searchModal.getBoundingClientRect();
+
+            return (
+                style.display !== 'none' &&
+                style.visibility !== 'hidden' &&
+                parseFloat(style.opacity || '1') > 0 &&
+                rect.width > 0 &&
+                rect.height > 0
+            );
+        }
+
+        function syncSearchAd() {
+            searchAd.style.display =
+                isSearchVisible() ? 'flex' : 'none';
+        }
+
+        if (window.MutationObserver) {
+            new MutationObserver(syncSearchAd).observe(searchModal, {
+                attributes: true,
+                attributeFilter: ['class', 'style', 'aria-hidden']
+            });
+        }
+
+        /*
+         * Catch search scripts that change visibility without changing
+         * attributes in the same tick.
+         */
+        var previousState = false;
+
+        setInterval(function () {
+            var currentState = isSearchVisible();
+
+            if (currentState !== previousState) {
+                previousState = currentState;
+                searchAd.style.display =
+                    currentState ? 'flex' : 'none';
+            }
+        }, 100);
+
+        syncSearchAd();
+    })();
+    </script>
 
     <!-- ══════════════════════════════════════════════════════════
          HERO SECTION — SEO-optimized featured content
