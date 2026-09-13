@@ -335,6 +335,367 @@
 
 <style>
     @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+    /* ============================================================
+       STREAMIFY — PREMIUM SUPPORT US DIALOG
+       ============================================================ */
+    #streamifySupportOverlay {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background:
+            radial-gradient(circle at 50% 10%, rgba(229,9,20,.18), transparent 38%),
+            rgba(4,4,8,.78);
+        backdrop-filter: blur(16px) saturate(125%);
+        -webkit-backdrop-filter: blur(16px);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity .32s ease, visibility .32s ease;
+    }
+
+    #streamifySupportOverlay.visible {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .streamify-support-card {
+        position: relative;
+        width: min(470px, 100%);
+        max-height: calc(100vh - 40px);
+        overflow: auto;
+        padding: 34px 30px 24px;
+        border-radius: 26px;
+        text-align: center;
+        background:
+            radial-gradient(circle at 50% -20%, rgba(229,9,20,.16), transparent 42%),
+            linear-gradient(145deg, rgba(28,28,38,.98), rgba(10,10,15,.98));
+        border: 1px solid rgba(255,255,255,.12);
+        box-shadow:
+            0 35px 100px rgba(0,0,0,.70),
+            0 0 70px rgba(229,9,20,.13);
+        transform: translateY(18px) scale(.96);
+        transition: transform .42s cubic-bezier(.2,.85,.2,1);
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255,255,255,.16) transparent;
+    }
+
+    #streamifySupportOverlay.visible .streamify-support-card {
+        transform: translateY(0) scale(1);
+    }
+
+    .streamify-support-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 18%;
+        right: 18%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(229,9,20,.9), transparent);
+    }
+
+    .streamify-support-close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 34px;
+        height: 34px;
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255,255,255,.45);
+        background: rgba(255,255,255,.035);
+        cursor: pointer;
+        transition: color .2s ease, background .2s ease, transform .2s ease;
+    }
+
+    .streamify-support-close:hover {
+        color: #fff;
+        background: rgba(255,255,255,.09);
+        transform: rotate(4deg);
+    }
+
+    .streamify-support-icon {
+        width: 72px;
+        height: 72px;
+        margin: 2px auto 18px;
+        border-radius: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        background: linear-gradient(145deg, #e50914, #a80710);
+        box-shadow:
+            0 14px 35px rgba(229,9,20,.24),
+            inset 0 1px 0 rgba(255,255,255,.18);
+        animation: streamifySupportFloat 3.2s ease-in-out infinite;
+    }
+
+    .streamify-support-icon i {
+        font-size: 29px;
+    }
+
+    @keyframes streamifySupportFloat {
+        0%,100% { transform: translateY(0); }
+        50% { transform: translateY(-4px); }
+    }
+
+    .streamify-support-eyebrow {
+        margin-bottom: 8px;
+        color: rgba(255,255,255,.45);
+        font-family: 'Inter', sans-serif;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+    }
+
+    .streamify-support-card h2 {
+        margin: 0 0 10px;
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+        font-size: clamp(25px, 6vw, 32px);
+        line-height: 1.15;
+        font-weight: 850;
+        letter-spacing: -.7px;
+    }
+
+    .streamify-support-card > p {
+        max-width: 390px;
+        margin: 0 auto 20px;
+        color: rgba(255,255,255,.62);
+        font-family: 'Inter', sans-serif;
+        font-size: 13px;
+        line-height: 1.75;
+    }
+
+    .streamify-support-highlight {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin: 0 auto 18px;
+        padding: 7px 11px;
+        border-radius: 999px;
+        color: rgba(255,255,255,.78);
+        background: rgba(255,255,255,.045);
+        border: 1px solid rgba(255,255,255,.08);
+        font-family: 'Inter', sans-serif;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .7px;
+        text-transform: uppercase;
+    }
+
+    .streamify-support-highlight i {
+        color: #e50914;
+    }
+
+    .streamify-trx-box {
+        margin: 0 0 16px;
+        padding: 15px;
+        border-radius: 17px;
+        text-align: left;
+        background: rgba(0,0,0,.24);
+        border: 1px solid rgba(255,255,255,.085);
+    }
+
+    .streamify-trx-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 9px;
+        color: rgba(255,255,255,.42);
+        font-family: 'Inter', sans-serif;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .8px;
+        text-transform: uppercase;
+    }
+
+    .streamify-trx-network {
+        color: rgba(255,255,255,.32);
+        font-size: 9px;
+        letter-spacing: .5px;
+    }
+
+    .streamify-trx-address-row {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    #streamifyTrxAddress {
+        min-width: 0;
+        flex: 1;
+        padding: 12px 11px;
+        border-radius: 11px;
+        color: rgba(255,255,255,.84);
+        background: rgba(255,255,255,.045);
+        border: 1px solid rgba(255,255,255,.07);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 11px;
+        line-height: 1.35;
+        word-break: break-all;
+        user-select: all;
+    }
+
+    #streamifyCopyTrx {
+        flex: 0 0 auto;
+        min-height: 42px;
+        border: 0;
+        border-radius: 11px;
+        padding: 0 14px;
+        color: #fff;
+        background: linear-gradient(135deg,#e50914,#b20710);
+        box-shadow: 0 8px 22px rgba(229,9,20,.20);
+        font-family: 'Inter', sans-serif;
+        font-size: 11px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    #streamifyCopyTrx:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 11px 27px rgba(229,9,20,.30);
+    }
+
+    #streamifyCopyTrx:active {
+        transform: scale(.97);
+    }
+
+    .streamify-support-footnote {
+        margin: 12px 0 0;
+        color: rgba(255,255,255,.30);
+        font-family: 'Inter', sans-serif;
+        font-size: 9.5px;
+        line-height: 1.55;
+    }
+
+    .streamify-support-actions {
+        display: flex;
+        justify-content: center;
+        gap: 9px;
+        margin-top: 17px;
+    }
+
+    .streamify-support-later {
+        border: 1px solid rgba(255,255,255,.09);
+        border-radius: 11px;
+        padding: 11px 17px;
+        color: rgba(255,255,255,.58);
+        background: rgba(255,255,255,.035);
+        font-family: 'Inter', sans-serif;
+        font-size: 11px;
+        font-weight: 750;
+        cursor: pointer;
+        transition: color .2s ease, background .2s ease;
+    }
+
+    .streamify-support-later:hover {
+        color: #fff;
+        background: rgba(255,255,255,.07);
+    }
+
+    .streamify-support-dismiss {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin: 15px auto 0;
+        cursor: pointer;
+        user-select: none;
+        color: rgba(255,255,255,.30);
+        font-family: 'Inter', sans-serif;
+        font-size: 9.5px;
+        transition: color .2s ease;
+    }
+
+    .streamify-support-dismiss:hover {
+        color: rgba(255,255,255,.55);
+    }
+
+    .streamify-support-dismiss input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .streamify-support-dismiss-box {
+        width: 16px;
+        height: 16px;
+        border: 1px solid rgba(255,255,255,.18);
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,.025);
+        transition: all .2s ease;
+    }
+
+    .streamify-support-dismiss input:checked + .streamify-support-dismiss-box {
+        background: #e50914;
+        border-color: #e50914;
+        box-shadow: 0 0 12px rgba(229,9,20,.28);
+    }
+
+    .streamify-support-dismiss input:checked + .streamify-support-dismiss-box::after {
+        content: '';
+        width: 4px;
+        height: 7px;
+        border: solid #fff;
+        border-width: 0 1.5px 1.5px 0;
+        transform: rotate(45deg) translate(-1px,-1px);
+    }
+
+    @media (max-width: 520px) {
+        #streamifySupportOverlay {
+            padding: 14px;
+        }
+
+        .streamify-support-card {
+            padding: 29px 18px 20px;
+            border-radius: 22px;
+        }
+
+        .streamify-support-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 19px;
+            margin-bottom: 15px;
+        }
+
+        .streamify-support-icon i {
+            font-size: 25px;
+        }
+
+        .streamify-trx-address-row {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        #streamifyCopyTrx {
+            width: 100%;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .streamify-support-icon,
+        .streamify-support-card,
+        #streamifySupportOverlay {
+            animation: none !important;
+            transition: none !important;
+        }
+    }
+
     @keyframes glowPulse { 0%,100%{box-shadow:0 0 20px rgba(229,9,20,0.3)} 50%{box-shadow:0 0 40px rgba(229,9,20,0.6)} }
     @keyframes textGradient { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
     .btn-play,.btn-info,.popup-btn{position:relative;overflow:hidden}
@@ -1005,6 +1366,85 @@
 <script src="version-check.js"></script>
 </head>
 <body itemscope itemtype="https://schema.org/WebPage">
+    <!-- ============================================================
+         STREAMIFY — PREMIUM SUPPORT US DIALOG
+         Appears on homepage load. Users can copy the TRX address,
+         dismiss it, or permanently hide future support prompts.
+         ============================================================ -->
+    <div id="streamifySupportOverlay"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="streamifySupportTitle"
+         aria-describedby="streamifySupportDescription">
+
+        <div class="streamify-support-card">
+            <button id="streamifySupportClose"
+                    class="streamify-support-close"
+                    type="button"
+                    aria-label="Close support dialog">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="streamify-support-icon" aria-hidden="true">
+                <i class="fas fa-heart"></i>
+            </div>
+
+            <div class="streamify-support-eyebrow">A little support goes a long way</div>
+
+            <h2 id="streamifySupportTitle">Keep Streamify Free</h2>
+
+            <p id="streamifySupportDescription">
+                Streamify is free to use, and we want to keep it that way.
+                If you enjoy the experience, a tiny contribution is a simple
+                way to support the project and help us keep improving it.
+            </p>
+
+            <div class="streamify-support-highlight">
+                <i class="fas fa-sparkles" aria-hidden="true"></i>
+                Even 1 TRX is appreciated
+            </div>
+
+            <div class="streamify-trx-box">
+                <div class="streamify-trx-label">
+                    <span>TRX Support Address</span>
+                    <span class="streamify-trx-network">TRON • TRX</span>
+                </div>
+
+                <div class="streamify-trx-address-row">
+                    <div id="streamifyTrxAddress"
+                         role="textbox"
+                         aria-label="Streamify TRX support address">
+                        TDNfU6R4djdaGF7YTQVxQAk79tkALBb2GN
+                    </div>
+
+                    <button id="streamifyCopyTrx"
+                            type="button"
+                            aria-label="Copy Streamify TRX address">
+                        <i class="fas fa-copy"></i>&nbsp; Copy
+                    </button>
+                </div>
+
+                <div class="streamify-support-footnote">
+                    Please make sure you are sending TRX on the TRON network.
+                </div>
+            </div>
+
+            <div class="streamify-support-actions">
+                <button id="streamifySupportLater"
+                        class="streamify-support-later"
+                        type="button">
+                    Maybe later
+                </button>
+            </div>
+
+            <label class="streamify-support-dismiss">
+                <input type="checkbox" id="streamifySupportDontShow">
+                <span class="streamify-support-dismiss-box" aria-hidden="true"></span>
+                <span>Don't show this again</span>
+            </label>
+        </div>
+    </div>
+
     <!-- ============================================================
          STREAMIFY — FRIEND SHARE CTA
          ============================================================ -->
@@ -1721,6 +2161,222 @@
             <span class="bnav-label presence-label" id="presenceLabel">Profile</span>
         </a>
     </nav>
+
+    <!-- ============================================================
+         STREAMIFY — SUPPORT DIALOG CONTROLLER
+         ============================================================ -->
+    <script>
+    (function () {
+        'use strict';
+
+        /*
+         * Show on each new page visit unless the visitor chooses
+         * "Don't show this again".
+         *
+         * sessionStorage is intentionally NOT used here because the
+         * requested behavior is to show the support dialog when the
+         * website is opened. The permanent opt-out is localStorage.
+         */
+        var DONT_SHOW_KEY = 'streamify_support_dialog_dont_show';
+        var SHOW_DELAY = 1400;
+
+        var SUPPORT_ADDRESS = 'TDNfU6R4djdaGF7YTQVxQAk79tkALBb2GN';
+
+        var overlay;
+        var closeButton;
+        var laterButton;
+        var copyButton;
+        var addressElement;
+        var dontShowCheckbox;
+
+        function getElements() {
+            overlay = document.getElementById('streamifySupportOverlay');
+            closeButton = document.getElementById('streamifySupportClose');
+            laterButton = document.getElementById('streamifySupportLater');
+            copyButton = document.getElementById('streamifyCopyTrx');
+            addressElement = document.getElementById('streamifyTrxAddress');
+            dontShowCheckbox = document.getElementById('streamifySupportDontShow');
+        }
+
+        function shouldShow() {
+            try {
+                return localStorage.getItem(DONT_SHOW_KEY) !== '1';
+            } catch (_) {
+                return true;
+            }
+        }
+
+        function saveDontShowPreference() {
+            if (!dontShowCheckbox || !dontShowCheckbox.checked) return;
+
+            try {
+                localStorage.setItem(DONT_SHOW_KEY, '1');
+            } catch (_) {}
+        }
+
+        function closeDialog() {
+            if (!overlay) return;
+
+            saveDontShowPreference();
+
+            overlay.classList.remove('visible');
+            document.documentElement.style.overflow = '';
+            document.body.style.overflow = '';
+
+            if (closeButton) closeButton.blur();
+            if (laterButton) laterButton.blur();
+            if (copyButton) copyButton.blur();
+        }
+
+        function showDialog() {
+            if (!overlay || !shouldShow()) return;
+
+            overlay.classList.add('visible');
+            document.documentElement.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden';
+
+            setTimeout(function () {
+                if (closeButton) closeButton.focus();
+            }, 80);
+        }
+
+        function copySupportAddress() {
+            if (!copyButton) return;
+
+            function success() {
+                copyButton.innerHTML =
+                    '<i class="fas fa-check"></i>&nbsp; Copied';
+                copyButton.setAttribute(
+                    'aria-label',
+                    'TRX support address copied'
+                );
+
+                setTimeout(function () {
+                    if (copyButton) {
+                        copyButton.innerHTML =
+                            '<i class="fas fa-copy"></i>&nbsp; Copy';
+                        copyButton.setAttribute(
+                            'aria-label',
+                            'Copy Streamify TRX address'
+                        );
+                    }
+                }, 1800);
+            }
+
+            function failure() {
+                if (!addressElement) return;
+
+                try {
+                    addressElement.focus();
+                    addressElement.select();
+                } catch (_) {}
+
+                copyButton.innerHTML =
+                    '<i class="fas fa-hand-pointer"></i>&nbsp; Select & Copy';
+
+                setTimeout(function () {
+                    if (copyButton) {
+                        copyButton.innerHTML =
+                            '<i class="fas fa-copy"></i>&nbsp; Copy';
+                    }
+                }, 2200);
+            }
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(SUPPORT_ADDRESS)
+                    .then(success)
+                    .catch(function () {
+                        fallbackCopy();
+                    });
+            } else {
+                fallbackCopy();
+            }
+
+            function fallbackCopy() {
+                var textarea = document.createElement('textarea');
+
+                textarea.value = SUPPORT_ADDRESS;
+                textarea.setAttribute('readonly', '');
+                textarea.style.position = 'fixed';
+                textarea.style.left = '-9999px';
+                textarea.style.top = '0';
+                textarea.style.opacity = '0';
+
+                document.body.appendChild(textarea);
+                textarea.focus();
+                textarea.select();
+                textarea.setSelectionRange(0, textarea.value.length);
+
+                var copied = false;
+
+                try {
+                    copied = document.execCommand('copy');
+                } catch (_) {
+                    copied = false;
+                }
+
+                textarea.remove();
+
+                if (copied) {
+                    success();
+                } else {
+                    failure();
+                }
+            }
+        }
+
+        function initialize() {
+            getElements();
+
+            if (!overlay ||
+                !closeButton ||
+                !laterButton ||
+                !copyButton) {
+                return;
+            }
+
+            closeButton.addEventListener('click', closeDialog);
+            laterButton.addEventListener('click', closeDialog);
+            copyButton.addEventListener('click', copySupportAddress);
+
+            overlay.addEventListener('click', function (event) {
+                if (event.target === overlay) {
+                    closeDialog();
+                }
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (!overlay.classList.contains('visible')) return;
+
+                if (event.key === 'Escape') {
+                    event.preventDefault();
+                    closeDialog();
+                }
+            });
+
+            /*
+             * Only show the support dialog on the homepage.
+             * This avoids interrupting users while they browse
+             * movies, series, profiles, or other pages.
+             */
+            var path = window.location.pathname.split('/').pop() || 'index.html';
+            var isHome =
+                path === '' ||
+                path === 'index.html' ||
+                path === 'index.htm';
+
+            if (!isHome || !shouldShow()) return;
+
+            setTimeout(showDialog, SHOW_DELAY);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialize);
+        } else {
+            initialize();
+        }
+    })();
+    </script>
 
     <!-- ═══ SCRIPTS ═══ -->
     <script src="js/config.js"></script>
