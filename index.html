@@ -347,15 +347,15 @@
         align-items: center;
         justify-content: center;
         padding: 20px;
-        background:
-            radial-gradient(circle at 50% 15%, rgba(229,9,20,.24), transparent 40%),
-            rgba(3,3,7,.84);
-        backdrop-filter: blur(18px) saturate(130%);
-        -webkit-backdrop-filter: blur(18px) saturate(130%);
-        opacity: 0;
+-webkit-
+opacity: 0;
         visibility: hidden;
         pointer-events: none;
         transition: opacity .35s ease, visibility .35s ease;
+        background: radial-gradient(circle at 50% 50%, rgba(245,197,66,.045), transparent 42%);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+
     }
 
     #streamifySupportOverlay.visible {
@@ -374,7 +374,7 @@
         text-align: center;
         background:
             radial-gradient(circle at 50% -8%, rgba(229,9,20,.20), transparent 42%),
-            linear-gradient(150deg, rgba(31,31,40,.99), rgba(9,9,14,.99));
+            linear-gradient(150deg, rgba(31,31,40,.94), rgba(9,9,14,.92));
         border: 1px solid rgba(255,255,255,.13);
         box-shadow:
             0 40px 110px rgba(0,0,0,.78),
@@ -1317,6 +1317,18 @@
             padding: 0 8px;
         }
     }
+
+/* Streamify donation: transparent page backdrop */
+#streamifySupportOverlay {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+#streamifySupportOverlay .streamify-support-card {
+    background:
+        radial-gradient(circle at 50% -8%, rgba(245,197,66,.12), transparent 42%),
+        linear-gradient(150deg, rgba(31,31,40,.94), rgba(9,9,14,.92)) !important;
+}
 </style>
 
 <!-- Streamify automatic version check + cache busting -->
@@ -1366,7 +1378,7 @@
 
             <div class="streamify-trx-box">
                 <div class="streamify-trx-label">
-                    <span>Donate with TRX • TRC-20</span>
+                    <span>Donate with TRX • TRC-20 • TRC-20</span>
                     <span class="streamify-trx-network">TRON NETWORK</span>
                 </div>
 
